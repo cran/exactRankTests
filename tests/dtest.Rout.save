@@ -1,13 +1,14 @@
 
-R : Copyright 2003, The R Development Core Team
-Version 1.8.0 alpha (2003-09-17)
+R : Copyright 2003, The R Foundation for Statistical Computing
+Version 1.9.0 Under development (unstable) (2003-12-15), ISBN 3-900051-00-3
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
 
 R is a collaborative project with many contributors.
-Type 'contributors()' for more information.
+Type 'contributors()' for more information and
+'citation()' on how to cite R in publications.
 
 Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for a HTML browser interface to help.
@@ -15,7 +16,6 @@ Type 'q()' to quit R.
 
 > 
 > library(exactRankTests)
-Loading required package: ctest 
 > RNGkind("Wichmann-Hill", "Kinderman-Ramage")
 > set.seed(29081975)
 > 
@@ -113,7 +113,7 @@ pwilcox:  0.02764398 pperm:  0.02764398
 pwilcox:  0.9143719 pperm:  0.9143719 
 > 
 > cat("Max difference: ", max(abs(hansi - seppl)), "\n")
-Max difference:  7.660539e-15 
+Max difference:  7.771561e-16 
 > 
 >   stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
 > 
@@ -165,7 +165,7 @@ Max difference:  0
 > dansari <- function(x, m ,n)
 + {
 +     .C("dansari", as.integer(length(x)), d = as.double(x), as.integer(m),
-+        as.integer(n), PACKAGE="ctest")$d
++        as.integer(n), PACKAGE="exactRankTests")$d
 + }
 > 
 > # Ansari-Bradley

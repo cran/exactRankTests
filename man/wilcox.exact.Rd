@@ -81,6 +81,8 @@ tied observations.
   \item{data.name}{a character string giving the names of the data.}
   \item{conf.int}{a confidence interval for the location parameter.
     (Only present if argument \code{conf.int = TRUE}.)}
+  \item{estimate}{Hodges-Lehmann estimate of the location parameter.
+    (Only present if argument \code{conf.int = TRUE}.)}
 }
 \references{
   Myles Hollander & Douglas A. Wolfe (1973),

@@ -1,4 +1,11 @@
-$Id: CHANGES,v 1.58.2.4 2003/11/03 15:16:50 hothorn Exp $
+$Id: CHANGES,v 1.58.2.5 2003/12/16 17:32:02 hothorn Exp $
+
+	0.8-6 (16.12.2003)
+
+	do not import(ctest) in Namespace and load package `stats' instead
+	for R versions >= 1.9.0
+
+	for the moment, copy `ansari.c' from package `stats'.
 
 	0.8-5 (03.11.2003)
 

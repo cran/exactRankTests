@@ -10,7 +10,7 @@ Globulin fraction of plasma (g/l) in two groups of 10 patients.
   This data frame contains the following variables:
   \describe{
     \item{gfrac}{Globulin fraction of plasma}
-    \item{group}{a factor at levels \code{group1} and \code{group2}}
+    \item{group}{a factor with levels \code{group1} and \code{group2}}
   }
 }
 \details{
@@ -22,15 +22,13 @@ See page 75 of Gardner & Altman (1989).
   Published by the British Medical Journal.
 }
 \references{
-  Joachim R\"ohmel (1996).
+  Joachim R\"ohmel (1996),
   Precision intervals for estimates of the difference in success 
   rates for binary  random variables based on the permutation principle.
   \emph{Biometrical Journal}, \bold{38}(8), 977--993.  
 }
 \examples{
 data(globulin)
-pt <- perm.test(gfrac ~ group, data=globulin, conf.int=TRUE)
-pt
-stopifnot(pt$conf.int == c(-8.50, 1.25))
+perm.test(gfrac ~ group, data=globulin, conf.int=TRUE)
 }
 \keyword{datasets}

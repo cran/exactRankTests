@@ -1,9 +1,10 @@
 /*
 
-  $Id: irank.c,v 1.3 2002/11/18 10:33:30 hothorn Exp $
+  $Id: irank.c,v 1.4 2003/04/09 09:50:58 hothorn Exp $
   
   irank: integer valued ranks
   modified from R-1.5.1/src/main/sort.c
+  see the Copyright there
 
 */
       

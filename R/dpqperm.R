@@ -1,35 +1,52 @@
-# $Id: dpqperm.R,v 1.19 2002/12/13 08:56:28 hothorn Exp $
+# $Id: dpqperm.R,v 1.24 2003/04/09 09:57:43 hothorn Exp $
 
-toltest <- function(x, scores, m) 
-{
-    a <- sort(scores*x - round(scores*x))
-    upper <- a[1:m]       
-    upper <- sum(abs(upper[upper < 0]))
-    lower <- a[(length(a) - m):length(a)]
-    lower <- sum(abs(lower[lower > 0]))
-    max(upper, lower)/x   
+findfact <- function(scores, m, tol) {
+    sc <- rev(sort(scores))
+    foo <- function(fact) {
+      abs(sum(abs(fact*sc[1:m] - round(fact*sc[1:m],0)))/fact - tol)
+    }
+    fact <- optimize(foo, c(1, 100000/(sum(sc) -min(sc))))$minimum
+    thistol <- sum(abs(fact*sc[1:m] - round(fact*sc[1:m],0)))/fact
+    if (thistol > tol)
+      warning(paste("cannot hold tol, tolerance:", round(thistol, 6)))
+    fact
 }
 
-dperm <- function(x, scores, m, paired = NULL, tol = 0.01, fact = NULL)
+
+dperm <- function(x, scores, m, paired = NULL, tol = 0.01, fact = NULL,
+                  density=FALSE, simulate=FALSE, B=10000)
 {
     if (is.null(x)) stop("Non-numeric argument to mathematical function")
-    eq <- equiscores(scores, m, tol, fact)
-    cp <- cperm(eq, m, paired)
-    RVAL <- rep(0, length(x))
-    RVAL[x %in% cp$T ] <- cp$Prob[cp$T %in% x]
+    # use raw scores for Monte-Carle simulations
+    eq <- equiscores(scores, m, tol, fact, simulate)
+    if (simulate) 
+      cp <- cperm(eq, m, paired, B=B)
+    else 
+      cp <- cperm(eq, m, paired)
+    # return everything up to x
+    if (density & length(x) == 1) {
+      indx <- which(cp$T <= x)
+      RVAL <- data.frame(cp$T[indx], cp$Prob[indx])
+    } else {
+      RVAL <- rep(0, length(x))
+      RVAL[x %in% cp$T ] <- cp$Prob[cp$T %in% x]
+    }
     return(RVAL) 
 }
 
 
 pperm <- function(q, scores, m, paired = NULL, tol = 0.01, fact = NULL,
                      alternative=c("less", "greater", "two.sided"),
-                     pprob=FALSE)
+                     pprob=FALSE, simulate=FALSE, B=10000)
 {
     if(is.null(q)) stop("Non-numeric argument to mathematical function")
     alternative <- match.arg(alternative)
     if (is.null(paired))  paired <- (length(scores) == m)
-    eq <- equiscores(scores, m, tol, fact)
-    cp <- cperm(eq, m, paired)
+    eq <- equiscores(scores, m, tol, fact, simulate)
+    if (simulate) 
+      cp <- cperm(eq, m, paired, B=B)
+    else 
+      cp <- cperm(eq, m, paired)
     PVALUE <- c()
     PPROB <- c()
     for (i in q) {
@@ -64,15 +81,19 @@ pperm <- function(q, scores, m, paired = NULL, tol = 0.01, fact = NULL,
 } 
 
 
-qperm <- function(p, scores, m, paired = NULL, tol = 0.01, fact = NULL)
+qperm <- function(p, scores, m, paired = NULL, tol = 0.01, fact = NULL,
+                  simulate = FALSE, B=10000)
 {
     if (is.null(p)) stop("Non-numeric argument to mathematical function")
     if (any(p < 0) || any(p > 1)) {
         warning("p is not a probability")
         return(NaN)
     }
-    eq <- equiscores(scores, m, tol, fact)                          
-    cp <- cperm(eq, m, paired)
+    eq <- equiscores(scores, m, tol, fact, simulate)
+    if (simulate) 
+      cp <- cperm(eq, m, paired, B=B)
+    else 
+      cp <- cperm(eq, m, paired)
     cs <- cumsum(cp$Prob)
     RVAL <- c()
     for (i in p) {
@@ -86,20 +107,10 @@ qperm <- function(p, scores, m, paired = NULL, tol = 0.01, fact = NULL)
 rperm <- function(n, scores, m)
     sapply(1:n, dummy <- function(x) sum(sample(scores,m)))
 
-equiscores <- function(scores, m=NULL, tol = 0.01, fact=NULL)
+equiscores <- function(scores, m=NULL, tol = 0.01, fact=NULL, simulate=FALSE)
 {
   if (any(is.null(scores))) 
       stop("Non-numeric argument to mathematical function")
-
-  # first, handle integer and midranked scores, 
-  # m is not needed here
-  fact <- 1
-  fscore <- scores - floor(scores)
-  if (all(fscore == 0)) {
-    if (all(fscore[fscore != 0] == 0.5)) # midranks
-      fact <- 2
-  }
-  scores <- scores*fact
 
   if (!is.null(m)) { 
     if (m < 1) 
@@ -111,37 +122,38 @@ equiscores <- function(scores, m=NULL, tol = 0.01, fact=NULL)
     paired <- FALSE
   }
 
-  fscore <- scores - floor(scores)
+  # use raw scores for simulation based computation of the permutation 
+  # distribution
+  if (simulate) {
+    if(paired & any(scores < 0)) stop("scores must be positive")
+    RVAL <- list(scores = scores, fact = 1, add = 0)
+    class(RVAL) <- "equis"
+    return(RVAL)
+  }  
 
-  # ok, lets face the problems    
-  if (!all(fscore == 0)) { # rational or real scores
-    ssc <- sort(scores)
-    b <- min(ssc[2:length(ssc)] - ssc[1:(length(ssc)-1)])
-    if (b > 0) b <- ceiling(1/b) else b <- 100
-    if (is.null(fact) || fact < b ) {
-      if (toltest(b, scores, m) <= tol)
-        fact <- b
-      else { # do not induce more than 20.000 columns
-        maxfact <- min(1000, round(20000/sum(scores -
-                       min(scores))))   
-        if (maxfact < b)
-          fact <- maxfact
-        else {
-          test <- function(x)
-            ifelse(toltest(x, scores, m) - tol > 0, 1/x, x)
-          fact <- optimize(test, 
-                    interval=c(1e-5,100000))$minimum
-          if (fact > maxfact) {
-            fact <- maxfact
-            warning(paste("cannot hold tol, tolerance:",
-                          round(toltest(maxfact, scores, m), 6)))
-          } else fact <- min(fact)
-        }
-      }
-    } 
+  if (is.null(fact)) {
+    # first, handle integer and midranked scores, 
+    # m is not needed here
+    fact <- 1
+    fscore <- scores - floor(scores)
+    if (any(fscore != 0)) {
+      if (all(fscore[fscore != 0] == 0.5)) # midranks
+        fact <- 2
+    }
+    scores <- scores*fact
+
+    fscore <- scores - floor(scores)
+
+    # ok, lets face the problems    
+    if (!all(fscore == 0)) { # rational or real scores
+      fact <- ceiling(findfact(scores - min(scores) + 1, m, tol))
+      scores <- round(scores * fact)
+    }
+  } else {
+    # the user knows what to do
     scores <- round(scores * fact)
-  }
-
+  } 
+   
   if(!paired) 
     add <- min(scores) - 1
   else 
@@ -156,26 +168,34 @@ equiscores <- function(scores, m=NULL, tol = 0.01, fact=NULL)
 }
 
 
-cperm <- function(escores, m, paired = NULL)
+cperm <- function(escores, m, paired = NULL, B=NULL)
 {
     if (!(class(escores) == "equis"))
         stop("scores are not of class equis") 
 
     N <- length(escores$scores)
 
-    prob <- rep(0, max(cumsum(escores$scores)))
-
     if (is.null(paired))
         paired <- (N == m)
     else 
         paired <- (N == m) && paired  
 
+    if (!is.null(B)) {
+        if (B < 1) stop("B must be positive integer")
+        RVAL <- .Call("sim2is", scores=as.double(escores$scores),
+                                mfirst=as.integer(m), Nsim=as.integer(B), 
+                                PACKAGE="exactRankTests")
+        names(RVAL) <- c("T", "Prob")
+        if (escores$add != 0 & paired) 
+          warning("escores$add not zero for paired samples!")
+        RVAL$T <- (RVAL$T + escores$add*m)/escores$fact
+        return(RVAL)
+    }
+
     if (paired) {
         # paired two sample situation
-        prob <- c(0, prob)
-        prob <- .C("cpermdist1", prob = as.double(prob),
-                   as.integer(escores$scores), as.integer(N),
-                   PACKAGE="exactRankTests")$prob
+        prob <- .Call("cpermdist1", scores = as.integer(escores$scores),
+                   PACKAGE="exactRankTests")
         t <- which(prob != 0)
         prob <- prob[t]
         # 0 is possible
@@ -186,9 +206,10 @@ cperm <- function(escores, m, paired = NULL)
         # independent samples
         col <- sum(sort(escores$scores)[(N + 1 - m):N])
         scores <- rep(1, N)
-        prob <- .C("cpermdist2", prob = as.double(prob), as.integer(m),
-                as.integer(col), as.integer(scores), as.integer(escores$scores),
-                as.integer(N), as.integer(1), PACKAGE="exactRankTests")$prob
+        prob <- .Call("cpermdist2", ma = as.integer(m),
+                mb = as.integer(col), scorea = as.integer(scores), 
+                scoreb = as.integer(escores$scores),
+                retProb = as.logical(TRUE), PACKAGE="exactRankTests")
         t <- which(prob != 0)
         prob <- prob[t]
     }

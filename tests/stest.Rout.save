@@ -1,0 +1,159 @@
+
+R : Copyright 2003, The R Development Core Team
+Version 1.6.2  (2003-01-10)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type `license()' or `licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type `contributors()' for more information.
+
+Type `demo()' for some demos, `help()' for on-line help, or
+`help.start()' for a HTML browser interface to help.
+Type `q()' to quit R.
+
+> 
+> library(exactRankTests)
+> actversion <- paste(R.version$major, R.version$minor, sep=".")
+> thisversion <- "1.7.0"
+> if (compareVersion(actversion, thisversion) >= 0)
++   RNGversion("1.6.2")
+> set.seed(29081975)
+> 
+> # test the distribution functions
+> 
+> # paired observations
+> 
+> hansi <- c()
+> seppl <- c()
+> for (i in 1:10)
++ {
++ 	m <- sample(10:50, 1)
++ 	score <- sample(m)
++ 	val <- sample(0:m, 1)
++ 	# cat("m: ", m, "n: ", n, " val: ", val, "\n")
++ 	hansi <- c(hansi,  psignrank(val, m))
++ 	cat("psignrank: ", hansi[length(hansi)])
++ 	seppl <- c(seppl, pperm(val, score, m, alternative="less",
++                                 simulate=TRUE, B=20000))
++ 	cat(" pperm: ", seppl[length(seppl)], "\n")
++ }
+psignrank:  3.669993e-08 pperm:  0 
+psignrank:  3.278255e-07 pperm:  0 
+psignrank:  0.003417969 pperm:  0.00425 
+psignrank:  7.45058e-08 pperm:  0 
+psignrank:  0.0004196167 pperm:  3e-04 
+psignrank:  3.583978e-11 pperm:  0 
+psignrank:  4.768372e-06 pperm:  0 
+psignrank:  2.980232e-08 pperm:  0 
+psignrank:  1.490116e-08 pperm:  0 
+psignrank:  3.814697e-06 pperm:  0 
+> 
+> cat("Max difference: ", max(abs(hansi - seppl)), "\n")
+Max difference:  0.0008320313 
+> 
+> #  stopifnot(max(abs(hansi - seppl)) <= 1e-10)
+> 
+> hansi <- c()
+> seppl <- c()
+> for (i in 1:10)
++ {
++         m <- sample(10:50, 1)
++         score <- sample(m)
++         prob <- runif(1)
++         # cat("m: ", m, "n: ", n, " prob: ", prob, "\n")
++         hansi <- c(hansi,  qsignrank(prob, m))
++         cat("qwilcox: ", hansi[length(hansi)])
++         seppl <- c(seppl, qperm(prob, score, m, 
++                           simulate=TRUE, B=20000))
++         cat(" qperm: ", seppl[length(seppl)], "\n")
++ }
+qwilcox:  447 qperm:  445 
+qwilcox:  46 qperm:  47 
+qwilcox:  117 qperm:  117 
+qwilcox:  377 qperm:  378 
+qwilcox:  689 qperm:  690 
+qwilcox:  488 qperm:  489 
+qwilcox:  545 qperm:  544 
+qwilcox:  90 qperm:  90 
+qwilcox:  14 qperm:  14 
+qwilcox:  137 qperm:  137 
+> 
+> cat("Max difference: ", max(abs(hansi - seppl)), "\n")
+Max difference:  2 
+> 
+> #  stopifnot(max(abs(hansi - seppl)) <= 1e-10)
+> 
+> # independent observations
+> 
+> hansi <- c()
+> seppl <- c()
+> for (i in 1:10)
++ {
++ 	m <- sample(10:50, 1)
++ 	if (runif(1) < 0.5)
++ 		n <- sample(10:50, 1)
++ 	else	
++ 		n <- m
++ 	score <- sample(n+m)
++ 	val <- sample(0:(m*n), 1)
++ 	# cat("m: ", m, "n: ", n, " val: ", val, "\n")
++ 	hansi <- c(hansi,  pwilcox(val, m, n))
++ 	cat("pwilcox: ", hansi[length(hansi)])
++ 	seppl <- c(seppl, pperm(val + m*(m+1)/2, score, m,
++                           alternative="less", 
++                           simulate=TRUE, B=20000))
++ 	cat(" pperm: ", seppl[length(seppl)], "\n")
++ }
+pwilcox:  3.273895e-07 pperm:  0 
+pwilcox:  0.9815699 pperm:  0.97945 
+pwilcox:  0.998494 pperm:  0.9985 
+pwilcox:  7.246072e-09 pperm:  0 
+pwilcox:  0.03166225 pperm:  0.03085 
+pwilcox:  0.005660486 pperm:  0.0054 
+pwilcox:  0.974474 pperm:  0.97475 
+pwilcox:  0.8815706 pperm:  0.88265 
+pwilcox:  0.0004994904 pperm:  5e-04 
+pwilcox:  6.616704e-06 pperm:  5e-05 
+> 
+> cat("Max difference: ", max(abs(hansi - seppl)), "\n")
+Max difference:  0.002119885 
+> 
+> #  stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
+> 
+> hansi <- c()
+> seppl <- c()
+> for (i in 1:10)
++ {
++         m <- sample(10:50, 1)
++         if (runif(1) < 0.5)
++                 n <- sample(10:50, 1)
++         else
++                 n <- m
++         score <- sample(n+m)
++         prob <- runif(1)
++         # cat("m: ", m, "n: ", n, " prob: ", prob, "\n")
++         hansi <- c(hansi,  qwilcox(prob, m, n))
++         cat("qwilcox: ", hansi[length(hansi)])
++         seppl <- c(seppl, qperm(prob, score, m, simulate=TRUE, B=20000) 
++                           - m*(m+1)/2)
++         cat(" qperm: ", seppl[length(seppl)], "\n")
++ }
+qwilcox:  990 qperm:  988 
+qwilcox:  600 qperm:  602 
+qwilcox:  155 qperm:  155 
+qwilcox:  185 qperm:  185 
+qwilcox:  251 qperm:  252 
+qwilcox:  475 qperm:  475 
+qwilcox:  38 qperm:  38 
+qwilcox:  768 qperm:  769 
+qwilcox:  579 qperm:  577 
+qwilcox:  474 qperm:  475 
+> 
+> cat("Max difference: ", max(abs(hansi - seppl)), "\n")
+Max difference:  2 
+> 
+> #  stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
+> 
+> 

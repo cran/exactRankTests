@@ -9,17 +9,20 @@
 }
 \usage{
 \method{cscores}{default}(y, type=c("Data", "Wilcoxon", "NormalQuantile", 
-        "AnsariBradley", "Median"), int=FALSE, \dots )
+        "AnsariBradley", "Median", "Savage", "ConSal"), int=FALSE,
+        maxs=length(y), \dots )
 \method{cscores}{factor}(y, \dots)
-\method{cscores}{Surv}(y, type="LogRank", int=FALSE, \dots)
+\method{cscores}{Surv}(y, type="LogRank", int=FALSE, maxs=nrow(y), \dots)
 }
 \arguments{
   \item{y}{ a numeric, factor or logical vector or an object of class
-           `Surv'. }
+           \code{Surv}. }
   \item{type}{a character string which specifies the type of the scores to be
               computed. \code{Data} just returns \code{y} if 
               \code{y} is numeric.}
   \item{int}{a logical, forcing integer valued scores. }
+  \item{maxs}{an integer defining the maximal value of the scores
+              if \code{int=TRUE}.}
   \item{\dots}{ additional arguments, not passed to anything at the moment. }
 }
 \details{
@@ -27,13 +30,15 @@
 more general framework of rank and permutation tests in future versions of
 this package. Currently, it is only used in the examples.
 
-The logrank scores are computed as given in Hothorn & Lausen, 2002.
+The logrank scores are computed as given in Hothorn & Lausen (2002).
 
 If integer valued scores are requested (\code{int = TRUE}), the
 \code{scores} are mapped into integers by
 \code{round(scores*length(scores)/max(scores))}. See \code{\link{dperm}} for
 more details.
 
+\code{type} is self descriptive, except for \code{ConSal} which implements
+scores suggested by Conover & Salsburg (1988).
 }
 \value{
   A vector of scores for \code{y} with an attribute \code{scores} indicating
@@ -41,14 +46,20 @@ the kind of scores used is returned.
 }
 \references{
 
-        Hothorn, T. and Lausen, B. (2002).
+        Torsten Hothorn & Berthold Lausen (2002),
         On the exact distribution of maximally selected rank statistics.
         \emph{Computational Statistics \& Data Analysis}, (in press).
         Preprint available from
         \url{http://www.mathpreprints.com/math/Preprint/hothorn/20020227/2}
 
+	William J. Conover & David S. Salsburg (1988), Locally most powerful tests
+	for detecting treatment effects when only a subset of patients can
+	be expected to "respond" to treatment. \emph{Biometrics}, \bold{44},
+	189-196.
+
 }
 \author{ Torsten Hothorn <Torsten.Hothorn@rzmail.uni-erlangen.de> }
+
 \examples{
 
 y <- rnorm(50)
@@ -56,24 +67,6 @@ y <- rnorm(50)
 nq <- cscores(y, type="Normal", int=TRUE)
 # quantile for m=20 observations in the first group
 qperm(0.1, nq, 20)
-
-# Table 9.19 StaXact-4 manual: lung cancer clinical trial
-time <- c(257, 476, 355, 1779, 355, 191, 563, 242, 285, 16, 16, 16, 257, 16)
-cens <- c(0,0,1,1,0,1,1,1,1,1,1,1,1,1)
-
-# round logrank scores
-scores <- cscores.Surv(cbind(time, cens))
-T <- sum(scores[1:5])
-system.time(prob <- pperm(T, scores, m=5, al="le"))
-prob
-pperm(T, scores, m=5, al="tw")
-
-# map into integers, faster
-scores <- cscores.Surv(cbind(time, cens), int=TRUE)
-T <- sum(scores[1:5])
-system.time(prob <- pperm(T, scores, m=5, al="le"))
-prob # compare with 0.001
-pperm(T, scores, m=5, al="tw") # compare with 0.001
 
 }
 

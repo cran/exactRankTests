@@ -1,4 +1,26 @@
-$Id: CHANGES,v 1.50 2003/01/20 15:37:04 hothorn Exp $
+$Id: CHANGES,v 1.57 2003/04/23 15:09:52 hothorn Exp $
+
+	0.8-0 (23.04.2003)
+
+	Monte-Carlo based computation of the null-distribution now possible
+
+	use `.Call' instead of `.C' for interfacing with C
+
+	Code cleanup, documentation cleanup
+
+	Move regression tests from example sections to ./tests/reg-tests.R
+
+	Conover-Salsburg scores added, Savage scores added
+
+	more examples:	neuropathy (pain scores)
+			clodronate (randomized trial)
+			ears (ventilating tubes)
+			sal (serum antigen level)
+			bloodp (blood pressure)
+			lungcancer (well,...)
+
+	prepare for R-1.7.0: set RNGversion("1.6.2") for regression tests
+			     put the package into a NAMESPACE
 
 	0.7-7 (20.01.2003)
 

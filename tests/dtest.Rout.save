@@ -1,6 +1,6 @@
 
-R : Copyright 2002, The R Development Core Team
-Version 1.6.0 beta (2002-09-28)
+R : Copyright 2003, The R Development Core Team
+Version 1.7.0 Under development (unstable) (2003-04-09)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -15,7 +15,10 @@ Type `q()' to quit R.
 
 > 
 > library(exactRankTests)
-> 
+> actversion <- paste(R.version$major, R.version$minor, sep=".")
+> thisversion <- "1.7.0"
+> if (compareVersion(actversion, thisversion) >= 0)
++   RNGversion("1.6.2")
 > set.seed(29081975)
 > 
 > # test the distribution functions
@@ -159,5 +162,35 @@ Max difference:  0
 +   stopifnot(all.equal(wilcox.test(r ~ group)$p.value, 
 +                       perm.test(r ~ group)$p.value))
 + }
+> 
+> 
+> dansari <- function(x, m ,n)
++ {
++     .C("dansari", as.integer(length(x)), d = as.double(x), as.integer(m),
++        as.integer(n), PACKAGE="ctest")$d
++ }
+> 
+> # Ansari-Bradley
+> 
+> n <- 10
+> x <- rnorm(n, 2, 1)
+> y <- rnorm(n, 2, 2)
+> 
+> # exact distribution using Streitberg-Roehmel
+> 
+> sc <- cscores(c(x,y), type="Ansari")
+> dabexac <- dperm(0:(n*(2*n+1)/2), sc, n)
+> sum(dabexac)
+[1] 1
+> tr <- which(dabexac > 0)
+> 
+> # exact distribution using dansari (wrapper to ansari.c in ctest)
+> 
+> dab <- dansari(0:(n*(2*n+1)/2), n, n)
+> 
+> # compare the two distributions:
+> 
+> stopifnot(all.equal(max(abs(dab[tr] - dabexac[tr])), 0))
+> 
 > 
 > 

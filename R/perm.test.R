@@ -1,4 +1,4 @@
-# $Id: perm.test.R,v 1.14 2003/01/19 12:54:49 hothorn Exp $
+# $Id: perm.test.R,v 1.17 2003/04/09 16:02:20 hothorn Exp $
 
 perm.test <- function(x, ...) UseMethod("perm.test")
 
@@ -80,10 +80,11 @@ function(x,y=NULL, paired = FALSE, alternative = c("two.sided", "less", "greater
 
             Hx <- rep(0, sum(xscores$scores)*m)
 
-            Hx <- .C("cpermdist2", H = as.double(Hx), as.integer(m),
-                as.integer(sum(xscores$scores)), as.integer(rep(1,m)),
-                as.integer(xscores$scores), as.integer(m),
-                as.integer(length(Hx)+1), PACKAGE="exactRankTests")$H
+            dummy <- rep(1,m)
+            Hx <- .Call("cpermdist2", as.integer(m),
+                as.integer(sum(xscores$scores)), as.integer(dummy),
+                as.integer(xscores$scores), 
+                as.logical(FALSE), PACKAGE="exactRankTests")
 
             Hx <- matrix(Hx, nrow=m, byrow=TRUE)
             Hx <- rbind(Hx, 0)
@@ -102,8 +103,9 @@ function(x,y=NULL, paired = FALSE, alternative = c("two.sided", "less", "greater
                 count <- count[od]
                 diff <- diff[od]
                 du <- duplicated(diff)
-                for (k in length(count):1)
+                for (k in length(count):1) {
                     if (du[k]) count[k-1] <- count[k-1] + count[k]
+                }
 
                 diff <- unique(diff)
                 count <- count[!du]
@@ -148,7 +150,7 @@ function(x,y=NULL, paired = FALSE, alternative = c("two.sided", "less", "greater
      } else {
         m <- length(x)
         n <- length(y)
-        if(n < m) {
+        if(n < m & conf.int) {
             warning("x has more observations than y, returning perm.test(y, x, ...)")
             return(perm.test(y, x, paired, alternative,
                    mu, exact, conf.int, conf.level, tol=NULL,...))
@@ -204,26 +206,24 @@ function(x,y=NULL, paired = FALSE, alternative = c("two.sided", "less", "greater
             xscores <- equiscores(x,m)
             yscores <- equiscores(y,n)
 
-            Hx <- rep(0, sum(xscores$scores)*m)
-            Hy <- rep(0, sum(yscores$scores)*n)
+            tsx <- sum(xscores$scores)
+            tsy <- sum(yscores$scores)
 
-            Hx <- .C("cpermdist2", H = as.double(Hx), as.integer(m),
-                as.integer(sum(xscores$scores)), as.integer(rep(1,m)),
-                as.integer(xscores$scores), as.integer(m),
-                as.integer(length(Hx)+1), PACKAGE="exactRankTests")$H
+            dummy <- rep(1,m)
+            Hx <- .Call("cpermdist2", as.integer(m),
+                as.integer(tsx), as.integer(dummy),
+                as.integer(xscores$scores), 
+                as.logical(FALSE), PACKAGE="exactRankTests")
 
-            Hx <- matrix(Hx, nrow=m, byrow=TRUE)
-            Hx <- rbind(Hx, 0)
-            Hx[nrow(Hx), ncol(Hx)] <- 1
+            Hx <- matrix(Hx, nrow=m+1, byrow=TRUE)
+           
+            dummy <- rep(1,n)
+            Hy <- .Call("cpermdist2", as.integer(n),
+                as.integer(tsy), as.integer(dummy),
+                as.integer(yscores$scores), 
+                as.logical(FALSE), PACKAGE="exactRankTests")
 
-            Hy <- .C("cpermdist2", H = as.double(Hy), as.integer(n),
-                as.integer(sum(yscores$scores)), as.integer(rep(1,n)),
-                as.integer(yscores$scores), as.integer(n),
-                as.integer(length(Hy)+1), PACKAGE="exactRankTests")$H
-
-            Hy <- matrix(Hy, nrow=n, byrow=TRUE)
-            Hy <- rbind(Hy, 0)
-            Hy[nrow(Hy), ncol(Hy)] <- 1
+            Hy <-  matrix(Hy, nrow=n+1, byrow=TRUE)
 
             L <- sum(choose(m, 1:m)*choose(n, 1:m))
             D <- c()
@@ -241,8 +241,13 @@ function(x,y=NULL, paired = FALSE, alternative = c("two.sided", "less", "greater
                 count <- count[od]
                 diff <- diff[od]
                 du <- duplicated(diff)
-                for (k in length(count):1)
+                if (any(is.na(du))) print("NA in du")
+                if (length(du) < length(count)) print("du < count")
+
+                for (k in length(count):1) {
                     if (du[k]) count[k-1] <- count[k-1] + count[k]
+		}
+
 
                 diff <- unique(diff)
                 count <- count[!du]

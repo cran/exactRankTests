@@ -1,11 +1,13 @@
-# $Id: cscores.R,v 1.12 2002/11/22 08:52:20 hothorn Exp $
+# $Id: cscores.R,v 1.14 2003/02/07 14:03:39 hothorn Exp $
 
 cscores <- function(y, ...) UseMethod("cscores")
 
 cscores.default <- function(y, type=c("Data", "Wilcoxon", 
-                            "NormalQuantile", "AnsariBradley", "Median"), 
-                            int=FALSE, ... ) {
+                            "NormalQuantile", "AnsariBradley", "Median",
+                            "ConSal"), int=FALSE, maxs=length(y), ... ) {
   type <- match.arg(type)
+  if (!(all.equal(floor(maxs),maxs))  || maxs < 1) 
+    stop("maxs is not an positiv integer")
   N <- length(y)
   RET <- switch(type, "Data" = y,
            "Wilcoxon" = rank(y),
@@ -17,13 +19,19 @@ cscores.default <- function(y, type=c("Data", "Wilcoxon",
              r <- rank(y)
              r[r <= (N+1)/2] <- 0
              r[r > 0] <- 1
-             r})
+             r},
+           "Savage" = {
+             cscores.Surv(cbind(y, 1)) },
+           "ConSal" = {
+             (rank(y)/(N+1))^4
+           }
+  )
   attr(RET, "scores") <- type
   if (int) {
     fscore <- RET - floor(RET)
     if (all(fscore[fscore != 0] == 0.5)) 
       RET <- 2*RET
-    else RET <- round(RET*N/max(RET))
+    else RET <- round(RET*maxs/max(RET))
   }
   RET
 }
@@ -44,8 +52,10 @@ irank <- function(x, ox=NULL) {
           PACKAGE="exactRankTests")
 }
 
-cscores.Surv <- function(y, type="LogRank", int=FALSE, ...) {
+cscores.Surv <- function(y, type="LogRank", int=FALSE, maxs=nrow(y), ...) {
   type <- match.arg(type)
+  if (!(all.equal(floor(maxs),maxs))  || maxs < 1)
+    stop("maxs is not an positiv integer")
   time <- y[,1]
   event <- y[,2]
   N <- length(time)
@@ -54,7 +64,7 @@ cscores.Surv <- function(y, type="LogRank", int=FALSE, ...) {
   fact <- event/(N - rt + 1)
   scores <- event - cumsum(fact[ot])[rt]
   if (int)
-    RET <- round(scores*N/max(scores))
+    RET <- round(scores*maxs/max(scores))
   else
     RET <- scores
   attr(RET, "scores") <- "LogRank"

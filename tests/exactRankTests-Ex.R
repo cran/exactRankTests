@@ -1,3 +1,5 @@
+### * <HEADER>
+###
 attach(NULL, name = "CheckExEnv")
 assign(".CheckExEnv", as.environment(2), pos = length(search())) # base
 ## This plot.new() patch has no effect yet for persp();
@@ -13,31 +15,149 @@ assign("plot.new",
                      outer = outer, adj = 1, cex = .8, col = "orchid")
 	   }
        },
-       env = .CheckExEnv)
+       env = environment(plot))
 assign("cleanEx",
        function(env = .GlobalEnv) {
 	   rm(list = ls(envir = env, all.names = TRUE), envir = env)
            RNGkind("Wichmann-Hill", "default")
 	   assign(".Random.seed", c(0, rep(7654, 3)), pos = 1)
-	   assign("T", NULL, pos = 1);
-	   assign("F", NULL, pos = 1);
+	   assign("T", delay(stop("T used instead of TRUE")),
+		  pos = .CheckExEnv)
+	   assign("F", delay(stop("F used instead of FALSE")),
+		  pos = .CheckExEnv)
        },
        env = .CheckExEnv)
-assign("..nameEx", "__{must remake R-ex/*.R}__", env = .CheckExEnv) #-- for now
+assign("..nameEx", "__{must remake R-ex/*.R}__", env = .CheckExEnv) # for now
 assign("ptime", proc.time(), env = .CheckExEnv)
 postscript("exactRankTests-Examples.ps")
 assign("par.postscript", par(no.readonly = TRUE), env = .CheckExEnv)
 options(contrasts = c(unordered = "contr.treatment", ordered = "contr.poly"))
 library('exactRankTests')
+
+cleanEx(); ..nameEx <- "ASAT"
+
+### * ASAT
+
+### Name: ASAT
+### Title: Toxicological Study on Female Wistar Rats
+### Aliases: ASAT
+### Keywords: datasets
+
+### ** Examples
+
+
+data(ASAT)
+# does not really look symmetric
+
+plot(asat ~ group, data=ASAT)
+
+# proof-of-safety based on ration of medians
+pos <- wilcox.exact(I(log(asat)) ~ group, data = ASAT, alternative = "less", 
+             conf.int=TRUE)
+
+# one-sided confidence set. Safety cannot be concluded since the effect of
+# the compound exceeds 20% of the control median
+exp(pos$conf.int)
+
+
+
+cleanEx(); ..nameEx <- "ansari.exact"
+
+### * ansari.exact
+
+### Name: ansari.exact
+### Title: Ansari-Bradley Test
+### Aliases: ansari.exact ansari.exact.default ansari.exact.formula
+### Keywords: htest
+
+### ** Examples
+
+## Hollander & Wolfe (1973, p. 86f):
+## Serum iron determination using Hyland control sera
+ramsay <- c(111, 107, 100, 99, 102, 106, 109, 108, 104, 99,
+            101, 96, 97, 102, 107, 113, 116, 113, 110, 98)
+jung.parekh <- c(107, 108, 106, 98, 105, 103, 110, 105, 104,
+            100, 96, 108, 103, 104, 114, 114, 113, 108, 106, 99)
+ansari.test(ramsay, jung.parekh)
+ansari.exact(ramsay, jung.parekh)
+
+ansari.exact(rnorm(20), rnorm(20, 0, 2), conf.int = TRUE)
+
+
+
+cleanEx(); ..nameEx <- "bloodp"
+
+### * bloodp
+
+### Name: bloodp
+### Title: Diastolic Blood Pressure
+### Aliases: bloodp
+### Keywords: datasets
+
+### ** Examples
+
+data(bloodp)
+
+# Permutation test
+
+perm.test(bp ~ group, data=bloodp)
+perm.test(bp ~ group, data=bloodp, alternative="greater")
+perm.test(bp ~ group, data=bloodp, exact=FALSE)
+
+# Wilcoxon-Mann-Whitney test
+
+wilcox.exact(bp ~ group, data=bloodp, conf.int=TRUE, alternative="l")
+wilcox.exact(bp ~ group, data=bloodp, conf.int=TRUE)
+
+# compute the v.d. Waerden test
+
+sc <- cscores(bloodp$bp, type="NormalQuantile")
+X <- sum(sc[bloodp$group == "group2"])
+round(pperm(X, sc, 11), 4) 
+round(pperm(X, sc, 11, simulate=TRUE), 4)
+round(pperm(X, sc, 11, alternative="two.sided"), 4) 
+round(pperm(X, sc, 11, alternative="two.sided", simulate=TRUE), 4)
+
+# use scores mapped into integers (cf. dperm)
+
+sc <- cscores(bloodp$bp, type="NormalQuantile", int=TRUE)
+X <- sum(sc[bloodp$group == "group2"])
+round(pperm(X, sc, 11), 4)      
+round(pperm(X, sc, 11, alternative="two.sided"), 4)
+
+
+
+cleanEx(); ..nameEx <- "cscores"
+
+### * cscores
+
+### Name: cscores
+### Title: Computation of Scores
+### Aliases: cscores cscores.default cscores.Surv cscores.factor
+### Keywords: misc
+
+### ** Examples
+
+
+y <- rnorm(50)
+# v.d. Waerden scores
+nq <- cscores(y, type="Normal", int=TRUE)
+# quantile for m=20 observations in the first group
+qperm(0.1, nq, 20)
+
+
+
+
 cleanEx(); ..nameEx <- "dperm"
-###--- >>> `dperm' <<<----- Distribution of One and Two Sample Permutation Tests
 
-	## alias	 help(dperm)
-	## alias	 help(pperm)
-	## alias	 help(qperm)
-	## alias	 help(rperm)
+### * dperm
 
-##___ Examples ___:
+### Name: dperm
+### Title: Distribution of One and Two Sample Permutation Tests
+### Aliases: dperm pperm qperm rperm
+### Keywords: distribution
+
+### ** Examples
 
 
 # exact one-sided p-value of the Wilcoxon test for a tied sample
@@ -48,7 +168,7 @@ r <- cscores(c(x,y), type="Wilcoxon")
 pperm(sum(r[seq(along=x)]), r, 7)
 
 # Compare the exact algorithm as implemented in ctest and the
-# Streitberg-Roehmel for untied samples
+# Shift-Algorithm by Streitberg & Roehmel for untied samples
  
 # Wilcoxon:
 
@@ -57,12 +177,10 @@ x <- rnorm(n, 2)
 y <- rnorm(n, 3)
 r <- cscores(c(x,y), type="Wilcoxon")
 
-# exact distribution using Streitberg-Roehmel
+# exact distribution using the Shift-Algorithm
 
 dwexac <- dperm((n*(n+1)/2):(n^2 + n*(n+1)/2), r, n)
-su <- sum(dwexac)           # should be something near 1 :-)
-su
-if (su != 1) stop("sum(dwexac) not equal 1")
+sum(dwexac)           # should be something near 1 :-)
 
 # exact distribution using dwilcox
 
@@ -89,20 +207,11 @@ n <- 10
 x <- rnorm(n, 2, 1)
 y <- rnorm(n, 2, 2)
 
-# exact distribution using Streitberg-Roehmel
+# exact distribution using the Shift-Algorithm
 
 sc <- cscores(c(x,y), type="Ansari")
 dabexac <- dperm(0:(n*(2*n+1)/2), sc, n)
 sum(dabexac)
-tr <- which(dabexac > 0)
-
-# exact distribution using dansari (wrapper to ansari.c in ctest)
-
-dab <- dansari(0:(n*(2*n+1)/2), n, n)
-
-# compare the two distributions:
-
-plot(dab[tr], dabexac[tr], main="Ansari", xlab="dansari", ylab="dperm")
 
 # real scores are allowed (but only result in an approximation)
 # e.g. v.d. Waerden test
@@ -133,54 +242,233 @@ p2 <- pperm(X, scores, length(x), alternative="two.sided")
 
 p1 - p2
 
-# the blood pressure example from StatXact manual, page 221:
-
-treat <- c(94, 108, 110, 90)
-contr <- c(80, 94, 85, 90, 90, 90, 108, 94, 78, 105, 88)
-
-# compute the v.d. Waerden test and compare the results to StatXact-4 for
-# Windows:
-
-sc <- cscores(c(contr, treat), type="NormalQuantile")
-X <- sum(sc[seq(along=contr)])
-round(pperm(X, sc, 11), 4)      # == 0.0462 (StatXact)
-round(pperm(X, sc, 11, alternative="two.sided"), 4)     # == 0.0799 (StatXact)
-
-# the alternative method returns:
-
-sc <- cscores(c(contr, treat), type="NormalQuantile", int=TRUE)
-X <- sum(sc[seq(along=contr)])
-
-round(pperm(X, sc, 11), 4)      # compare to 0.0462 
-round(pperm(X, sc, 11, alternative="two.sided"), 4)     # compare to 0.0799
 
 
-## Keywords: 'distribution'.
+
+cleanEx(); ..nameEx <- "ears"
+
+### * ears
+
+### Name: ears
+### Title: Survival of Ventilating Tubes
+### Aliases: ears
+### Keywords: datasets
+
+### ** Examples
+
+data(ears)
+if (require(survival, quietly=TRUE)) {
+  ls <- cscores(Surv(ears$left, ears$lcens), int=TRUE)
+  perm.test(ls ~ group, data=ears)
+}
 
 
+
+
+cleanEx(); ..nameEx <- "glioma"
+
+### * glioma
+
+### Name: glioma
+### Title: Malignant Glioma Pilot Study
+### Aliases: glioma
+### Keywords: datasets
+
+### ** Examples
+
+data(glioma)
+
+if(require(survival, quietly = TRUE)) {
+
+  par(mfrow=c(1,2))
+
+  # Grade III glioma
+  g3 <- glioma[glioma$Histology == "Grade3",]
+
+  # Plot Kaplan-Meier curves
+  plot(survfit(Surv(Survival, Cens) ~ Group, data=g3), 
+       main="Grade III Glioma", lty=c(2,1), 
+       legend.text=c("Control", "Treated"),
+       legend.bty=1, ylab="Probability", 
+       xlab="Survival Time in Month")
+
+  # log-rank test
+  survdiff(Surv(Survival, Cens) ~ Group, data=g3)
+
+  # permutation test with integer valued log-rank scores
+  lsc <- cscores(Surv(g3$Survival, g3$Cens), int=TRUE) 
+  perm.test(lsc ~ Group, data=g3) 
+
+  # permutation test with real valued log-rank scores
+  lsc <- cscores(Surv(g3$Survival, g3$Cens), int=FALSE)
+  tr <- (g3$Group == "RIT")
+  T <- sum(lsc[tr])
+  pperm(T, lsc, sum(tr), alternative="tw")
+  pperm(T, lsc, sum(tr), alternative="tw", simulate=TRUE)
+
+  # Grade IV glioma
+  gbm <- glioma[glioma$Histology == "GBM",] 
+
+  # Plot Kaplan-Meier curves
+  plot(survfit(Surv(Survival, Cens) ~ Group, data=gbm), 
+       main="Grade IV Glioma", lty=c(2,1), 
+       legend.text=c("Control", "Treated"),
+       legend.bty=1, legend.pos=1, ylab="Probability", 
+       xlab="Survival Time in Month")
+   
+  # log-rank test
+  survdiff(Surv(Survival, Cens) ~ Group, data=gbm)
+
+  # permutation test with integer valued log-rank scores
+  lsc <- cscores(Surv(gbm$Survival, gbm$Cens), int=TRUE)
+  perm.test(lsc ~ Group, data=gbm)
+
+  # permutation test with real valued log-rank scores 
+  lsc <- cscores(Surv(gbm$Survival, gbm$Cens), int=FALSE) 
+  tr <- (gbm$Group == "RIT")
+  T <- sum(lsc[tr])
+  pperm(T, lsc, sum(tr), alternative="tw")
+  pperm(T, lsc, sum(tr), alternative="tw", simulate=TRUE)
+}
+
+
+
+par(get("par.postscript", env = .CheckExEnv))
 cleanEx(); ..nameEx <- "globulin"
-###--- >>> `globulin' <<<----- Differences in Globulin Fraction in Two Groups
 
-	## alias	 help(globulin)
+### * globulin
 
-##___ Examples ___:
+### Name: globulin
+### Title: Differences in Globulin Fraction in Two Groups
+### Aliases: globulin
+### Keywords: datasets
+
+### ** Examples
 
 data(globulin)
-pt <- perm.test(gfrac ~ group, data=globulin, conf.int=TRUE)
-pt
-stopifnot(pt$conf.int == c(-8.50, 1.25))
+perm.test(gfrac ~ group, data=globulin, conf.int=TRUE)
 
-## Keywords: 'datasets'.
+
+
+cleanEx(); ..nameEx <- "irank"
+
+### * irank
+
+### Name: irank
+### Title: Integer Ranks
+### Aliases: irank
+### Keywords: univar
+
+### ** Examples
+
+x <- rnorm(10)
+irank(x)
+rank(x)
+x <- c(1,2,3,3,0)
+irank(x)
+rank(x)
+
+
+
+cleanEx(); ..nameEx <- "lungcancer"
+
+### * lungcancer
+
+### Name: lungcancer
+### Title: Lung Cancer Clinical Trial
+### Aliases: lungcancer
+### Keywords: datasets
+
+### ** Examples
+
+data(lungcancer)
+attach(lungcancer)
+
+# round logrank scores
+scores <- cscores.Surv(cbind(time, cens))
+T <- sum(scores[group=="newdrug"])
+mobs <- sum(group=="newdrug")
+prob <- pperm(T, scores, m=mobs, al="le")
+prob
+pperm(T, scores, m=mobs, al="tw")
+pperm(T, scores, m=mobs, al="tw", simulate=TRUE)
+
+# map into integers, faster
+scores <- cscores.Surv(cbind(time, cens), int=TRUE)
+T <- sum(scores[group=="newdrug"])
+mobs <- sum(group=="newdrug")
+prob <- pperm(T, scores, m=mobs, al="le")
+prob
+pperm(T, scores, m=mobs, al="tw")
+pperm(T, scores, m=mobs, al="tw", simulate=TRUE)
+
+detach(lungcancer)
+
+
+
+
+cleanEx(); ..nameEx <- "neuropathy"
+
+### * neuropathy
+
+### Name: neuropathy
+### Title: Acute Painful Diabetic Neuropathy
+### Aliases: neuropathy
+### Keywords: datasets
+
+### ** Examples
+
+data(neuropathy)
+# compare with Table 2 of Conover & Salsburg (1988)
+wilcox.exact(pain ~ group, data=neuropathy, alternative="less")
+css <- cscores(neuropathy$pain, type="ConSal")
+pperm(sum(css[neuropathy$group=="control"]),css,
+      m=sum(neuropathy$group=="control"))
+
+
+
+
+cleanEx(); ..nameEx <- "ocarcinoma"
+
+### * ocarcinoma
+
+### Name: ocarcinoma
+### Title: Ovarian Carcinoma
+### Aliases: ocarcinoma
+### Keywords: datasets
+
+### ** Examples
+
+
+data(ocarcinoma)
+attach(ocarcinoma)
+# compute integer valued logrank scores
+logrsc <- cscores.Surv(cbind(time, cens), int=TRUE)
+# the test statistic
+lgT <- sum(logrsc[stadium == "II"])
+# p-value
+round(pperm(lgT, logrsc, m=sum(stadium=="II"), al="tw"), 4)
+
+# compute logrank scores and simulate p-value
+logrsc <- cscores.Surv(cbind(time, cens), int=FALSE)
+# the test statistic
+lgT <- sum(logrsc[stadium == "II"])
+# p-value
+round(pperm(lgT, logrsc, m=sum(stadium=="II"), al="tw", simulate=TRUE), 4)
+
+
 
 
 cleanEx(); ..nameEx <- "perm.test"
-###--- >>> `perm.test' <<<----- One and Two Sample Permutation Test
 
-	## alias	 help(perm.test)
-	## alias	 help(perm.test.default)
-	## alias	 help(perm.test.formula)
+### * perm.test
 
-##___ Examples ___:
+### Name: perm.test
+### Title: One and Two Sample Permutation Test
+### Aliases: perm.test perm.test.default perm.test.formula
+### Keywords: htest
+
+### ** Examples
 
 
 # Example from Gardner & Altman (1989), p. 30
@@ -189,63 +477,78 @@ cleanEx(); ..nameEx <- "perm.test"
 
 A <- c(rep(1, 61), rep(0, 19))
 B <- c(rep(1, 45), rep(0, 35))
-pt <- perm.test(A, B, conf.int=TRUE, exact=TRUE)
-pt
+perm.test(A, B, conf.int=TRUE, exact=TRUE)
 
-  stopifnot(round(pt$conf.int, 4) == c(0.0526, 0.3429))
+# one-sample AIDS data (differences only), Methta and Patel (2001),
+# Table 8.1 page 181
 
+data(sal)
+attach(sal)
+ppdiff <- pre - post
+detach(sal)
 
-# the blood pressure example from StatXact-manual, page 262:
+# p-values in StatXact == 0.0011 one-sided, 0.0021 two.sided, page 183
 
-treat <- c(94, 108, 110, 90)
-contr <- c(80, 94, 85, 90, 90, 90, 108, 94, 78, 105, 88)
-
-pt <- perm.test(treat, contr)
-pt
-
-  stopifnot(round(pt$p.value, 4) == 0.1040)
-
-pt <- perm.test(treat, contr, alternative="greater")
-pt
-
-  stopifnot(round(pt$p.value, 4) == 0.0564)
-
-
-pt <- perm.test(treat, contr, exact=FALSE)
-pt
-
-  stopifnot(round(pt$p.value, 4) == 0.1070)
-
-
-# one-sample AIDS data (differences only), page 179
-
-diff <- c(-149, 51, 0, 126, -106, -20, 0, -52, -292, 0, -103, 0, -84, -89,
--159, -404, -500, -259, -14, -2600)
-
-# p-values in StatXact == 0.0011 one-sided, 0.0021 two.sided 
-
-perm.test(diff)
-
-perm.test(diff, alternative="less")
-
-pt <- perm.test(diff, exact=FALSE)
-
-  # StatXact page 179
-  stopifnot(round(pt$p.value, 4) == 0.0878)
+perm.test(ppdiff)
+perm.test(ppdiff, alternative="less")
+perm.test(ppdiff, exact=FALSE)
 
 
 
-## Keywords: 'htest'.
+
+cleanEx(); ..nameEx <- "rotarod"
+
+### * rotarod
+
+### Name: rotarod
+### Title: Rotating Rats Data
+### Aliases: rotarod
+### Keywords: datasets
+
+### ** Examples
+
+data(rotarod)
+wilcox.exact(time ~ group, data=rotarod, alternative="g")
+wilcox.exact(time ~ group, data=rotarod, conf.int=TRUE)
+wilcox.exact(time ~ group, data=rotarod, exact=FALSE)
+# the permutation test
+perm.test(time ~ group, data=rotarod)
+perm.test(time ~ group, data=rotarod, exact=FALSE)
+
+
+
+cleanEx(); ..nameEx <- "sal"
+
+### * sal
+
+### Name: sal
+### Title: Serum Antigen Level
+### Aliases: sal
+### Keywords: datasets
+
+### ** Examples
+
+data(sal)
+attach(sal)
+
+wilcox.exact(pre, post, paired=TRUE, conf.int=TRUE)
+wilcox.exact(pre,post, paired=TRUE, conf.int=TRUE, exact=FALSE)
+
+detach(sal)
+
+
 
 
 cleanEx(); ..nameEx <- "wilcox.exact"
-###--- >>> `wilcox.exact' <<<----- Wilcoxon Rank Sum and Signed Rank Tests
 
-	## alias	 help(wilcox.exact)
-	## alias	 help(wilcox.exact.default)
-	## alias	 help(wilcox.exact.formula)
+### * wilcox.exact
 
-##___ Examples ___:
+### Name: wilcox.exact
+### Title: Wilcoxon Rank Sum and Signed Rank Tests
+### Aliases: wilcox.exact wilcox.exact.default wilcox.exact.formula
+### Keywords: htest
+
+### ** Examples
 
 ## One-sample test.
 ## Hollander & Wolfe (1973), 29f.
@@ -258,14 +561,6 @@ y <- c(0.878, 0.647, 0.598, 2.05, 1.06, 1.29, 1.06, 3.14, 1.29)
 wilcox.exact(x, y, paired = TRUE, alternative = "greater")
 wilcox.exact(y - x, alternative = "less")    # The same.
 
-
-  wt <- wilcox.test(y-x)
-  we <- wilcox.exact(y -x)
-  wt
-  we
-  stopifnot(wt$p.value == we$p.value)
-
-
 ## Two-sample test.
 ## Hollander & Wolfe (1973), 69f.
 ## Permeability constants of the human chorioamnion (a placental
@@ -274,16 +569,7 @@ wilcox.exact(y - x, alternative = "less")    # The same.
 ##  of the human chorioamnion for the term pregnancy.
 x <- c(0.80, 0.83, 1.89, 1.04, 1.45, 1.38, 1.91, 1.64, 0.73, 1.46)
 y <- c(1.15, 0.88, 0.90, 0.74, 1.21)
-we <- wilcox.exact(x, y, alternative = "g")        # greater
-wt <- wilcox.exact(x, y, alternative = "g")
-
- stopifnot(we$p.value == wt$p.value)
- stopifnot(all(we$conf.int == wt$conf.int))
-
-
-x <- rnorm(10)
-y <- rnorm(10, 2)
-wilcox.exact(x, y, conf.int = TRUE)
+wilcox.exact(x, y, alternative = "g")        # greater
 
 ## Formula interface.
 data(airquality)
@@ -291,190 +577,30 @@ boxplot(Ozone ~ Month, data = airquality)
 wilcox.exact(Ozone ~ Month, data = airquality,
             subset = Month %in% c(5, 8))
 
-
-  if (!any(duplicated(c(x,y)))) {
-    we <- wilcox.exact(x, y, conf.int = TRUE)
-    print(we)
-    wt <- wilcox.test(x, y, conf.int = TRUE)
-    print(wt)
-    we$pointprob <- NULL
-    we$method <- NULL
-    wt$parameter <- NULL
-    wt$method <- NULL
-    stopifnot(all.equal(wt, we))
-    we <- wilcox.exact(x, conf.int = TRUE)
-    print(we)
-    wt <- wilcox.test(x, conf.int = TRUE)
-    print(wt)
-    we$pointprob <- NULL
-    we$method <- NULL
-    wt$parameter <- NULL
-    wt$method <- NULL
-    stopifnot(all.equal(wt, we))
-  }
-
-  
-
-# Data from the StatXact-4 manual, page 221, diastolic blood pressure
-
-treat <- c(94, 108, 110, 90)
-contr <- c(80, 94, 85, 90, 90, 90, 108, 94, 78, 105, 88)
-
-# StatXact 4 for Windows: p.value = 0.0989, point prob = 0.019
-
-we <- wilcox.exact(contr, treat, conf.int=TRUE)
-we
-
-  stopifnot(round(we$p.value,4) == 0.0989)
-
-
-we <- wilcox.exact(contr, treat, conf.int=TRUE, exact=FALSE)
-we
-
-  stopifnot(round(we$p.value,4) == 0.0853)
-
-
-
-  # StatXact page 221
-  we <- wilcox.exact(treat, contr, conf.int=TRUE)
-  stopifnot(we$conf.int[1] == -4)
-  stopifnot(we$conf.int[2] == 22)
-  stopifnot(we$conf.estimate == 9.5)
- 
-
-# StatXact 4 for Windows: p.value = 0.0542, point prob = 0.019
- 
-we <- wilcox.exact(contr, treat, alternative="less", conf.int=TRUE) 
-we
-
-  stopifnot(round(we$p.value,4) == 0.0542)
-
-
-# paired observations
-# Data from the StatXact-4 manual, page 167, serum antigen level
-
-# StatXact 4 for Windows: p.value=0.0021 (page 168)
-
-pre <- c(149, 0, 0, 259, 106, 255, 0, 52, 340, 65, 180, 0, 84, 89, 212, 554,
-500, 424, 112, 2600)
-post <- c(0, 51, 0, 385, 0, 235, 0, 0, 48, 65, 77, 0, 0, 0, 53, 150, 0, 165,
-98, 0)
-
-we <- wilcox.exact(pre, post, paired=TRUE, conf.int=TRUE)
-we
-
-  stopifnot(round(we$p.value,4) == 0.0021)
-
-
-
-  # StatXact page 175
-  we <- wilcox.exact(post, pre, paired=TRUE, conf.int=TRUE)
-  stopifnot(we$estimate > we$conf.int[1] & we$estimate < we$conf.int[2])
-  stopifnot(we$conf.int[1] == -292)
-  stopifnot(we$conf.int[2] == -54)
-  stopifnot(round(we$estimate,1) == -137.8)
-
-
-
-we <- wilcox.exact(pre,post, paired=TRUE, conf.int=TRUE, exact=FALSE)
-we
-
-  stopifnot(round(we$p.value,4) == 0.0038)
-  
-
-
-
-
-# Hollander & Wolfe (1999), second edition, Example 4.2., page 112
-
-contr <- c(1042, 1617, 1180, 973, 1552, 1251, 1151, 728, 1079, 951, 1319)
-SST <- c(874, 389, 612, 798, 1152, 893, 541, 741, 1064, 862, 213)
-
-wilcox.exact(contr, SST, conf.int=TRUE) 
-
-# page 110, Example 4.1
-
-term <- c(0.8, 0.83, 1.89, 1.04, 1.45, 1.38, 1.91, 1.64, 0.73, 1.46)
-weeks <- c(1.15, 0.88, 0.90, 0.74, 1.21)
-
-wilcox.exact(weeks, term, conf.int=TRUE)
-
-
 # Hollander & Wolfe, p. 39, results p. 40 and p. 53
 
 x <- c(1.83, 0.50, 1.62, 2.48, 1.68, 1.88, 1.55, 3.06, 1.30)
 y <- c(0.878, 0.647, 0.598, 2.05, 1.06, 1.29, 1.06, 3.14, 1.29)
 
-we <- wilcox.exact(y,x, paired=TRUE, conf.int=TRUE)
-we 
-
-
-  stopifnot(round(we$p.value,4) == 0.0391)
-  stopifnot(round(we$conf.int,3) == c(-0.786, -0.010))
-  stopifnot(round(we$estimate,3) == -0.46)
-
+wilcox.exact(y,x, paired=TRUE, conf.int=TRUE)
 
 # Hollander & Wolfe, p. 110, results p. 111 and p. 126
 
 x <- c(0.8, 0.83, 1.89, 1.04, 1.45, 1.38, 1.91, 1.64, 0.73, 1.46)
 y <- c(1.15, 0.88, 0.90, 0.74, 1.21)
 
-we <- wilcox.exact(y,x, conf.int=TRUE)
-we
-
-  stopifnot(round(we$p.value,4) == 0.2544)
-  stopifnot(round(we$conf.int,3) == c(-0.76, 0.15))
-  stopifnot(round(we$estimate,3) == -0.305)
-
-
-wel <- wilcox.exact(y,x, conf.int=TRUE, alternative="less")
-weg <- wilcox.exact(y,x, conf.int=TRUE, alternative="greater")
-
-
-  stopifnot(we$estimate == wel$estimate & we$estimate == weg$estimate)
-  stopifnot(we$conf.int[1] <= weg$conf.int[1] & we$conf.int[2] >= wel$conf.int[2])
+wilcox.exact(y,x, conf.int=TRUE)
 
 
 
-stopifnot(wilcox.exact(1:8)$p.value == 0.0078125)
-stopifnot(wilcox.exact(c(1:7,7))$p.value == 0.0078125)
-stopifnot(wilcox.exact(c(1,1,1))$p.value == 0.25)
 
-x <- rnorm(10)
-y <- rnorm(10)
-stopifnot(wilcox.test(x,y,conf.int=TRUE)$estimate ==
-          wilcox.exact(x,y,conf.int=TRUE)$estimate)
-stopifnot(wilcox.test(x,conf.int=TRUE)$estimate ==
-          wilcox.exact(x,conf.int=TRUE)$estimate)
-
-
-# Table 9.19 StaXact-4 manual: lung cancer clinical trial
-time <- c(257, 476, 355, 1779, 355, 191, 563, 242, 285, 16, 16, 16, 257, 16)
-cens <- c(0,0,1,1,0,1,1,1,1,1,1,1,1,1)
-
-# round logrank scores
-scores <- cscores.Surv(cbind(time, cens))
-T <- sum(scores[1:5])
-prob <- pperm(T, scores, m=5, al="le")
-prob
-stopifnot(all.equal(round(prob, 3), 0.001))
-prob <- pperm(T, scores, m=5, al="tw")
-prob
-stopifnot(all.equal(round(prob, 3), 0.001))
-
-
-# map into integers
-scores <- cscores.Surv(cbind(time, cens), int=TRUE)
-T <- sum(scores[1:5])
-prob <- pperm(T, scores, m=5, al="le")
-prob
-stopifnot(all.equal(round(prob, 3), 0.001))
-prob <- pperm(T, scores, m=5, al="tw")
-prob
-stopifnot(all.equal(round(prob, 3), 0.001))
-
-## Keywords: 'htest'.
-
-
+### * <FOOTER>
+###
 cat("Time elapsed: ", proc.time() - get("ptime", env = .CheckExEnv),"\n")
-dev.off(); quit('no')
+dev.off()
+###
+### Local variables: ***
+### mode: outline-minor ***
+### outline-regexp: "\\(> \\)?### [*]+" ***
+### End: ***
+quit('no')

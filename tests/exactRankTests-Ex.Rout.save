@@ -1,6 +1,6 @@
 
 R : Copyright 2003, The R Development Core Team
-Version 1.7.0 Under development (unstable) (2003-01-18)
+Version 1.7.0  (2003-04-16)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -13,6 +13,8 @@ Type `demo()' for some demos, `help()' for on-line help, or
 `help.start()' for a HTML browser interface to help.
 Type `q()' to quit R.
 
+> ### * <HEADER>
+> ###
 > attach(NULL, name = "CheckExEnv")
 > assign(".CheckExEnv", as.environment(2), pos = length(search())) # base
 > ## This plot.new() patch has no effect yet for persp();
@@ -28,31 +30,232 @@ Type `q()' to quit R.
 +                      outer = outer, adj = 1, cex = .8, col = "orchid")
 + 	   }
 +        },
-+        env = .CheckExEnv)
++        env = environment(plot))
 > assign("cleanEx",
 +        function(env = .GlobalEnv) {
 + 	   rm(list = ls(envir = env, all.names = TRUE), envir = env)
 +            RNGkind("Wichmann-Hill", "default")
 + 	   assign(".Random.seed", c(0, rep(7654, 3)), pos = 1)
-+ 	   assign("T", NULL, pos = 1);
-+ 	   assign("F", NULL, pos = 1);
++ 	   assign("T", delay(stop("T used instead of TRUE")),
++ 		  pos = .CheckExEnv)
++ 	   assign("F", delay(stop("F used instead of FALSE")),
++ 		  pos = .CheckExEnv)
 +        },
 +        env = .CheckExEnv)
-> assign("..nameEx", "__{must remake R-ex/*.R}__", env = .CheckExEnv) #-- for now
+> assign("..nameEx", "__{must remake R-ex/*.R}__", env = .CheckExEnv) # for now
 > assign("ptime", proc.time(), env = .CheckExEnv)
 > postscript("exactRankTests-Examples.ps")
 > assign("par.postscript", par(no.readonly = TRUE), env = .CheckExEnv)
 > options(contrasts = c(unordered = "contr.treatment", ordered = "contr.poly"))
 > library('exactRankTests')
+> 
+> cleanEx(); ..nameEx <- "ASAT"
+> 
+> ### * ASAT
+> 
+> ### Name: ASAT
+> ### Title: Toxicological Study on Female Wistar Rats
+> ### Aliases: ASAT
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> 
+> data(ASAT)
+> # does not really look symmetric
+> 
+> plot(asat ~ group, data=ASAT)
+> 
+> # proof-of-safety based on ration of medians
+> pos <- wilcox.exact(I(log(asat)) ~ group, data = ASAT, alternative = "less", 
++              conf.int=TRUE)
+> 
+> # one-sided confidence set. Safety cannot be concluded since the effect of
+> # the compound exceeds 20% of the control median
+> exp(pos$conf.int)
+[1] 0.000000 1.337778
+attr(,"conf.level")
+[1] 0.95
+> 
+> 
+> 
+> cleanEx(); ..nameEx <- "ansari.exact"
+> 
+> ### * ansari.exact
+> 
+> ### Name: ansari.exact
+> ### Title: Ansari-Bradley Test
+> ### Aliases: ansari.exact ansari.exact.default ansari.exact.formula
+> ### Keywords: htest
+> 
+> ### ** Examples
+> 
+> ## Hollander & Wolfe (1973, p. 86f):
+> ## Serum iron determination using Hyland control sera
+> ramsay <- c(111, 107, 100, 99, 102, 106, 109, 108, 104, 99,
++             101, 96, 97, 102, 107, 113, 116, 113, 110, 98)
+> jung.parekh <- c(107, 108, 106, 98, 105, 103, 110, 105, 104,
++             100, 96, 108, 103, 104, 114, 114, 113, 108, 106, 99)
+> ansari.test(ramsay, jung.parekh)
+
+	Ansari-Bradley test
+
+data:  ramsay and jung.parekh 
+AB = 185.5, p-value = 0.1815
+alternative hypothesis: true ratio of scales is not equal to 1 
+
+Warning message: 
+Cannot compute exact p-value with ties in: ansari.test.default(ramsay, jung.parekh) 
+> ansari.exact(ramsay, jung.parekh)
+
+	Ansari-Bradley test
+
+data:  ramsay and jung.parekh 
+AB = 185.5, p-value = 0.1881
+alternative hypothesis: true ratio of scales is not equal to 1 
+
+> 
+> ansari.exact(rnorm(20), rnorm(20, 0, 2), conf.int = TRUE)
+
+	Ansari-Bradley test
+
+data:  rnorm(20) and rnorm(20, 0, 2) 
+AB = 249, p-value = 0.03605
+alternative hypothesis: true ratio of scales is not equal to 1 
+95 percent confidence interval:
+ 0.2701446 0.9526227 
+sample estimates:
+ratio of scales 
+      0.5544411 
+
+> 
+> 
+> 
+> cleanEx(); ..nameEx <- "bloodp"
+> 
+> ### * bloodp
+> 
+> ### Name: bloodp
+> ### Title: Diastolic Blood Pressure
+> ### Aliases: bloodp
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> data(bloodp)
+> 
+> # Permutation test
+> 
+> perm.test(bp ~ group, data=bloodp)
+
+	2-sample Permutation Test
+
+data:  bp by group 
+T = 402, p-value = 0.1040
+alternative hypothesis: true mu is not equal to 0 
+
+> perm.test(bp ~ group, data=bloodp, alternative="greater")
+
+	2-sample Permutation Test
+
+data:  bp by group 
+T = 402, p-value = 0.05641
+alternative hypothesis: true mu is greater than 0 
+
+> perm.test(bp ~ group, data=bloodp, exact=FALSE)
+
+	Asymptotic 2-sample Permutation Test
+
+data:  bp by group 
+T = 402, p-value = 0.1070
+alternative hypothesis: true mu is not equal to 0 
+
+> 
+> # Wilcoxon-Mann-Whitney test
+> 
+> wilcox.exact(bp ~ group, data=bloodp, conf.int=TRUE, alternative="l")
+
+	Exact Wilcoxon rank sum test
+
+data:  bp by group 
+W = 35, p-value = 0.9648
+alternative hypothesis: true mu is less than 0 
+95 percent confidence interval:
+ -Inf   20 
+sample estimates:
+difference in location 
+                   9.5 
+
+> wilcox.exact(bp ~ group, data=bloodp, conf.int=TRUE)
+
+	Exact Wilcoxon rank sum test
+
+data:  bp by group 
+W = 35, p-value = 0.0989
+alternative hypothesis: true mu is not equal to 0 
+95 percent confidence interval:
+ -4 22 
+sample estimates:
+difference in location 
+                   9.5 
+
+> 
+> # compute the v.d. Waerden test
+> 
+> sc <- cscores(bloodp$bp, type="NormalQuantile")
+> X <- sum(sc[bloodp$group == "group2"])
+> round(pperm(X, sc, 11), 4) 
+[1] 0.0462
+> round(pperm(X, sc, 11, simulate=TRUE), 4)
+[1] 0.0467
+> round(pperm(X, sc, 11, alternative="two.sided"), 4) 
+[1] 0.0799
+> round(pperm(X, sc, 11, alternative="two.sided", simulate=TRUE), 4)
+[1] 0.0791
+> 
+> # use scores mapped into integers (cf. dperm)
+> 
+> sc <- cscores(bloodp$bp, type="NormalQuantile", int=TRUE)
+> X <- sum(sc[bloodp$group == "group2"])
+> round(pperm(X, sc, 11), 4)      
+[1] 0.0462
+> round(pperm(X, sc, 11, alternative="two.sided"), 4)
+[1] 0.0799
+> 
+> 
+> 
+> cleanEx(); ..nameEx <- "cscores"
+> 
+> ### * cscores
+> 
+> ### Name: cscores
+> ### Title: Computation of Scores
+> ### Aliases: cscores cscores.default cscores.Surv cscores.factor
+> ### Keywords: misc
+> 
+> ### ** Examples
+> 
+> 
+> y <- rnorm(50)
+> # v.d. Waerden scores
+> nq <- cscores(y, type="Normal", int=TRUE)
+> # quantile for m=20 observations in the first group
+> qperm(0.1, nq, 20)
+[1] -102
+> 
+> 
+> 
+> 
 > cleanEx(); ..nameEx <- "dperm"
-> ###--- >>> `dperm' <<<----- Distribution of One and Two Sample Permutation Tests
 > 
-> 	## alias	 help(dperm)
-> 	## alias	 help(pperm)
-> 	## alias	 help(qperm)
-> 	## alias	 help(rperm)
+> ### * dperm
 > 
-> ##___ Examples ___:
+> ### Name: dperm
+> ### Title: Distribution of One and Two Sample Permutation Tests
+> ### Aliases: dperm pperm qperm rperm
+> ### Keywords: distribution
+> 
+> ### ** Examples
 > 
 > 
 > # exact one-sided p-value of the Wilcoxon test for a tied sample
@@ -64,7 +267,7 @@ Type `q()' to quit R.
 [1] 0.004351204
 > 
 > # Compare the exact algorithm as implemented in ctest and the
-> # Streitberg-Roehmel for untied samples
+> # Shift-Algorithm by Streitberg & Roehmel for untied samples
 >  
 > # Wilcoxon:
 > 
@@ -73,13 +276,11 @@ Type `q()' to quit R.
 > y <- rnorm(n, 3)
 > r <- cscores(c(x,y), type="Wilcoxon")
 > 
-> # exact distribution using Streitberg-Roehmel
+> # exact distribution using the Shift-Algorithm
 > 
 > dwexac <- dperm((n*(n+1)/2):(n^2 + n*(n+1)/2), r, n)
-> su <- sum(dwexac)           # should be something near 1 :-)
-> su
+> sum(dwexac)           # should be something near 1 :-)
 [1] 1
-> if (su != 1) stop("sum(dwexac) not equal 1")
 > 
 > # exact distribution using dwilcox
 > 
@@ -115,21 +316,12 @@ alternative hypothesis: true mu is less than 0
 > x <- rnorm(n, 2, 1)
 > y <- rnorm(n, 2, 2)
 > 
-> # exact distribution using Streitberg-Roehmel
+> # exact distribution using the Shift-Algorithm
 > 
 > sc <- cscores(c(x,y), type="Ansari")
 > dabexac <- dperm(0:(n*(2*n+1)/2), sc, n)
 > sum(dabexac)
 [1] 1
-> tr <- which(dabexac > 0)
-> 
-> # exact distribution using dansari (wrapper to ansari.c in ctest)
-> 
-> dab <- dansari(0:(n*(2*n+1)/2), n, n)
-> 
-> # compare the two distributions:
-> 
-> plot(dab[tr], dabexac[tr], main="Ansari", xlab="dansari", ylab="dperm")
 > 
 > # real scores are allowed (but only result in an approximation)
 > # e.g. v.d. Waerden test
@@ -143,7 +335,7 @@ alternative hypothesis: true mu is less than 0
 > # critical value, two-sided test
 > 
 > abs(qperm(0.025, scores, length(x)))
-[1] 3.874505
+[1] 3.869096
 > 
 > # p-values
 > 
@@ -160,47 +352,123 @@ alternative hypothesis: true mu is less than 0
 > # compare p1 and p2
 > 
 > p1 - p2
-[1] 0.01111737
-> 
-> # the blood pressure example from StatXact manual, page 221:
-> 
-> treat <- c(94, 108, 110, 90)
-> contr <- c(80, 94, 85, 90, 90, 90, 108, 94, 78, 105, 88)
-> 
-> # compute the v.d. Waerden test and compare the results to StatXact-4 for
-> # Windows:
-> 
-> sc <- cscores(c(contr, treat), type="NormalQuantile")
-> X <- sum(sc[seq(along=contr)])
-> round(pperm(X, sc, 11), 4)      # == 0.0462 (StatXact)
-[1] 0.0462
-> round(pperm(X, sc, 11, alternative="two.sided"), 4)     # == 0.0799 (StatXact)
-[1] 0.0799
-> 
-> # the alternative method returns:
-> 
-> sc <- cscores(c(contr, treat), type="NormalQuantile", int=TRUE)
-> X <- sum(sc[seq(along=contr)])
-> 
-> round(pperm(X, sc, 11), 4)      # compare to 0.0462 
-[1] 0.0462
-> round(pperm(X, sc, 11, alternative="two.sided"), 4)     # compare to 0.0799
-[1] 0.0799
+[1] 0.01025136
 > 
 > 
-> ## Keywords: 'distribution'.
 > 
 > 
+> cleanEx(); ..nameEx <- "ears"
+> 
+> ### * ears
+> 
+> ### Name: ears
+> ### Title: Survival of Ventilating Tubes
+> ### Aliases: ears
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> data(ears)
+> if (require(survival, quietly=TRUE)) {
++   ls <- cscores(Surv(ears$left, ears$lcens), int=TRUE)
++   perm.test(ls ~ group, data=ears)
++ }
+
+	2-sample Permutation Test
+
+data:  ls by group 
+T = 748, p-value = 0.01222
+alternative hypothesis: true mu is not equal to 0 
+
+> 
+> 
+> 
+> 
+> cleanEx(); ..nameEx <- "glioma"
+> 
+> ### * glioma
+> 
+> ### Name: glioma
+> ### Title: Malignant Glioma Pilot Study
+> ### Aliases: glioma
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> data(glioma)
+> 
+> if(require(survival, quietly = TRUE)) {
++ 
++   par(mfrow=c(1,2))
++ 
++   # Grade III glioma
++   g3 <- glioma[glioma$Histology == "Grade3",]
++ 
++   # Plot Kaplan-Meier curves
++   plot(survfit(Surv(Survival, Cens) ~ Group, data=g3), 
++        main="Grade III Glioma", lty=c(2,1), 
++        legend.text=c("Control", "Treated"),
++        legend.bty=1, ylab="Probability", 
++        xlab="Survival Time in Month")
++ 
++   # log-rank test
++   survdiff(Surv(Survival, Cens) ~ Group, data=g3)
++ 
++   # permutation test with integer valued log-rank scores
++   lsc <- cscores(Surv(g3$Survival, g3$Cens), int=TRUE) 
++   perm.test(lsc ~ Group, data=g3) 
++ 
++   # permutation test with real valued log-rank scores
++   lsc <- cscores(Surv(g3$Survival, g3$Cens), int=FALSE)
++   tr <- (g3$Group == "RIT")
++   T <- sum(lsc[tr])
++   pperm(T, lsc, sum(tr), alternative="tw")
++   pperm(T, lsc, sum(tr), alternative="tw", simulate=TRUE)
++ 
++   # Grade IV glioma
++   gbm <- glioma[glioma$Histology == "GBM",] 
++ 
++   # Plot Kaplan-Meier curves
++   plot(survfit(Surv(Survival, Cens) ~ Group, data=gbm), 
++        main="Grade IV Glioma", lty=c(2,1), 
++        legend.text=c("Control", "Treated"),
++        legend.bty=1, legend.pos=1, ylab="Probability", 
++        xlab="Survival Time in Month")
++    
++   # log-rank test
++   survdiff(Surv(Survival, Cens) ~ Group, data=gbm)
++ 
++   # permutation test with integer valued log-rank scores
++   lsc <- cscores(Surv(gbm$Survival, gbm$Cens), int=TRUE)
++   perm.test(lsc ~ Group, data=gbm)
++ 
++   # permutation test with real valued log-rank scores 
++   lsc <- cscores(Surv(gbm$Survival, gbm$Cens), int=FALSE) 
++   tr <- (gbm$Group == "RIT")
++   T <- sum(lsc[tr])
++   pperm(T, lsc, sum(tr), alternative="tw")
++   pperm(T, lsc, sum(tr), alternative="tw", simulate=TRUE)
++ }
+[1] 1e-04
+Warning message: 
+cannot hold tol, tolerance: 0.010001 in: findfact(scores - min(scores) + 1, m, tol) 
+> 
+> 
+> 
+> par(get("par.postscript", env = .CheckExEnv))
 > cleanEx(); ..nameEx <- "globulin"
-> ###--- >>> `globulin' <<<----- Differences in Globulin Fraction in Two Groups
 > 
-> 	## alias	 help(globulin)
+> ### * globulin
 > 
-> ##___ Examples ___:
+> ### Name: globulin
+> ### Title: Differences in Globulin Fraction in Two Groups
+> ### Aliases: globulin
+> ### Keywords: datasets
+> 
+> ### ** Examples
 > 
 > data(globulin)
-> pt <- perm.test(gfrac ~ group, data=globulin, conf.int=TRUE)
-> pt
+> perm.test(gfrac ~ group, data=globulin, conf.int=TRUE)
 
 	2-sample Permutation Test
 
@@ -210,19 +478,148 @@ alternative hypothesis: true mu is not equal to 0
 95 percent confidence interval:
  -8.50  1.25 
 
-> stopifnot(pt$conf.int == c(-8.50, 1.25))
 > 
-> ## Keywords: 'datasets'.
+> 
+> 
+> cleanEx(); ..nameEx <- "irank"
+> 
+> ### * irank
+> 
+> ### Name: irank
+> ### Title: Integer Ranks
+> ### Aliases: irank
+> ### Keywords: univar
+> 
+> ### ** Examples
+> 
+> x <- rnorm(10)
+> irank(x)
+ [1]  5  2  6 10  9  1  4  8  3  7
+> rank(x)
+ [1]  5  2  6 10  9  1  4  8  3  7
+> x <- c(1,2,3,3,0)
+> irank(x)
+[1] 2 3 5 5 1
+> rank(x)
+[1] 2.0 3.0 4.5 4.5 1.0
+> 
+> 
+> 
+> cleanEx(); ..nameEx <- "lungcancer"
+> 
+> ### * lungcancer
+> 
+> ### Name: lungcancer
+> ### Title: Lung Cancer Clinical Trial
+> ### Aliases: lungcancer
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> data(lungcancer)
+> attach(lungcancer)
+> 
+> # round logrank scores
+> scores <- cscores.Surv(cbind(time, cens))
+> T <- sum(scores[group=="newdrug"])
+> mobs <- sum(group=="newdrug")
+> prob <- pperm(T, scores, m=mobs, al="le")
+> prob
+[1] 0.0004995005
+> pperm(T, scores, m=mobs, al="tw")
+[1] 0.0004995005
+> pperm(T, scores, m=mobs, al="tw", simulate=TRUE)
+[1] 0.001
+> 
+> # map into integers, faster
+> scores <- cscores.Surv(cbind(time, cens), int=TRUE)
+> T <- sum(scores[group=="newdrug"])
+> mobs <- sum(group=="newdrug")
+> prob <- pperm(T, scores, m=mobs, al="le")
+> prob
+[1] 0.000999001
+> pperm(T, scores, m=mobs, al="tw")
+[1] 0.000999001
+> pperm(T, scores, m=mobs, al="tw", simulate=TRUE)
+[1] 9e-04
+> 
+> detach(lungcancer)
+> 
+> 
+> 
+> 
+> cleanEx(); ..nameEx <- "neuropathy"
+> 
+> ### * neuropathy
+> 
+> ### Name: neuropathy
+> ### Title: Acute Painful Diabetic Neuropathy
+> ### Aliases: neuropathy
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> data(neuropathy)
+> # compare with Table 2 of Conover & Salsburg (1988)
+> wilcox.exact(pain ~ group, data=neuropathy, alternative="less")
+
+	Exact Wilcoxon rank sum test
+
+data:  pain by group 
+W = 357, p-value = 0.1654
+alternative hypothesis: true mu is less than 0 
+
+> css <- cscores(neuropathy$pain, type="ConSal")
+> pperm(sum(css[neuropathy$group=="control"]),css,
++       m=sum(neuropathy$group=="control"))
+[1] 0.03113022
+> 
+> 
+> 
+> 
+> cleanEx(); ..nameEx <- "ocarcinoma"
+> 
+> ### * ocarcinoma
+> 
+> ### Name: ocarcinoma
+> ### Title: Ovarian Carcinoma
+> ### Aliases: ocarcinoma
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> 
+> data(ocarcinoma)
+> attach(ocarcinoma)
+> # compute integer valued logrank scores
+> logrsc <- cscores.Surv(cbind(time, cens), int=TRUE)
+> # the test statistic
+> lgT <- sum(logrsc[stadium == "II"])
+> # p-value
+> round(pperm(lgT, logrsc, m=sum(stadium=="II"), al="tw"), 4)
+[1] 0.0191
+> 
+> # compute logrank scores and simulate p-value
+> logrsc <- cscores.Surv(cbind(time, cens), int=FALSE)
+> # the test statistic
+> lgT <- sum(logrsc[stadium == "II"])
+> # p-value
+> round(pperm(lgT, logrsc, m=sum(stadium=="II"), al="tw", simulate=TRUE), 4)
+[1] 0.0179
+> 
+> 
 > 
 > 
 > cleanEx(); ..nameEx <- "perm.test"
-> ###--- >>> `perm.test' <<<----- One and Two Sample Permutation Test
 > 
-> 	## alias	 help(perm.test)
-> 	## alias	 help(perm.test.default)
-> 	## alias	 help(perm.test.formula)
+> ### * perm.test
 > 
-> ##___ Examples ___:
+> ### Name: perm.test
+> ### Title: One and Two Sample Permutation Test
+> ### Aliases: perm.test perm.test.default perm.test.formula
+> ### Keywords: htest
+> 
+> ### ** Examples
 > 
 > 
 > # Example from Gardner & Altman (1989), p. 30
@@ -231,8 +628,7 @@ alternative hypothesis: true mu is not equal to 0
 > 
 > A <- c(rep(1, 61), rep(0, 19))
 > B <- c(rep(1, 45), rep(0, 35))
-> pt <- perm.test(A, B, conf.int=TRUE, exact=TRUE)
-> pt
+> perm.test(A, B, conf.int=TRUE, exact=TRUE)
 
 	2-sample Permutation Test
 
@@ -243,95 +639,161 @@ alternative hypothesis: true mu is not equal to 0
  0.05263158 0.34285714 
 
 > 
->   stopifnot(round(pt$conf.int, 4) == c(0.0526, 0.3429))
+> # one-sample AIDS data (differences only), Methta and Patel (2001),
+> # Table 8.1 page 181
 > 
+> data(sal)
+> attach(sal)
+> ppdiff <- pre - post
+> detach(sal)
 > 
-> # the blood pressure example from StatXact-manual, page 262:
+> # p-values in StatXact == 0.0011 one-sided, 0.0021 two.sided, page 183
 > 
-> treat <- c(94, 108, 110, 90)
-> contr <- c(80, 94, 85, 90, 90, 90, 108, 94, 78, 105, 88)
-> 
-> pt <- perm.test(treat, contr)
-> pt
+> perm.test(ppdiff)
 
-	2-sample Permutation Test
+	1-sample Permutation Test
 
-data:  treat and contr 
-T = 402, p-value = 0.1040
+data:  ppdiff 
+T = 4831, p-value = 0.002136
+alternative hypothesis: true mu is not equal to 0 
+
+> perm.test(ppdiff, alternative="less")
+
+	1-sample Permutation Test
+
+data:  ppdiff 
+T = 4831, p-value = 0.999
+alternative hypothesis: true mu is less than 0 
+
+> perm.test(ppdiff, exact=FALSE)
+
+	Asymptotic 1-sample Permutation Test
+
+data:  ppdiff 
+T = 4831, p-value = 0.08779
 alternative hypothesis: true mu is not equal to 0 
 
 > 
->   stopifnot(round(pt$p.value, 4) == 0.1040)
 > 
-> pt <- perm.test(treat, contr, alternative="greater")
-> pt
+> 
+> 
+> cleanEx(); ..nameEx <- "rotarod"
+> 
+> ### * rotarod
+> 
+> ### Name: rotarod
+> ### Title: Rotating Rats Data
+> ### Aliases: rotarod
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> data(rotarod)
+> wilcox.exact(time ~ group, data=rotarod, alternative="g")
+
+	Exact Wilcoxon rank sum test
+
+data:  time by group 
+W = 102, p-value = 0.01863
+alternative hypothesis: true mu is greater than 0 
+
+> wilcox.exact(time ~ group, data=rotarod, conf.int=TRUE)
+
+	Exact Wilcoxon rank sum test
+
+data:  time by group 
+W = 102, p-value = 0.03727
+alternative hypothesis: true mu is not equal to 0 
+95 percent confidence interval:
+   0 137 
+sample estimates:
+difference in location 
+                  14.5 
+
+> wilcox.exact(time ~ group, data=rotarod, exact=FALSE)
+
+	Asymptotic Wilcoxon rank sum test
+
+data:  time by group 
+W = 102, p-value = 0.01473
+alternative hypothesis: true mu is not equal to 0 
+
+> # the permutation test
+> perm.test(time ~ group, data=rotarod)
 
 	2-sample Permutation Test
 
-data:  treat and contr 
-T = 402, p-value = 0.05641
-alternative hypothesis: true mu is greater than 0 
+data:  time by group 
+T = 3600, p-value = 0.03727
+alternative hypothesis: true mu is not equal to 0 
 
-> 
->   stopifnot(round(pt$p.value, 4) == 0.0564)
-> 
-> 
-> pt <- perm.test(treat, contr, exact=FALSE)
-> pt
+> perm.test(time ~ group, data=rotarod, exact=FALSE)
 
 	Asymptotic 2-sample Permutation Test
 
-data:  treat and contr 
-T = 402, p-value = 0.1070
+data:  time by group 
+T = 3600, p-value = 0.0324
 alternative hypothesis: true mu is not equal to 0 
 
 > 
->   stopifnot(round(pt$p.value, 4) == 0.1070)
 > 
 > 
-> # one-sample AIDS data (differences only), page 179
+> cleanEx(); ..nameEx <- "sal"
 > 
-> diff <- c(-149, 51, 0, 126, -106, -20, 0, -52, -292, 0, -103, 0, -84, -89,
-+ -159, -404, -500, -259, -14, -2600)
+> ### * sal
 > 
-> # p-values in StatXact == 0.0011 one-sided, 0.0021 two.sided 
+> ### Name: sal
+> ### Title: Serum Antigen Level
+> ### Aliases: sal
+> ### Keywords: datasets
 > 
-> perm.test(diff)
+> ### ** Examples
+> 
+> data(sal)
+> attach(sal)
+> 
+> wilcox.exact(pre, post, paired=TRUE, conf.int=TRUE)
 
-	1-sample Permutation Test
+	Exact Wilcoxon signed rank test
 
-data:  diff 
-T = 177, p-value = 0.002136
+data:  pre and post 
+V = 124, p-value = 0.002136
 alternative hypothesis: true mu is not equal to 0 
+95 percent confidence interval:
+  54 292 
+sample estimates:
+(pseudo)median 
+        137.75 
+
+> wilcox.exact(pre,post, paired=TRUE, conf.int=TRUE, exact=FALSE)
+
+	Asymptotic Wilcoxon signed rank test
+
+data:  pre and post 
+V = 124, p-value = 0.003783
+alternative hypothesis: true mu is not equal to 0 
+95 percent confidence interval:
+  54.49998 281.50005 
+sample estimates:
+(pseudo)median 
+      137.2646 
 
 > 
-> perm.test(diff, alternative="less")
-
-	1-sample Permutation Test
-
-data:  diff 
-T = 177, p-value = 0.001068
-alternative hypothesis: true mu is less than 0 
-
-> 
-> pt <- perm.test(diff, exact=FALSE)
-> 
->   # StatXact page 179
->   stopifnot(round(pt$p.value, 4) == 0.0878)
+> detach(sal)
 > 
 > 
-> 
-> ## Keywords: 'htest'.
 > 
 > 
 > cleanEx(); ..nameEx <- "wilcox.exact"
-> ###--- >>> `wilcox.exact' <<<----- Wilcoxon Rank Sum and Signed Rank Tests
 > 
-> 	## alias	 help(wilcox.exact)
-> 	## alias	 help(wilcox.exact.default)
-> 	## alias	 help(wilcox.exact.formula)
+> ### * wilcox.exact
 > 
-> ##___ Examples ___:
+> ### Name: wilcox.exact
+> ### Title: Wilcoxon Rank Sum and Signed Rank Tests
+> ### Aliases: wilcox.exact wilcox.exact.default wilcox.exact.formula
+> ### Keywords: htest
+> 
+> ### ** Examples
 > 
 > ## One-sample test.
 > ## Hollander & Wolfe (1973), 29f.
@@ -358,28 +820,6 @@ V = 5, p-value = 0.01953
 alternative hypothesis: true mu is less than 0 
 
 > 
-> 
->   wt <- wilcox.test(y-x)
->   we <- wilcox.exact(y -x)
->   wt
-
-	Wilcoxon signed rank test
-
-data:  y - x 
-V = 5, p-value = 0.03906
-alternative hypothesis: true mu is not equal to 0 
-
->   we
-
-	Exact Wilcoxon signed rank test
-
-data:  y - x 
-V = 5, p-value = 0.03906
-alternative hypothesis: true mu is not equal to 0 
-
->   stopifnot(wt$p.value == we$p.value)
-> 
-> 
 > ## Two-sample test.
 > ## Hollander & Wolfe (1973), 69f.
 > ## Permeability constants of the human chorioamnion (a placental
@@ -388,27 +828,13 @@ alternative hypothesis: true mu is not equal to 0
 > ##  of the human chorioamnion for the term pregnancy.
 > x <- c(0.80, 0.83, 1.89, 1.04, 1.45, 1.38, 1.91, 1.64, 0.73, 1.46)
 > y <- c(1.15, 0.88, 0.90, 0.74, 1.21)
-> we <- wilcox.exact(x, y, alternative = "g")        # greater
-> wt <- wilcox.exact(x, y, alternative = "g")
-> 
->  stopifnot(we$p.value == wt$p.value)
->  stopifnot(all(we$conf.int == wt$conf.int))
-> 
-> 
-> x <- rnorm(10)
-> y <- rnorm(10, 2)
-> wilcox.exact(x, y, conf.int = TRUE)
+> wilcox.exact(x, y, alternative = "g")        # greater
 
 	Exact Wilcoxon rank sum test
 
 data:  x and y 
-W = 4, p-value = 0.0001299
-alternative hypothesis: true mu is not equal to 0 
-95 percent confidence interval:
- -2.953465 -1.320829 
-sample estimates:
-difference in location 
-             -1.983215 
+W = 35, p-value = 0.1272
+alternative hypothesis: true mu is greater than 0 
 
 > 
 > ## Formula interface.
@@ -424,254 +850,12 @@ W = 127.5, p-value = 6.109e-05
 alternative hypothesis: true mu is not equal to 0 
 
 > 
-> 
->   if (!any(duplicated(c(x,y)))) {
-+     we <- wilcox.exact(x, y, conf.int = TRUE)
-+     print(we)
-+     wt <- wilcox.test(x, y, conf.int = TRUE)
-+     print(wt)
-+     we$pointprob <- NULL
-+     we$method <- NULL
-+     wt$parameter <- NULL
-+     wt$method <- NULL
-+     stopifnot(all.equal(wt, we))
-+     we <- wilcox.exact(x, conf.int = TRUE)
-+     print(we)
-+     wt <- wilcox.test(x, conf.int = TRUE)
-+     print(wt)
-+     we$pointprob <- NULL
-+     we$method <- NULL
-+     wt$parameter <- NULL
-+     wt$method <- NULL
-+     stopifnot(all.equal(wt, we))
-+   }
-
-	Exact Wilcoxon rank sum test
-
-data:  x and y 
-W = 4, p-value = 0.0001299
-alternative hypothesis: true mu is not equal to 0 
-95 percent confidence interval:
- -2.953465 -1.320829 
-sample estimates:
-difference in location 
-             -1.983215 
-
-
-	Wilcoxon rank sum test
-
-data:  x and y 
-W = 4, p-value = 0.0001299
-alternative hypothesis: true mu is not equal to 0 
-95 percent confidence interval:
- -2.953465 -1.320829 
-sample estimates:
-difference in location 
-             -1.983215 
-
-
-	Exact Wilcoxon signed rank test
-
-data:  x 
-V = 21, p-value = 0.5566
-alternative hypothesis: true mu is not equal to 0 
-95 percent confidence interval:
- -0.6791477  0.4989492 
-sample estimates:
-(pseudo)median 
-    -0.1332953 
-
-
-	Wilcoxon signed rank test
-
-data:  x 
-V = 21, p-value = 0.5566
-alternative hypothesis: true mu is not equal to 0 
-95 percent confidence interval:
- -0.6791477  0.4989492 
-sample estimates:
-(pseudo)median 
-    -0.1332953 
-
-> 
->   
-> 
-> # Data from the StatXact-4 manual, page 221, diastolic blood pressure
-> 
-> treat <- c(94, 108, 110, 90)
-> contr <- c(80, 94, 85, 90, 90, 90, 108, 94, 78, 105, 88)
-> 
-> # StatXact 4 for Windows: p.value = 0.0989, point prob = 0.019
-> 
-> we <- wilcox.exact(contr, treat, conf.int=TRUE)
-> we
-
-	Exact Wilcoxon rank sum test
-
-data:  contr and treat 
-W = 9, p-value = 0.0989
-alternative hypothesis: true mu is not equal to 0 
-95 percent confidence interval:
- -22   4 
-sample estimates:
-difference in location 
-                  -9.5 
-
-> 
->   stopifnot(round(we$p.value,4) == 0.0989)
-> 
-> 
-> we <- wilcox.exact(contr, treat, conf.int=TRUE, exact=FALSE)
-> we
-
-	Asymptotic Wilcoxon rank sum test
-
-data:  contr and treat 
-W = 9, p-value = 0.08535
-alternative hypothesis: true mu is not equal to 0 
-95 percent confidence interval:
- -2.000007e+01  4.143776e-05 
-sample estimates:
-difference in location 
-             -9.841188 
-
-> 
->   stopifnot(round(we$p.value,4) == 0.0853)
-> 
-> 
-> 
->   # StatXact page 221
->   we <- wilcox.exact(treat, contr, conf.int=TRUE)
->   stopifnot(we$conf.int[1] == -4)
->   stopifnot(we$conf.int[2] == 22)
->   stopifnot(we$conf.estimate == 9.5)
->  
-> 
-> # StatXact 4 for Windows: p.value = 0.0542, point prob = 0.019
->  
-> we <- wilcox.exact(contr, treat, alternative="less", conf.int=TRUE) 
-> we
-
-	Exact Wilcoxon rank sum test
-
-data:  contr and treat 
-W = 9, p-value = 0.05421
-alternative hypothesis: true mu is less than 0 
-95 percent confidence interval:
- -Inf    0 
-sample estimates:
-difference in location 
-                  -9.5 
-
-> 
->   stopifnot(round(we$p.value,4) == 0.0542)
-> 
-> 
-> # paired observations
-> # Data from the StatXact-4 manual, page 167, serum antigen level
-> 
-> # StatXact 4 for Windows: p.value=0.0021 (page 168)
-> 
-> pre <- c(149, 0, 0, 259, 106, 255, 0, 52, 340, 65, 180, 0, 84, 89, 212, 554,
-+ 500, 424, 112, 2600)
-> post <- c(0, 51, 0, 385, 0, 235, 0, 0, 48, 65, 77, 0, 0, 0, 53, 150, 0, 165,
-+ 98, 0)
-> 
-> we <- wilcox.exact(pre, post, paired=TRUE, conf.int=TRUE)
-> we
-
-	Exact Wilcoxon signed rank test
-
-data:  pre and post 
-V = 124, p-value = 0.002136
-alternative hypothesis: true mu is not equal to 0 
-95 percent confidence interval:
-  54 292 
-sample estimates:
-(pseudo)median 
-        137.75 
-
-> 
->   stopifnot(round(we$p.value,4) == 0.0021)
-> 
-> 
-> 
->   # StatXact page 175
->   we <- wilcox.exact(post, pre, paired=TRUE, conf.int=TRUE)
->   stopifnot(we$estimate > we$conf.int[1] & we$estimate < we$conf.int[2])
->   stopifnot(we$conf.int[1] == -292)
->   stopifnot(we$conf.int[2] == -54)
->   stopifnot(round(we$estimate,1) == -137.8)
-> 
-> 
-> 
-> we <- wilcox.exact(pre,post, paired=TRUE, conf.int=TRUE, exact=FALSE)
-> we
-
-	Asymptotic Wilcoxon signed rank test
-
-data:  pre and post 
-V = 124, p-value = 0.003783
-alternative hypothesis: true mu is not equal to 0 
-95 percent confidence interval:
-  54.49998 281.50005 
-sample estimates:
-(pseudo)median 
-      137.2646 
-
-> 
->   stopifnot(round(we$p.value,4) == 0.0038)
->   
-> 
-> 
-> 
-> 
-> # Hollander & Wolfe (1999), second edition, Example 4.2., page 112
-> 
-> contr <- c(1042, 1617, 1180, 973, 1552, 1251, 1151, 728, 1079, 951, 1319)
-> SST <- c(874, 389, 612, 798, 1152, 893, 541, 741, 1064, 862, 213)
-> 
-> wilcox.exact(contr, SST, conf.int=TRUE) 
-
-	Exact Wilcoxon rank sum test
-
-data:  contr and SST 
-W = 106, p-value = 0.00186
-alternative hypothesis: true mu is not equal to 0 
-95 percent confidence interval:
- 168 690 
-sample estimates:
-difference in location 
-                   410 
-
-> 
-> # page 110, Example 4.1
-> 
-> term <- c(0.8, 0.83, 1.89, 1.04, 1.45, 1.38, 1.91, 1.64, 0.73, 1.46)
-> weeks <- c(1.15, 0.88, 0.90, 0.74, 1.21)
-> 
-> wilcox.exact(weeks, term, conf.int=TRUE)
-
-	Exact Wilcoxon rank sum test
-
-data:  weeks and term 
-W = 15, p-value = 0.2544
-alternative hypothesis: true mu is not equal to 0 
-95 percent confidence interval:
- -0.76  0.15 
-sample estimates:
-difference in location 
-                -0.305 
-
-> 
-> 
 > # Hollander & Wolfe, p. 39, results p. 40 and p. 53
 > 
 > x <- c(1.83, 0.50, 1.62, 2.48, 1.68, 1.88, 1.55, 3.06, 1.30)
 > y <- c(0.878, 0.647, 0.598, 2.05, 1.06, 1.29, 1.06, 3.14, 1.29)
 > 
-> we <- wilcox.exact(y,x, paired=TRUE, conf.int=TRUE)
-> we 
+> wilcox.exact(y,x, paired=TRUE, conf.int=TRUE)
 
 	Exact Wilcoxon signed rank test
 
@@ -685,19 +869,12 @@ sample estimates:
          -0.46 
 
 > 
-> 
->   stopifnot(round(we$p.value,4) == 0.0391)
->   stopifnot(round(we$conf.int,3) == c(-0.786, -0.010))
->   stopifnot(round(we$estimate,3) == -0.46)
-> 
-> 
 > # Hollander & Wolfe, p. 110, results p. 111 and p. 126
 > 
 > x <- c(0.8, 0.83, 1.89, 1.04, 1.45, 1.38, 1.91, 1.64, 0.73, 1.46)
 > y <- c(1.15, 0.88, 0.90, 0.74, 1.21)
 > 
-> we <- wilcox.exact(y,x, conf.int=TRUE)
-> we
+> wilcox.exact(y,x, conf.int=TRUE)
 
 	Exact Wilcoxon rank sum test
 
@@ -711,66 +888,19 @@ difference in location
                 -0.305 
 
 > 
->   stopifnot(round(we$p.value,4) == 0.2544)
->   stopifnot(round(we$conf.int,3) == c(-0.76, 0.15))
->   stopifnot(round(we$estimate,3) == -0.305)
-> 
-> 
-> wel <- wilcox.exact(y,x, conf.int=TRUE, alternative="less")
-> weg <- wilcox.exact(y,x, conf.int=TRUE, alternative="greater")
-> 
-> 
->   stopifnot(we$estimate == wel$estimate & we$estimate == weg$estimate)
->   stopifnot(we$conf.int[1] <= weg$conf.int[1] & we$conf.int[2] >= wel$conf.int[2])
 > 
 > 
 > 
-> stopifnot(wilcox.exact(1:8)$p.value == 0.0078125)
-> stopifnot(wilcox.exact(c(1:7,7))$p.value == 0.0078125)
-> stopifnot(wilcox.exact(c(1,1,1))$p.value == 0.25)
-> 
-> x <- rnorm(10)
-> y <- rnorm(10)
-> stopifnot(wilcox.test(x,y,conf.int=TRUE)$estimate ==
-+           wilcox.exact(x,y,conf.int=TRUE)$estimate)
-> stopifnot(wilcox.test(x,conf.int=TRUE)$estimate ==
-+           wilcox.exact(x,conf.int=TRUE)$estimate)
-> 
-> 
-> # Table 9.19 StaXact-4 manual: lung cancer clinical trial
-> time <- c(257, 476, 355, 1779, 355, 191, 563, 242, 285, 16, 16, 16, 257, 16)
-> cens <- c(0,0,1,1,0,1,1,1,1,1,1,1,1,1)
-> 
-> # round logrank scores
-> scores <- cscores.Surv(cbind(time, cens))
-> T <- sum(scores[1:5])
-> prob <- pperm(T, scores, m=5, al="le")
-> prob
-[1] 0.000999001
-> stopifnot(all.equal(round(prob, 3), 0.001))
-> prob <- pperm(T, scores, m=5, al="tw")
-> prob
-[1] 0.000999001
-> stopifnot(all.equal(round(prob, 3), 0.001))
-> 
-> 
-> # map into integers
-> scores <- cscores.Surv(cbind(time, cens), int=TRUE)
-> T <- sum(scores[1:5])
-> prob <- pperm(T, scores, m=5, al="le")
-> prob
-[1] 0.000999001
-> stopifnot(all.equal(round(prob, 3), 0.001))
-> prob <- pperm(T, scores, m=5, al="tw")
-> prob
-[1] 0.000999001
-> stopifnot(all.equal(round(prob, 3), 0.001))
-> 
-> ## Keywords: 'htest'.
-> 
-> 
+> ### * <FOOTER>
+> ###
 > cat("Time elapsed: ", proc.time() - get("ptime", env = .CheckExEnv),"\n")
-Time elapsed:  15.07 0.28 15.4 0 0 
-> dev.off(); quit('no')
+Time elapsed:  10.11 0.59 14.65 0 0 
+> dev.off()
 null device 
           1 
+> ###
+> ### Local variables: ***
+> ### mode: outline-minor ***
+> ### outline-regexp: "\\(> \\)?### [*]+" ***
+> ### End: ***
+> quit('no')

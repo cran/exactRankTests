@@ -51,3 +51,4 @@ for (i in 1:100)
   ret <- c(ret,dperm(-(1:10), sample(1:20, 5), 5))
 stopifnot(sum(ret) == 0) 
 
+try(dperm(0, c(0,-1,2,2), m=4))

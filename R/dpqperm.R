@@ -1,4 +1,4 @@
-# $Id: dpqperm.R,v 1.18 2002/09/18 16:19:30 hothorn Exp $
+# $Id: dpqperm.R,v 1.19 2002/12/13 08:56:28 hothorn Exp $
 
 toltest <- function(x, scores, m) 
 {
@@ -147,6 +147,8 @@ equiscores <- function(scores, m=NULL, tol = 0.01, fact=NULL)
   else 
     add <- 0
   scores <- scores - add
+
+  if(any(scores < 0)) stop("scores must be positive")
 
   RVAL <- list(scores = scores, fact = fact, add = add)
   class(RVAL) <- "equis"

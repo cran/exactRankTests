@@ -1,6 +1,6 @@
 
 R : Copyright 2002, The R Development Core Team
-Version 1.6.0 beta (2002-09-28)
+Version 1.7.0 Under development (unstable) (2002-11-24)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -87,4 +87,7 @@ alternative hypothesis: true mu is not equal to 0
 +   ret <- c(ret,dperm(-(1:10), sample(1:20, 5), 5))
 > stopifnot(sum(ret) == 0) 
 > 
+> try(dperm(0, c(0,-1,2,2), m=4))
+Error in equiscores(scores, m, tol, fact) : 
+	scores must be positive
 > 

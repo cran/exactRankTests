@@ -1,6 +1,6 @@
 
 R : Copyright 2002, The R Development Core Team
-Version 1.5.0 Under development (unstable) (2002-03-05)
+Version 1.5.0 Under development (unstable) (2002-04-09)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -13,6 +13,7 @@ Type `demo()' for some demos, `help()' for on-line help, or
 `help.start()' for a HTML browser interface to help.
 Type `q()' to quit R.
 
+> T <- F <- NULL
 > attach(NULL, name = "CheckExEnv")
 > assign(".CheckExEnv", as.environment(2), pos = length(search())) # base
 > ## This plot.new() patch has no effect yet for persp();
@@ -139,7 +140,7 @@ alternative hypothesis: true mu is less than 0
 > # critical value, two-sided test
 > 
 > abs(qperm(0.025, scores, length(x)))
-[1] 3.872778
+[1] 3.874505
 > 
 > # p-values
 > 
@@ -157,7 +158,7 @@ alternative hypothesis: true mu is less than 0
 > # compare p1 and p2
 > 
 > p1 - p2
-[1] -0.07312347
+[1] -0.07297192
 > 
 > # the blood pressure example from StatXact manual, page 221:
 > 
@@ -866,7 +867,7 @@ difference in location
 > 
 > 
 > cat("Time elapsed: ", proc.time() - get("ptime", env = .CheckExEnv),"\n")
-Time elapsed:  10.78 0.23 12.22 0 0 
+Time elapsed:  10.28 0.17 11.04 0 0 
 > dev.off(); quit('no')
 null device 
           1 

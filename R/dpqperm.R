@@ -1,4 +1,4 @@
-# $Id: dpqperm.R,v 1.12 2001/12/08 14:24:34 hothorn Exp $
+# $Id: dpqperm.R,v 1.13 2002/04/10 15:46:30 hothorn Exp $
 
 toltest <- function(x, scores, m) 
 {
@@ -125,9 +125,10 @@ equiscores <- function(scores, m, tol = 0.01, fact=NULL)
                     if (maxfact < b)
                         fact <- maxfact
                     else {
-                        test <- function(x, tol, sc)
-                                ifelse(toltest(x, sc, m) - tol > 0, 1/x, x)
-                        fact <- optim(10, test, tol=tol, sc=scores)$par
+                        test <- function(x)
+                                ifelse(toltest(x, scores, m) - tol > 0, 1/x, x)
+#                        fact <- optim(10, test, tol=tol, sc=scores)$par
+fact <- optimize(test, interval=c(1e-5,100000))$minimum
                         if (fact > maxfact) {
                             fact <- maxfact
                             warning(paste("cannot hold tol, tolerance:",

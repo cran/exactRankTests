@@ -1,6 +1,6 @@
 
 R : Copyright 2002, The R Development Core Team
-Version 1.5.1  (2002-06-17)
+Version 1.6.0 beta (2002-09-28)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -13,7 +13,6 @@ Type `demo()' for some demos, `help()' for on-line help, or
 `help.start()' for a HTML browser interface to help.
 Type `q()' to quit R.
 
-> T <- F <- NULL
 > 
 > library(exactRankTests)
 > 
@@ -149,5 +148,16 @@ qwilcox:  228 qperm:  228
 Max difference:  0 
 > 
 >   stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
+> 
+> for (i in 1:20) {
++   x <- rnorm(10)
++   y <- rnorm(10)
++   group <- factor(c(rep(0, 10), rep(1, 10)))
++   stopifnot(all.equal(wilcox.test(x,y)$p.value, wilcox.exact(x,y)$p.value))
++   stopifnot(all.equal(wilcox.test(y)$p.value, wilcox.exact(y)$p.value))
++   r <- rank(c(x,y))
++   stopifnot(all.equal(wilcox.test(r ~ group)$p.value, 
++                       perm.test(r ~ group)$p.value))
++ }
 > 
 > 

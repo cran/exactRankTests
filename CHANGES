@@ -1,4 +1,19 @@
-$Id: CHANGES,v 1.39 2002/07/23 07:04:40 hothorn Exp $
+$Id: CHANGES,v 1.45 2002/09/17 13:52:01 hothorn Exp $
+
+	0.7-1 (17.09.2002)
+
+	improve documentation
+ 	bugfix: pperm for two.sided p-values (paired / !paired) was wrong
+        	if q == expectation
+	limits on the scores removed: [dpq]perm only limited by
+        	the machine memory
+	cscores.Surv optimized, example with censored data added to
+	cscores.Rd
+ 
+	0.7-0 (13.09.2002)
+
+	generic `cscores' for the computation of scores added
+	m=NULL allowed in equiscores for some configurations
 
 	0.6-12 (23.07.2002)
 

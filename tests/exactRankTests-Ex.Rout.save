@@ -1,6 +1,6 @@
 
 R : Copyright 2002, The R Development Core Team
-Version 1.5.1  (2002-06-17)
+Version 1.6.0 beta (2002-09-28)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -13,23 +13,29 @@ Type `demo()' for some demos, `help()' for on-line help, or
 `help.start()' for a HTML browser interface to help.
 Type `q()' to quit R.
 
-> T <- F <- NULL
 > attach(NULL, name = "CheckExEnv")
 > assign(".CheckExEnv", as.environment(2), pos = length(search())) # base
 > ## This plot.new() patch has no effect yet for persp();
 > ## layout() & filled.contour() are now ok
-> assign("plot.new", function() { .Internal(plot.new())
-+ 		       pp <- par(c("mfg","mfcol","oma","mar"))
-+ 		       if(all(pp$mfg[1:2] == c(1, pp$mfcol[2]))) {
-+ 			 outer <- (oma4 <- pp$oma[4]) > 0; mar4 <- pp$mar[4]
-+ 			 mtext(paste("help(",..nameEx,")"), side = 4,
-+ 			       line = if(outer)max(1, oma4 - 1) else min(1, mar4 - 1),
-+ 			       outer = outer, adj=1, cex= .8, col="orchid")} },
+> assign("plot.new",
++        function() {
++ 	   .Internal(plot.new())
++ 	   pp <- par(c("mfg","mfcol","oma","mar"))
++ 	   if(all(pp$mfg[1:2] == c(1, pp$mfcol[2]))) {
++                outer <- (oma4 <- pp$oma[4]) > 0; mar4 <- pp$mar[4]
++                mtext(paste("help(", ..nameEx, ")"), side = 4,
++                      line = if(outer)max(1, oma4 - 1) else min(1, mar4 - 1),
++                      outer = outer, adj = 1, cex = .8, col = "orchid")
++ 	   }
++        },
 +        env = .CheckExEnv)
-> assign("cleanEx", function(env = .GlobalEnv) {
-+ 	rm(list = ls(envir = env, all.names = TRUE), envir = env)
-+ 	RNGkind("Wichmann-Hill", "default")
-+ 	assign(".Random.seed", c(0,rep(7654,3)), pos=1)
+> assign("cleanEx",
++        function(env = .GlobalEnv) {
++ 	   rm(list = ls(envir = env, all.names = TRUE), envir = env)
++            RNGkind("Wichmann-Hill", "default")
++ 	   assign(".Random.seed", c(0, rep(7654, 3)), pos = 1)
++ 	   assign("T", NULL, pos = 1);
++ 	   assign("F", NULL, pos = 1);
 +        },
 +        env = .CheckExEnv)
 > assign("..nameEx", "__{must remake R-ex/*.R}__", env = .CheckExEnv) #-- for now
@@ -53,7 +59,7 @@ Type `q()' to quit R.
 > 
 > x <- c(0.5, 0.5, 0.6, 0.6, 0.7, 0.8, 0.9)
 > y <- c(0.5, 1.0, 1.2, 1.2, 1.4, 1.5, 1.9, 2.0)
-> r <- rank(c(x,y))
+> r <- cscores(c(x,y), type="Wilcoxon")
 > pperm(sum(r[seq(along=x)]), r, 7)
 [1] 0.004351204
 > 
@@ -65,7 +71,7 @@ Type `q()' to quit R.
 > n <- 10
 > x <- rnorm(n, 2)
 > y <- rnorm(n, 3)
-> r <- rank(c(x,y))
+> r <- cscores(c(x,y), type="Wilcoxon")
 > 
 > # exact distribution using Streitberg-Roehmel
 > 
@@ -89,7 +95,7 @@ Type `q()' to quit R.
 > n <- 10
 > x <- rnorm(n, 5)
 > y <- rnorm(n, 5)
-> r <- rank(abs(x - y))
+> r <- cscores(abs(x - y), type="Wilcoxon")
 > pperm(sum(r[x - y > 0]), r, length(r))
 [1] 0.1875
 > wilcox.test(x,y, paired=TRUE, alternative="less")
@@ -111,8 +117,7 @@ alternative hypothesis: true mu is less than 0
 > 
 > # exact distribution using Streitberg-Roehmel
 > 
-> r <- rank(c(x,y))
-> sc <- pmin(r, 2*n - r +1)
+> sc <- cscores(c(x,y), type="Ansari")
 > dabexac <- dperm(0:(n*(2*n+1)/2), sc, n)
 > sum(dabexac)
 [1] 1
@@ -132,9 +137,7 @@ alternative hypothesis: true mu is less than 0
 > n <- 10
 > x <- rnorm(n)
 > y <- rnorm(n)
-> N <- length(x) + length(y)
-> r <- rank(c(x,y))
-> scores <- qnorm(r/(N+1))
+> scores <- cscores(c(x,y), type="NormalQuantile")
 > X <- sum(scores[seq(along=x)])  # <- v.d. Waerden normal quantile statistic
 > 
 > # critical value, two-sided test
@@ -149,8 +152,7 @@ alternative hypothesis: true mu is less than 0
 > # generate integer valued scores with the same shape as normal quantile
 > # scores, this no longer v.d.Waerden, but something very similar
 > 
-> scores <- scores - min(scores)
-> scores <- round(scores*N/max(scores))
+> scores <- cscores(c(x,y), type="NormalQuantile", int=TRUE)
 > 
 > X <- sum(scores[seq(along=x)])
 > p2 <- pperm(X, scores, length(x), alternative="two.sided")
@@ -158,7 +160,7 @@ alternative hypothesis: true mu is less than 0
 > # compare p1 and p2
 > 
 > p1 - p2
-[1] -0.07297192
+[1] 0.01111737
 > 
 > # the blood pressure example from StatXact manual, page 221:
 > 
@@ -168,8 +170,7 @@ alternative hypothesis: true mu is less than 0
 > # compute the v.d. Waerden test and compare the results to StatXact-4 for
 > # Windows:
 > 
-> r <- rank(c(contr, treat))
-> sc <- qnorm(r/16)
+> sc <- cscores(c(contr, treat), type="NormalQuantile")
 > X <- sum(sc[seq(along=contr)])
 > round(pperm(X, sc, 11), 4)      # == 0.0462 (StatXact)
 [1] 0.0462
@@ -178,160 +179,13 @@ alternative hypothesis: true mu is less than 0
 > 
 > # the alternative method returns:
 > 
-> sc <- sc - min(sc)
-> sc <- round(sc*16/max(sc))
+> sc <- cscores(c(contr, treat), type="NormalQuantile", int=TRUE)
 > X <- sum(sc[seq(along=contr)])
 > 
 > round(pperm(X, sc, 11), 4)      # compare to 0.0462 
 [1] 0.0462
 > round(pperm(X, sc, 11, alternative="two.sided"), 4)     # compare to 0.0799
-[1] 0.0813
-> 
-> 
-> 
-> # paired observations
-> 
-> hansi <- c()
-> seppl <- c()
-> for (i in 1:10)
-+ {
-+         m <- sample(10:50, 1)
-+         score <- sample(m)
-+         val <- sample(0:m, 1)
-+         # cat("m: ", m, "n: ", n, " val: ", val, "\n")
-+         hansi <- c(hansi,  psignrank(val, m))
-+         cat("psignrank: ", hansi[length(hansi)])
-+         seppl <- c(seppl, pperm(val, score, m, alternative="less"))
-+         cat(" pperm: ", seppl[length(seppl)], "\n")
-+ }
-psignrank:  9.313226e-09 pperm:  9.313226e-09 
-psignrank:  0.001525879 pperm:  0.001525879 
-psignrank:  0.006713867 pperm:  0.006713867 
-psignrank:  6.532669e-05 pperm:  6.532669e-05 
-psignrank:  1.527667e-13 pperm:  1.527667e-13 
-psignrank:  2.670288e-05 pperm:  2.670288e-05 
-psignrank:  2.233719e-09 pperm:  2.233719e-09 
-psignrank:  9.313226e-08 pperm:  9.313226e-08 
-psignrank:  2.041459e-06 pperm:  2.041459e-06 
-psignrank:  9.947598e-13 pperm:  9.947598e-13 
-> 
-> cat("Max difference: ", max(abs(hansi - seppl)), "\n")
-Max difference:  4.336809e-18 
-> 
-> 
->   stopifnot(max(abs(hansi - seppl)) <= 1e-10)
-> 
-> 
-> hansi <- c()
-> seppl <- c()
-> for (i in 1:10)
-+ {
-+         m <- sample(10:50, 1)
-+         score <- sample(m)
-+         prob <- runif(1)
-+         # cat("m: ", m, "n: ", n, " prob: ", prob, "\n")
-+         hansi <- c(hansi,  qsignrank(prob, m))
-+         cat("qwilcox: ", hansi[length(hansi)])
-+         seppl <- c(seppl, qperm(prob, score, m))
-+         cat(" qperm: ", seppl[length(seppl)], "\n")
-+ }
-qwilcox:  80 qperm:  80 
-qwilcox:  360 qperm:  360 
-qwilcox:  393 qperm:  393 
-qwilcox:  553 qperm:  553 
-qwilcox:  123 qperm:  123 
-qwilcox:  121 qperm:  121 
-qwilcox:  283 qperm:  283 
-qwilcox:  350 qperm:  350 
-qwilcox:  574 qperm:  574 
-qwilcox:  48 qperm:  48 
-> 
-> cat("Max difference: ", max(abs(hansi - seppl)), "\n")
-Max difference:  0 
-> 
-> 
->   stopifnot(max(abs(hansi - seppl)) <= 1e-10)
-> 
-> 
-> # independent observations
-> 
-> hansi <- c()
-> seppl <- c()
-> for (i in 1:10)
-+ {
-+         m <- sample(10:50, 1)
-+         if (runif(1) < 0.5)
-+                 n <- sample(10:50, 1)
-+         else    
-+                 n <- m
-+         score <- sample(n+m)
-+         val <- sample(0:(m*n), 1)
-+         # cat("m: ", m, "n: ", n, " val: ", val, "\n")
-+         hansi <- c(hansi,  pwilcox(val, m, n))
-+         cat("pwilcox: ", hansi[length(hansi)])
-+         seppl <- c(seppl, pperm(val + m*(m+1)/2, score, m,
-+ alternative="less"))
-+         cat(" pperm: ", seppl[length(seppl)], "\n")
-+ }
-pwilcox:  1 pperm:  1 
-pwilcox:  4.002447e-07 pperm:  4.002447e-07 
-pwilcox:  0.000903373 pperm:  0.000903373 
-pwilcox:  1.959144e-08 pperm:  1.959144e-08 
-pwilcox:  3.615505e-17 pperm:  3.615505e-17 
-pwilcox:  1 pperm:  1 
-pwilcox:  0.9565381 pperm:  0.9565381 
-pwilcox:  0.0002103854 pperm:  0.0002103854 
-pwilcox:  2.274899e-14 pperm:  2.274899e-14 
-pwilcox:  0.5606082 pperm:  0.5606082 
-> 
-> cat("Max difference: ", max(abs(hansi - seppl)), "\n")
-Max difference:  1.376677e-14 
-> 
-> 
->   stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
-> 
-> 
-> hansi <- c()
-> seppl <- c()
-> for (i in 1:10)
-+ {
-+         m <- sample(10:50, 1)
-+         if (runif(1) < 0.5)
-+                 n <- sample(10:50, 1)
-+         else
-+                 n <- m
-+         score <- sample(n+m)
-+         prob <- runif(1)
-+         # cat("m: ", m, "n: ", n, " prob: ", prob, "\n")
-+         hansi <- c(hansi,  qwilcox(prob, m, n))
-+         cat("qwilcox: ", hansi[length(hansi)])
-+         seppl <- c(seppl, qperm(prob, score, m) - m*(m+1)/2)
-+         cat(" qperm: ", seppl[length(seppl)], "\n")
-+ }
-qwilcox:  694 qperm:  694 
-qwilcox:  767 qperm:  767 
-qwilcox:  862 qperm:  862 
-qwilcox:  692 qperm:  692 
-qwilcox:  464 qperm:  464 
-qwilcox:  891 qperm:  891 
-qwilcox:  570 qperm:  570 
-qwilcox:  227 qperm:  227 
-qwilcox:  103 qperm:  103 
-qwilcox:  159 qperm:  159 
-> 
-> cat("Max difference: ", max(abs(hansi - seppl)), "\n")
-Max difference:  0 
-> 
-> 
->   stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
-> 
-> 
-> 
->   # bugged me
->   # stopifnot(pperm(36, c(16,15,5,11,14), 5, alternative="t") == 0.625)
-> 
-> 
-> 
+[1] 0.0799
 > 
 > 
 > ## Keywords: 'distribution'.
@@ -422,13 +276,26 @@ alternative hypothesis: true mu is greater than 0
 > 
 >   stopifnot(round(pt$p.value, 4) == 0.0564)
 > 
+> 
+> pt <- perm.test(treat, contr, exact=FALSE)
+> pt
+
+	Asymptotic 2-sample Permutation Test
+
+data:  treat and contr 
+T = 402, p-value = 0.1070
+alternative hypothesis: true mu is not equal to 0 
+
+> 
+>   stopifnot(round(pt$p.value, 4) == 0.1070)
+> 
+> 
 > # one-sample AIDS data (differences only), page 179
 > 
 > diff <- c(-149, 51, 0, 126, -106, -20, 0, -52, -292, 0, -103, 0, -84, -89,
 + -159, -404, -500, -259, -14, -2600)
 > 
-> # p-values in StatXact == 0.0011 one-sided, 0.0021 two.sided are slightly
-> # different, STATISTIC is ok ?!?
+> # p-values in StatXact == 0.0011 one-sided, 0.0021 two.sided 
 > 
 > perm.test(diff)
 
@@ -437,6 +304,15 @@ alternative hypothesis: true mu is greater than 0
 data:  diff 
 T = 177, p-value = 0.002136
 alternative hypothesis: true mu is not equal to 0 
+
+> 
+> perm.test(diff, alternative="less")
+
+	1-sample Permutation Test
+
+data:  diff 
+T = 177, p-value = 0.001068
+alternative hypothesis: true mu is less than 0 
 
 > 
 > pt <- perm.test(diff, exact=FALSE)
@@ -862,12 +738,40 @@ difference in location
 +           wilcox.exact(x,conf.int=TRUE)$estimate)
 > 
 > 
+> # Table 9.19 StaXact-4 manual: lung cancer clinical trial
+> time <- c(257, 476, 355, 1779, 355, 191, 563, 242, 285, 16, 16, 16, 257, 16)
+> cens <- c(0,0,1,1,0,1,1,1,1,1,1,1,1,1)
+> 
+> # round logrank scores
+> scores <- cscores.Surv(cbind(time, cens))
+> T <- sum(scores[1:5])
+> prob <- pperm(T, scores, m=5, al="le")
+> prob
+[1] 0.000999001
+> stopifnot(all.equal(round(prob, 3), 0.001))
+> prob <- pperm(T, scores, m=5, al="tw")
+> prob
+[1] 0.000999001
+> stopifnot(all.equal(round(prob, 3), 0.001))
+> 
+> 
+> # map into integers
+> scores <- cscores.Surv(cbind(time, cens), int=TRUE)
+> T <- sum(scores[1:5])
+> prob <- pperm(T, scores, m=5, al="le")
+> prob
+[1] 0.000999001
+> stopifnot(all.equal(round(prob, 3), 0.001))
+> prob <- pperm(T, scores, m=5, al="tw")
+> prob
+[1] 0.000999001
+> stopifnot(all.equal(round(prob, 3), 0.001))
 > 
 > ## Keywords: 'htest'.
 > 
 > 
 > cat("Time elapsed: ", proc.time() - get("ptime", env = .CheckExEnv),"\n")
-Time elapsed:  4.72 0.05 4.78 0 0 
+Time elapsed:  14.96 0.25 15.86 0 0 
 > dev.off(); quit('no')
 null device 
           1 

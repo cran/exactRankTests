@@ -72,8 +72,9 @@ Clearly, the maximum difference between \eqn{\sum_{i=1}^m f \cdot a_i} and
 If \eqn{f} induces more that 20.000 columns in the Streitberg-R\"ohmel
 Shift-Algorithm, \eqn{f} is restricted to the largest integer that does not. 
 
-The second idea is to map the scores itself into
-\eqn{\{1, \dots, N\}}. This induces additional ties, but the shape of the
+The second idea is to map the scores itself into integers by taking the
+integer part of \eqn{a_i N / \max(a_i)}. 
+This induces additional ties, but the shape of the
 scores is very similar. That means we do not try to approximate something
 but use a different test (with integer scores), serving for the same purpose
 (due to a similar shape of the scores). However, this has to be done prior
@@ -126,7 +127,7 @@ true, \code{pperm} returns a list with elements
 
 x <- c(0.5, 0.5, 0.6, 0.6, 0.7, 0.8, 0.9)
 y <- c(0.5, 1.0, 1.2, 1.2, 1.4, 1.5, 1.9, 2.0)
-r <- rank(c(x,y))
+r <- cscores(c(x,y), type="Wilcoxon")
 pperm(sum(r[seq(along=x)]), r, 7)
 
 # Compare the exact algorithm as implemented in ctest and the
@@ -137,7 +138,7 @@ pperm(sum(r[seq(along=x)]), r, 7)
 n <- 10
 x <- rnorm(n, 2)
 y <- rnorm(n, 3)
-r <- rank(c(x,y))
+r <- cscores(c(x,y), type="Wilcoxon")
 
 # exact distribution using Streitberg-Roehmel
 
@@ -160,7 +161,7 @@ plot(dw, dwexac, main="Wilcoxon", xlab="dwilcox", ylab="dperm")
 n <- 10
 x <- rnorm(n, 5)
 y <- rnorm(n, 5)
-r <- rank(abs(x - y))
+r <- cscores(abs(x - y), type="Wilcoxon")
 pperm(sum(r[x - y > 0]), r, length(r))
 wilcox.test(x,y, paired=TRUE, alternative="less")
 psignrank(sum(r[x - y > 0]), length(r))
@@ -173,8 +174,7 @@ y <- rnorm(n, 2, 2)
 
 # exact distribution using Streitberg-Roehmel
 
-r <- rank(c(x,y))
-sc <- pmin(r, 2*n - r +1)
+sc <- cscores(c(x,y), type="Ansari")
 dabexac <- dperm(0:(n*(2*n+1)/2), sc, n)
 sum(dabexac)
 tr <- which(dabexac > 0)
@@ -193,9 +193,7 @@ plot(dab[tr], dabexac[tr], main="Ansari", xlab="dansari", ylab="dperm")
 n <- 10
 x <- rnorm(n)
 y <- rnorm(n)
-N <- length(x) + length(y)
-r <- rank(c(x,y))
-scores <- qnorm(r/(N+1))
+scores <- cscores(c(x,y), type="NormalQuantile")
 X <- sum(scores[seq(along=x)])  # <- v.d. Waerden normal quantile statistic
 
 # critical value, two-sided test
@@ -209,8 +207,7 @@ p1 <- pperm(X, scores, length(x), alternative="two.sided")
 # generate integer valued scores with the same shape as normal quantile
 # scores, this no longer v.d.Waerden, but something very similar
 
-scores <- scores - min(scores)
-scores <- round(scores*N/max(scores))
+scores <- cscores(c(x,y), type="NormalQuantile", int=TRUE)
 
 X <- sum(scores[seq(along=x)])
 p2 <- pperm(X, scores, length(x), alternative="two.sided")
@@ -227,16 +224,14 @@ contr <- c(80, 94, 85, 90, 90, 90, 108, 94, 78, 105, 88)
 # compute the v.d. Waerden test and compare the results to StatXact-4 for
 # Windows:
 
-r <- rank(c(contr, treat))
-sc <- qnorm(r/16)
+sc <- cscores(c(contr, treat), type="NormalQuantile")
 X <- sum(sc[seq(along=contr)])
 round(pperm(X, sc, 11), 4) 	# == 0.0462 (StatXact)
 round(pperm(X, sc, 11, alternative="two.sided"), 4) 	# == 0.0799 (StatXact)
 
 # the alternative method returns:
 
-sc <- sc - min(sc)
-sc <- round(sc*16/max(sc))
+sc <- cscores(c(contr, treat), type="NormalQuantile", int=TRUE)
 X <- sum(sc[seq(along=contr)])
 
 round(pperm(X, sc, 11), 4)      # compare to 0.0462 

@@ -90,3 +90,14 @@ cat("Max difference: ", max(abs(hansi - seppl)), "\n")
 
   stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
 
+for (i in 1:20) {
+  x <- rnorm(10)
+  y <- rnorm(10)
+  group <- factor(c(rep(0, 10), rep(1, 10)))
+  stopifnot(all.equal(wilcox.test(x,y)$p.value, wilcox.exact(x,y)$p.value))
+  stopifnot(all.equal(wilcox.test(y)$p.value, wilcox.exact(y)$p.value))
+  r <- rank(c(x,y))
+  stopifnot(all.equal(wilcox.test(r ~ group)$p.value, 
+                      perm.test(r ~ group)$p.value))
+}
+

@@ -1,6 +1,6 @@
 /*
 
-  $Id: permdist.c,v 1.12 2002/05/23 14:24:21 hothorn Exp $
+  $Id: permdist.c,v 1.14 2002/09/16 15:33:50 hothorn Exp $
   
   permdist : Distribution of Permutation Tests by Streitberg and Roehmel
   Copyright (C) 2000  Torsten Hothorn <Torsten.Hothorn@rzmail.uni-erlangen.de>
@@ -38,10 +38,10 @@
 #include <R_ext/Mathlib.h>
 
 /*
-	N = m + n  <= 200 only 
+	sum(scores) <= 1.000.000 only, 
 */
 
-#define PERM_MAX_N 200
+#define PERM_MAX_N 1000000
 
 void cpermdist1(double *x, int *score_a, int *N)
 {

@@ -1,4 +1,4 @@
-# $Id: dpqperm.R,v 1.15 2002/07/23 06:31:25 hothorn Exp $
+# $Id: dpqperm.R,v 1.18 2002/09/18 16:19:30 hothorn Exp $
 
 toltest <- function(x, scores, m) 
 {
@@ -38,7 +38,7 @@ pperm <- function(q, scores, m, paired = NULL, tol = 0.01, fact = NULL,
         if(alternative=="greater")
             prob <- cp$Prob[cp$T >= i]
         if(alternative=="two.sided" & paired) {
-            if(2*sum(cp$Prob[cp$T <= i]) < 1)
+            if(2*sum(cp$Prob[cp$T <= i]) <= 1)
                 prob <- 2*cp$Prob[cp$T <= i]
             else
                 prob <- 2*cp$Prob[cp$T >= i]
@@ -47,8 +47,11 @@ pperm <- function(q, scores, m, paired = NULL, tol = 0.01, fact = NULL,
             expect <- m/length(scores)*sum(scores)
             TH <- cp$T - expect
             ih <- i - expect
-            prob <- c(cp$Prob[TH <= ifelse(ih > 0, -ih, ih)],
-                      cp$Prob[TH >= ifelse(ih >= 0, ih, -ih)])
+            if (ih != 0) 
+              prob <- c(cp$Prob[TH <= ifelse(ih > 0, -ih, ih)],
+                        cp$Prob[TH >= ifelse(ih >= 0, ih, -ih)])
+            else
+              prob <- 1
         }
     PVALUE <- c(PVALUE, sum(prob))
     PPROB <- c(PPROB, ifelse(!is.null(cp$Prob[cp$T == i]),
@@ -83,71 +86,71 @@ qperm <- function(p, scores, m, paired = NULL, tol = 0.01, fact = NULL)
 rperm <- function(n, scores, m)
     sapply(1:n, dummy <- function(x) sum(sample(scores,m)))
 
-equiscores <- function(scores, m, tol = 0.01, fact=NULL)
+equiscores <- function(scores, m=NULL, tol = 0.01, fact=NULL)
 {
-    if (any(is.null(scores))) 
-        stop("Non-numeric argument to mathematical function")
-    if (is.null(m)) 
-        stop("Non-numeric argument to mathematical function")
+  if (any(is.null(scores))) 
+      stop("Non-numeric argument to mathematical function")
+
+  # first, handle integer and midranked scores, 
+  # m is not needed here
+  fact <- 1
+  fscore <- scores - floor(scores)
+  if (all(fscore == 0)) {
+    if (all(fscore[fscore != 0] == 0.5)) # midranks
+      fact <- 2
+  }
+  scores <- scores*fact
+
+  if (!is.null(m)) { 
     if (m < 1) 
         stop("m less than 1")
     if (m > length(scores)) 
         stop("m greater length(scores)")
-
     paired <- (length(scores) == m)
+  } else {
+    paired <- FALSE
+  }
 
-    fscore <- scores - floor(scores)
-    
-    if (all(fscore == 0))
-    { 
-        # integer valued scores
-        fact <- 1
-    } else {
-        if (all(fscore[fscore != 0] == 0.5))
-        {
-            # midranked scores
-            fact <- 2
-            scores <- scores*fact
-        } else {
-            # rational or real scores
-            ssc <- sort(scores)
-            b <- min(ssc[2:length(ssc)] - ssc[1:(length(ssc)-1)])
-            if (b > 0) b <- ceiling(1/b) else b <- 100
-            if (is.null(fact) || fact < b ) {
-                if (toltest(b, scores, m) <= tol)
-                    fact <- b
-                else {
-                    # do not induce more than 20.000 columns
-                    maxfact <- min(1000, round(20000/sum(scores -
-                                                    min(scores))))   
-                    if (maxfact < b)
-                        fact <- maxfact
-                    else {
-                        test <- function(x)
-                                ifelse(toltest(x, scores, m) - tol > 0, 1/x, x)
-#                        fact <- optim(10, test, tol=tol, sc=scores)$par
-fact <- optimize(test, interval=c(1e-5,100000))$minimum
-                        if (fact > maxfact) {
-                            fact <- maxfact
-                            warning(paste("cannot hold tol, tolerance:",
-                                     round(toltest(maxfact, scores, m), 6)))
-                        } else fact <- min(fact)
-                    }
-                }
-            } 
-            scores <- round(scores * fact)
+  fscore <- scores - floor(scores)
+
+  # ok, lets face the problems    
+  if (!all(fscore == 0)) { # rational or real scores
+    ssc <- sort(scores)
+    b <- min(ssc[2:length(ssc)] - ssc[1:(length(ssc)-1)])
+    if (b > 0) b <- ceiling(1/b) else b <- 100
+    if (is.null(fact) || fact < b ) {
+      if (toltest(b, scores, m) <= tol)
+        fact <- b
+      else { # do not induce more than 20.000 columns
+        maxfact <- min(1000, round(20000/sum(scores -
+                       min(scores))))   
+        if (maxfact < b)
+          fact <- maxfact
+        else {
+          test <- function(x)
+            ifelse(toltest(x, scores, m) - tol > 0, 1/x, x)
+          fact <- optimize(test, 
+                    interval=c(1e-5,100000))$minimum
+          if (fact > maxfact) {
+            fact <- maxfact
+            warning(paste("cannot hold tol, tolerance:",
+                          round(toltest(maxfact, scores, m), 6)))
+          } else fact <- min(fact)
         }
-    }
+      }
+    } 
+    scores <- round(scores * fact)
+  }
 
-    if(!paired) 
-      add <- min(scores) - 1
-    else 
-      add <- 0
-    scores <- scores - add
+  if(!paired) 
+    add <- min(scores) - 1
+  else 
+    add <- 0
+  scores <- scores - add
 
-    RVAL <- list(scores = scores, fact = fact, add = add)
-    class(RVAL) <- "equis"
-    return(RVAL)
+  RVAL <- list(scores = scores, fact = fact, add = add)
+  class(RVAL) <- "equis"
+  return(RVAL)
 }
 
 

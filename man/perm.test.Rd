@@ -8,7 +8,8 @@
 }
 \usage{
 \method{perm.test}{default}(x, y, paired=FALSE, alternative=c("two.sided", "less", "greater"),
-                            mu=0, exact=NULL, conf.int=FALSE, conf.level=0.95, tol=NULL, \dots)
+                            mu=0, exact=NULL, conf.int=FALSE, 
+                            conf.level=0.95, tol=NULL, \dots)
 \method{perm.test}{formula}(formula, data, subset, na.action, \dots)
 }
 \arguments{

@@ -1,3 +1,5 @@
+br.test                 Bivariate Rank Test 
+cscores                 Computation of Scores 
 dperm                   Distribution of One and Two Sample Permutation
                         Tests
 exactRankTests-internal

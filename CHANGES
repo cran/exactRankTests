@@ -1,4 +1,8 @@
-$Id: CHANGES,v 1.58.2.6 2004/09/27 06:07:52 hothorn Exp $
+$Id: CHANGES,v 1.58.2.7 2005/03/16 10:43:33 hothorn Exp $
+
+	0.8-10 (16.03.2005)
+
+	`delay' is deprecated in R-2.1.0
 
 	0.8-7 (27.09.2004)
 

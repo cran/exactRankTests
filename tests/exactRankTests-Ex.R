@@ -21,10 +21,6 @@ assign("cleanEx",
 	   rm(list = ls(envir = env, all.names = TRUE), envir = env)
            RNGkind("Wichmann-Hill", "Kinderman-Ramage")
 	   assign(".Random.seed", c(0, rep(7654, 3)), envir=.GlobalEnv)
-	   assign("T", delay(stop("T used instead of TRUE")),
-		  pos = .CheckExEnv)
-	   assign("F", delay(stop("F used instead of FALSE")),
-		  pos = .CheckExEnv)
        },
        env = .CheckExEnv)
 assign("..nameEx", "__{must remake R-ex/*.R}__", env = .CheckExEnv) # for now

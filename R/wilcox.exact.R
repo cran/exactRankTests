@@ -145,6 +145,14 @@ function(x, y = NULL, alternative = c("two.sided", "less", "greater"),
                                    c(-Inf, lci)
                          })
                      attr(cint, "conf.level") <- conf.level    
+	        wmean <- sum(r)/2
+                if(floor(wmean) != wmean)
+                    ESTIMATE <- mean(c(diffs[floor(wmean)],
+                                       diffs[ceiling(wmean)]))
+                else
+                    ESTIMATE <- mean(c(diffs[wmean-1], diffs[wmean+1]))
+
+                names(ESTIMATE) <- "(pseudo)median"
                 }
             } else {
                 NTIES <- table(r)
@@ -226,6 +234,9 @@ function(x, y = NULL, alternative = c("two.sided", "less", "greater"),
                         c(-Inf, u)
                     })
                     attr(cint, "conf.level") <- conf.level    
+                    ESTIMATE <- uniroot(wdiff, c(mumin, mumax), tol=1e-4,
+                                    zq=0)$root
+                    names(ESTIMATE) <- "(pseudo)median"
                  }
 
 #                if(exact && TIES) {
@@ -346,6 +357,13 @@ function(x, y = NULL, alternative = c("two.sided", "less", "greater"),
                                    c(-Inf, lci)
                               })
                      attr(cint, "conf.level") <- conf.level    
+                     wmean <- n.x/(n.x+n.y)*sum(r) - n.x*(n.x+1)/2
+                     if(floor(wmean) != wmean)
+                         ESTIMATE <- mean(c(diffs[floor(wmean)],
+                                            diffs[ceiling(wmean)]))
+                     else
+                         ESTIMATE <- mean(c(diffs[wmean-1], diffs[wmean+1]))
+                     names(ESTIMATE) <- "difference in location"
                 }
             }
         } else {
@@ -414,6 +432,9 @@ function(x, y = NULL, alternative = c("two.sided", "less", "greater"),
                     c(-Inf, u)
                 })
                 attr(cint, "conf.level") <- conf.level    
+                ESTIMATE <- uniroot(wdiff, c(mumin, mumax), tol=1e-4,
+                                    zq=0)$root
+                names(ESTIMATE) <- "difference in location"
             }
 
 #            if(exact && TIES) {
@@ -442,8 +463,10 @@ function(x, y = NULL, alternative = c("two.sided", "less", "greater"),
                      method = METHOD, 
                      data.name = DNAME)
     }
-    if(conf.int)
+    if(conf.int) {
         RVAL$conf.int <- cint
+        RVAL$estimate <- ESTIMATE
+    }
     class(RVAL) <- "htest"
     return(RVAL)
 }

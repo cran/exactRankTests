@@ -1,6 +1,6 @@
 
 R : Copyright 2001, The R Development Core Team
-Version 1.2.2  (2001-02-26)
+Version 1.3.0 Under development (unstable) (2001-06-08)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -14,13 +14,25 @@ Type `demo()' for some demos, `help()' for on-line help, or
 Type `q()' to quit R.
 
 > attach(NULL, name = "CheckExEnv")
-> assign(".CheckExEnv", pos.to.env(2), pos = length(search()))
+> assign(".CheckExEnv", pos.to.env(2), pos = length(search())) # base
+> ## This plot.new() patch has not yet an effect for
+> ## persp();   layout() & filled.contour() are neither ok
+> assign("plot.new", function() { .Internal(plot.new())
++ 		       pp <- par(c("mfg","mfcol","oma","mar"))
++ 		       if(all(pp$mfg[1:2] == c(1, pp$mfcol[2]))) {
++ 		         outer <- (oma4 <- pp$oma[4]) > 0; mar4 <- pp$mar[4]
++ 			 mtext(paste("help(",..nameEx,")"), side = 4,
++ 			       line = if(outer)max(1, oma4 - 1) else min(1, mar4 - 1),
++ 			       outer = outer, adj=1, cex= .8, col="orchid")} },
++        env = .CheckExEnv)
+> assign("..nameEx", "__{must remake R-ex/*.R}__", env = .CheckExEnv) #-- for now
 > assign("ptime", proc.time(), env = .CheckExEnv)
 > postscript("exactRankTests-Examples.ps")
 > assign("par.postscript", par(no.readonly = TRUE), env = .CheckExEnv)
 > options(contrasts = c(unordered = "contr.treatment", ordered = "contr.poly"))
 > library('exactRankTests')
 > rm(list = ls(all = TRUE)); .Random.seed <- c(0,rep(7654,3))
+> ..nameEx <- "dperm"
 > ###--- >>> `dperm' <<<----- Distribution of Permutation Tests
 > 
 > 	## alias	 help(dperm)
@@ -77,7 +89,7 @@ Type `q()' to quit R.
 [1] 0.1875
 > wilcox.test(x,y, paired=T, alternative="less")
 
-	 Wilcoxon signed rank test 
+	Wilcoxon signed rank test
 
 data:  x and y 
 V = 18, p-value = 0.1875 
@@ -169,60 +181,12 @@ alternative hypothesis: true mu is less than 0
 > round(pperm2(X, sc, 11), 4)     # compare to 0.0799
 [1] 0.0813
 > 
-> # check if [qp]wilcox and [pq]signrank are equal with [qp]perm
 > 
-> source(system.file("test1.R", pkg="exactRankTests")[1])
-psignrank:  9.313226e-09 pperm:  9.313226e-09 
-psignrank:  0.001525879 pperm:  0.001525879 
-psignrank:  0.006713867 pperm:  0.006713867 
-psignrank:  6.532669e-05 pperm:  6.532669e-05 
-psignrank:  1.527667e-13 pperm:  1.527667e-13 
-psignrank:  2.670288e-05 pperm:  2.670288e-05 
-psignrank:  2.233719e-09 pperm:  2.233719e-09 
-psignrank:  9.313226e-08 pperm:  9.313226e-08 
-psignrank:  2.041459e-06 pperm:  2.041459e-06 
-psignrank:  9.947598e-13 pperm:  9.947598e-13 
-Max difference:  4.336809e-18 
-qwilcox:  80 qperm:  80 
-qwilcox:  360 qperm:  360 
-qwilcox:  393 qperm:  393 
-qwilcox:  553 qperm:  553 
-qwilcox:  123 qperm:  123 
-qwilcox:  121 qperm:  121 
-qwilcox:  283 qperm:  283 
-qwilcox:  350 qperm:  350 
-qwilcox:  574 qperm:  574 
-qwilcox:  48 qperm:  48 
-Max difference:  0 
-> source(system.file("test2.R", pkg="exactRankTests")[1])
-pwilcox:  1 pperm:  1 
-pwilcox:  4.002447e-07 pperm:  4.002447e-07 
-pwilcox:  0.000903373 pperm:  0.000903373 
-pwilcox:  1.959144e-08 pperm:  1.959144e-08 
-pwilcox:  3.615505e-17 pperm:  3.615505e-17 
-pwilcox:  1 pperm:  1 
-pwilcox:  0.9565381 pperm:  0.9565381 
-pwilcox:  0.0002103854 pperm:  0.0002103854 
-pwilcox:  2.274899e-14 pperm:  2.274899e-14 
-pwilcox:  0.5606082 pperm:  0.5606082 
-Max difference:  1.376677e-14 
-qwilcox:  694 qperm:  694 
-qwilcox:  767 qperm:  767 
-qwilcox:  862 qperm:  862 
-qwilcox:  692 qperm:  692 
-qwilcox:  464 qperm:  464 
-qwilcox:  891 qperm:  891 
-qwilcox:  570 qperm:  570 
-qwilcox:  227 qperm:  227 
-qwilcox:  103 qperm:  103 
-qwilcox:  159 qperm:  159 
-Max difference:  0 
-> 
-> 
-> ## Keywords: 'exact distribution'.
+> ## Keywords: 'distribution'.
 > 
 > 
 > rm(list = ls(all = TRUE)); .Random.seed <- c(0,rep(7654,3))
+> ..nameEx <- "wilcox.exact"
 > ###--- >>> `wilcox.exact' <<<----- Wilcoxon Rank Sum and Signed Rank Tests
 > 
 > 	## alias	 help(wilcox.exact)
@@ -239,7 +203,7 @@ Max difference:  0
 > y <- c(0.878, 0.647, 0.598, 2.05, 1.06, 1.29, 1.06, 3.14, 1.29)
 > wilcox.exact(x, y, paired = TRUE, alternative = "greater")
 
-	 Exact Wilcoxon signed rank test 
+	Exact Wilcoxon signed rank test
 
 data:  x and y 
 V = 40, point prob = 0.006, p-value = 0.01953 
@@ -247,7 +211,7 @@ alternative hypothesis: true mu is greater than 0
 
 > wilcox.exact(y - x, alternative = "less")    # The same.
 
-	 Exact Wilcoxon signed rank test 
+	Exact Wilcoxon signed rank test
 
 data:  y - x 
 V = 5, point prob = 0.006, p-value = 0.01953 
@@ -266,7 +230,7 @@ alternative hypothesis: true mu is less than 0
 > y <- c(1.15, 0.88, 0.90, 0.74, 1.21)
 > wilcox.exact(x, y, alternative = "g")        # greater
 
-	 Exact Wilcoxon rank sum test 
+	Exact Wilcoxon rank sum test
 
 data:  x and y 
 W = 35, point prob = 0.024, p-value = 0.1272 
@@ -277,13 +241,16 @@ alternative hypothesis: true mu is greater than 0
 > y <- rnorm(10, 2)
 > wilcox.exact(x, y, conf.int = TRUE)
 
-	 Exact Wilcoxon rank sum test 
+	Exact Wilcoxon rank sum test
 
 data:  x and y 
 W = 4, point prob = 0, p-value = 0.0001299 
 alternative hypothesis: true mu is not equal to 0 
 95 percent confidence interval:
  -2.953465 -1.320829 
+sample estimates:
+difference in location 
+             -2.005860 
 
 > 
 > # Data from the StatXact-4 manual, page 221, diastolic blood pressure
@@ -293,38 +260,56 @@ alternative hypothesis: true mu is not equal to 0
 > 
 > # StatXact 4 for Windows: p.value = 0.0989, point prob = 0.019
 > 
-> wilcox.exact(contr, treat)
+> wilcox.exact(contr, treat, conf.int=T)
 
-	 Exact Wilcoxon rank sum test 
+	Exact Wilcoxon rank sum test
 
 data:  contr and treat 
 W = 9, point prob = 0.019, p-value = 0.0989 
 alternative hypothesis: true mu is not equal to 0 
+95 percent confidence interval:
+ -22   4 
+sample estimates:
+difference in location 
+                    13 
 
 > 
 > # StatXact 4 for Windows: p.value = 0.0542, point prob = 0.019
 >  
-> wilcox.exact(contr, treat, alternative="less") 
+> wilcox.exact(contr, treat, alternative="less", conf.int=T) 
 
-	 Exact Wilcoxon rank sum test 
+	Exact Wilcoxon rank sum test
 
 data:  contr and treat 
 W = 9, point prob = 0.019, p-value = 0.05421 
 alternative hypothesis: true mu is less than 0 
+95 percent confidence interval:
+ -Inf    4 
+sample estimates:
+difference in location 
+                    13 
 
 > 
-> # works in R-1.2.3 only
-> #  
-> # x <- rnorm(10,3)
-> # y <- rnorm(10)
-> # stopifnot(all.equal(wilcox.test(x,y,conf.int=T), wilcox.exact(x,y,conf.int=T)))
+> 
+> stopifnot(wilcox.exact(1:8)$p.value == 0.0078125)
+> stopifnot(wilcox.exact(c(1:7,7))$p.value == 0.0078125)
+> stopifnot(wilcox.exact(c(1,1,1))$p.value == 0.25)
+> 
+> if (version$minor == "3.0") {
++ x <- rnorm(10)
++ y <- rnorm(10)
++ stopifnot(wilcox.test(x,y,conf.int=T)$estimate ==
++           wilcox.exact(x,y,conf.int=T)$estimate)
++ stopifnot(wilcox.test(x,conf.int=T)$estimate ==
++           wilcox.exact(x,conf.int=T)$estimate)
++ }
 > 
 > 
 > ## Keywords: 'htest'.
 > 
 > 
 > cat("Time elapsed: ", proc.time() - get("ptime", env = .CheckExEnv),"\n")
-Time elapsed:  4.97 0.1 5.1 0 0 
+Time elapsed:  0.98 0.12 1.15 0 0 
 > dev.off(); quit('no')
 null device 
           1 

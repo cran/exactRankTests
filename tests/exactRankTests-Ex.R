@@ -1,11 +1,23 @@
 attach(NULL, name = "CheckExEnv")
-assign(".CheckExEnv", pos.to.env(2), pos = length(search()))
+assign(".CheckExEnv", pos.to.env(2), pos = length(search())) # base
+## This plot.new() patch has not yet an effect for
+## persp();   layout() & filled.contour() are neither ok
+assign("plot.new", function() { .Internal(plot.new())
+		       pp <- par(c("mfg","mfcol","oma","mar"))
+		       if(all(pp$mfg[1:2] == c(1, pp$mfcol[2]))) {
+		         outer <- (oma4 <- pp$oma[4]) > 0; mar4 <- pp$mar[4]
+			 mtext(paste("help(",..nameEx,")"), side = 4,
+			       line = if(outer)max(1, oma4 - 1) else min(1, mar4 - 1),
+			       outer = outer, adj=1, cex= .8, col="orchid")} },
+       env = .CheckExEnv)
+assign("..nameEx", "__{must remake R-ex/*.R}__", env = .CheckExEnv) #-- for now
 assign("ptime", proc.time(), env = .CheckExEnv)
 postscript("exactRankTests-Examples.ps")
 assign("par.postscript", par(no.readonly = TRUE), env = .CheckExEnv)
 options(contrasts = c(unordered = "contr.treatment", ordered = "contr.poly"))
 library('exactRankTests')
 rm(list = ls(all = TRUE)); .Random.seed <- c(0,rep(7654,3))
+..nameEx <- "dperm"
 ###--- >>> `dperm' <<<----- Distribution of Permutation Tests
 
 	## alias	 help(dperm)
@@ -136,16 +148,12 @@ X <- sum(sc[seq(along=contr)])
 round(pperm(X, sc, 11), 4)      # compare to 0.0462 
 round(pperm2(X, sc, 11), 4)     # compare to 0.0799
 
-# check if [qp]wilcox and [pq]signrank are equal with [qp]perm
 
-source(system.file("test1.R", pkg="exactRankTests")[1])
-source(system.file("test2.R", pkg="exactRankTests")[1])
-
-
-## Keywords: 'exact distribution'.
+## Keywords: 'distribution'.
 
 
 rm(list = ls(all = TRUE)); .Random.seed <- c(0,rep(7654,3))
+..nameEx <- "wilcox.exact"
 ###--- >>> `wilcox.exact' <<<----- Wilcoxon Rank Sum and Signed Rank Tests
 
 	## alias	 help(wilcox.exact)
@@ -186,17 +194,25 @@ contr <- c(80, 94, 85, 90, 90, 90, 108, 94, 78, 105, 88)
 
 # StatXact 4 for Windows: p.value = 0.0989, point prob = 0.019
 
-wilcox.exact(contr, treat)
+wilcox.exact(contr, treat, conf.int=T)
 
 # StatXact 4 for Windows: p.value = 0.0542, point prob = 0.019
  
-wilcox.exact(contr, treat, alternative="less") 
+wilcox.exact(contr, treat, alternative="less", conf.int=T) 
 
-# works in R-1.2.3 only
-#  
-# x <- rnorm(10,3)
-# y <- rnorm(10)
-# stopifnot(all.equal(wilcox.test(x,y,conf.int=T), wilcox.exact(x,y,conf.int=T)))
+
+stopifnot(wilcox.exact(1:8)$p.value == 0.0078125)
+stopifnot(wilcox.exact(c(1:7,7))$p.value == 0.0078125)
+stopifnot(wilcox.exact(c(1,1,1))$p.value == 0.25)
+
+if (version$minor == "3.0") {
+x <- rnorm(10)
+y <- rnorm(10)
+stopifnot(wilcox.test(x,y,conf.int=T)$estimate ==
+          wilcox.exact(x,y,conf.int=T)$estimate)
+stopifnot(wilcox.test(x,conf.int=T)$estimate ==
+          wilcox.exact(x,conf.int=T)$estimate)
+}
 
 
 ## Keywords: 'htest'.

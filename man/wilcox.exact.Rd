@@ -121,17 +121,39 @@ contr <- c(80, 94, 85, 90, 90, 90, 108, 94, 78, 105, 88)
 
 # StatXact 4 for Windows: p.value = 0.0989, point prob = 0.019
 
-wilcox.exact(contr, treat)
+wilcox.exact(contr, treat, conf.int=T)
 
 # StatXact 4 for Windows: p.value = 0.0542, point prob = 0.019
  
-wilcox.exact(contr, treat, alternative="less") 
+wilcox.exact(contr, treat, alternative="less", conf.int=T) 
 
-# works in R-1.2.3 only
-# \testonly{ 
-# x <- rnorm(10,3)
-# y <- rnorm(10)
-# stopifnot(all.equal(wilcox.test(x,y,conf.int=T), wilcox.exact(x,y,conf.int=T)))
+# paired observations
+# Data from the StatXact-4 manual, page 167, serum antigen level
+
+# StatXact 4 for Windows: p.value=0.0021 (page 168)
+
+pre <- c(149, 0, 0, 259, 106, 255, 0, 52, 340, 65, 180, 0, 84, 89, 212, 554,
+500, 424, 112, 2600)
+post <- c(0, 51, 0, 385, 0, 235, 0, 0, 48, 65, 77, 0, 0, 0, 53, 150, 0, 165,
+98, 0)
+
+wilcox.exact(pre, post, paired=T)
+
+\testonly{
+stopifnot(wilcox.exact(1:8)$p.value == 0.0078125)
+stopifnot(wilcox.exact(c(1:7,7))$p.value == 0.0078125)
+stopifnot(wilcox.exact(c(1,1,1))$p.value == 0.25)
+
+if (version$minor == "3.0") {
+x <- rnorm(10)
+y <- rnorm(10)
+stopifnot(wilcox.test(x,y,conf.int=T)$estimate ==
+          wilcox.exact(x,y,conf.int=T)$estimate)
+stopifnot(wilcox.test(x,conf.int=T)$estimate ==
+          wilcox.exact(x,conf.int=T)$estimate)
+}
+}
+
 }
 }
 \keyword{htest}

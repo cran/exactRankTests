@@ -10,8 +10,8 @@
 \usage{
 cperm(escores, m, paired = NULL)
 dansari(x, m ,n)
-equiscores(escores, tol = 0.01, fact = NULL)
-toltest(x, scores)
+equiscores(scores, m, tol = 0.01, fact = NULL)
+toltest(x, scores, m)
 }
 \details{
   Those functions are not to be called by the user.

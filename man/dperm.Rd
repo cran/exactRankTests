@@ -73,7 +73,7 @@ but use a different test (with integer scores), serving for the same purpose
 (due to a similar shape of the scores). 
 
 Exact two-sided p-values are computed as suggested in the StatXact-4 
-manual, page 209, equation (9.32).  
+manual, page 209, equation (9.32) and equation (8.19), p. 165 (paired case).  
 
 }
 \value{
@@ -218,10 +218,95 @@ X <- sum(sc[seq(along=contr)])
 round(pperm(X, sc, 11), 4)      # compare to 0.0462 
 round(pperm2(X, sc, 11), 4)     # compare to 0.0799
 
-# check if [qp]wilcox and [pq]signrank are equal with [qp]perm
+\testonly{
 
-source(system.file("test1.R", pkg="exactRankTests")[1])
-source(system.file("test2.R", pkg="exactRankTests")[1])
+# paired observations
+
+hansi <- c()
+seppl <- c()
+for (i in 1:10)
+{
+	m <- sample(10:50, 1)
+	score <- sample(m)
+	val <- sample(0:m, 1)
+	# cat("m: ", m, "n: ", n, " val: ", val, "\n")
+	hansi <- c(hansi,  psignrank(val, m))
+	cat("psignrank: ", hansi[length(hansi)])
+	seppl <- c(seppl, pperm(val, score, m))
+	cat(" pperm: ", seppl[length(seppl)], "\n")
+}
+
+cat("Max difference: ", max(abs(hansi - seppl)), "\n")
+
+stopifnot(max(abs(hansi - seppl)) <= 1e-10)
+
+hansi <- c()
+seppl <- c()
+for (i in 1:10)
+{
+        m <- sample(10:50, 1)
+        score <- sample(m)
+        prob <- runif(1)
+        # cat("m: ", m, "n: ", n, " prob: ", prob, "\n")
+        hansi <- c(hansi,  qsignrank(prob, m))
+        cat("qwilcox: ", hansi[length(hansi)])
+        seppl <- c(seppl, qperm(prob, score, m))
+        cat(" qperm: ", seppl[length(seppl)], "\n")
+}
+
+cat("Max difference: ", max(abs(hansi - seppl)), "\n")
+
+stopifnot(max(abs(hansi - seppl)) <= 1e-10)
+
+
+# independent observations
+
+hansi <- c()
+seppl <- c()
+for (i in 1:10)
+{
+	m <- sample(10:50, 1)
+	if (runif(1) < 0.5)
+		n <- sample(10:50, 1)
+	else	
+		n <- m
+	score <- sample(n+m)
+	val <- sample(0:(m*n), 1)
+	# cat("m: ", m, "n: ", n, " val: ", val, "\n")
+	hansi <- c(hansi,  pwilcox(val, m, n))
+	cat("pwilcox: ", hansi[length(hansi)])
+	seppl <- c(seppl, pperm(val + m*(m+1)/2, score, m))
+	cat(" pperm: ", seppl[length(seppl)], "\n")
+}
+
+cat("Max difference: ", max(abs(hansi - seppl)), "\n")
+
+stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
+
+
+hansi <- c()
+seppl <- c()
+for (i in 1:10)
+{
+        m <- sample(10:50, 1)
+        if (runif(1) < 0.5)
+                n <- sample(10:50, 1)
+        else
+                n <- m
+        score <- sample(n+m)
+        prob <- runif(1)
+        # cat("m: ", m, "n: ", n, " prob: ", prob, "\n")
+        hansi <- c(hansi,  qwilcox(prob, m, n))
+        cat("qwilcox: ", hansi[length(hansi)])
+        seppl <- c(seppl, qperm(prob, score, m) - m*(m+1)/2)
+        cat(" qperm: ", seppl[length(seppl)], "\n")
+}
+
+cat("Max difference: ", max(abs(hansi - seppl)), "\n")
+
+stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
+
+}
 
 }
 \keyword{distribution}

@@ -39,20 +39,24 @@ pperm2 <- function(q, scores, m, paired = NULL, tol = 0.01, fact = NULL)
     eq <- equiscores(scores, m, tol, fact)
     cp <- cperm(eq, m, paired)
     paired <- any(c(m == length(scores), paired))
-    if (paired)
-        expect <- 1/2*sum(scores)
-    else
+    if (paired) {
+	expect <- 1/2*sum(scores)
+        if (q <= expect) RVAL <- 2*pperm(q, scores, m, paired, tol, fact)
+        else RVAL <- 2*(1 - pperm(q, scores, m, paired, tol, fact) + dperm(q,
+                            scores, m, paired, tol, fact))
+    } else {
         expect <- m/length(scores)*sum(scores)
-    cp$T <- cp$T - expect
-    q <- q - expect
-    RVAL <- c()
-    for (i in q) {
-        prob <- c(cp$Prob[cp$T <= ifelse(i > 0, -i, i)],
-                  cp$Prob[cp$T >= ifelse(i >= 0, i, -i)]) 
-        ifelse(length(prob) >= 1, RVAL <- c(RVAL, sum(prob)),
-                                  RVAL <- c(RVAL, 0))
-    } 
-    RVAL <- pmin(1, RVAL)
+        cp$T <- cp$T - expect
+        q <- q - expect
+        RVAL <- c()
+        for (i in q) {
+            prob <- c(cp$Prob[cp$T <= ifelse(i > 0, -i, i)],
+                    cp$Prob[cp$T >= ifelse(i >= 0, i, -i)]) 
+            ifelse(length(prob) >= 1, RVAL <- c(RVAL, sum(prob)),
+                    RVAL <- c(RVAL, 0))
+        } 
+        RVAL <- pmin(1, RVAL)
+    }
     return(RVAL)
 }
 
@@ -75,8 +79,8 @@ qperm <- function(p, scores, m, paired = NULL, tol = 0.01, fact = NULL)
     return(RVAL)
 }
 
-rperm <- function(size, scores, m)
-    sapply(1:size, dummy <- function(x) sum(sample(scores,m)))
+rperm <- function(n, scores, m)
+    sapply(1:n, dummy <- function(x) sum(sample(scores,m)))
 
 equiscores <- function(scores, m, tol = 0.01, fact=NULL)
 {

@@ -1,0 +1,28 @@
+
+R : Copyright 2004, The R Foundation for Statistical Computing
+Version 1.9.0 Under development (unstable) (2004-01-21), ISBN 3-900051-00-3
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for a HTML browser interface to help.
+Type 'q()' to quit R.
+
+
+Andrew Thomas: ...and if something goes wrong here it is probably not WinBUGS
+since that has been running for more than 10 years...
+Peter Green (from the back): ... and it still hasn't converged!
+   -- Andrew Thomas and Peter Green (during the talk about `BRugs')
+      gR 2003, Aalborg (September 2003)
+
+
+R> invisible(options(echo = TRUE))
+Warning message: 
+package stats in options("defaultPackages") was not found 
+R> 

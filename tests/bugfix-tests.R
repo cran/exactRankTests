@@ -59,3 +59,8 @@ try(dperm(0, c(0,-1,2,2), m=4))
 x <- c(1, 2, 3, 4, NA)
 y <- c(1, 2, 1, 2, 3)
 perm.test(x,y, paired=TRUE)
+
+# not fixed: This is a problem when defining two-sided P-values for discrete
+# distributions.
+# spotted by Dieter Menne <dieter.menne@menne-biomed.de>
+pperm(5, 1:4, 4, alt = "two.sided")

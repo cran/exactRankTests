@@ -1,9 +1,11 @@
-br.test                 Bivariate Rank Test 
-cscores                 Computation of Scores 
+ASAT                    Toxicological Study on Female Wistar Rats
+ansari.exact            Ansari-Bradley Test
+br.test                 Bivariate Rank Test
+cscores                 Computation of Scores
 dperm                   Distribution of One and Two Sample Permutation
                         Tests
-exactRankTests-internal
-                        Internal exactRankTests functions
-globulin                Differences in Globulin Fraction in Two Groups 
-perm.test               One and Two Sample Permutation Test 
+globulin                Differences in Globulin Fraction in Two Groups
+ocarcinoma              Ovarian Carcinoma
+perm.test               One and Two Sample Permutation Test
+rotarod                 Rotating Rats Data
 wilcox.exact            Wilcoxon Rank Sum and Signed Rank Tests

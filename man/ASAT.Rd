@@ -37,7 +37,7 @@ plot(asat ~ group, data=ASAT)
 pos <- wilcox.exact(I(log(asat)) ~ group, data = ASAT, alternative = "less", 
              conf.int=TRUE)
 # one-sided confidence set. Safety cannot be concluded since the effect of
-# the compound exceeds 20% of the control median
+# the compound exceeds 20\% of the control median
 exp(pos$conf.int)
 }
 \keyword{datasets}

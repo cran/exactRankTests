@@ -1,4 +1,4 @@
-# $Id: perm.test.R,v 1.17 2003/04/09 16:02:20 hothorn Exp $
+# $Id: perm.test.R,v 1.17.4.1 2003/09/18 11:24:15 hothorn Exp $
 
 perm.test <- function(x, ...) UseMethod("perm.test")
 
@@ -29,7 +29,12 @@ function(x,y=NULL, paired = FALSE, alternative = c("two.sided", "less", "greater
     } else DNAME <- deparse(substitute(x))
 
     if (paired) {
-        if (!is.null(y)) x <- x - y
+        if (!is.null(y)) {
+            OK <- complete.cases(x, y)
+            x <- x[OK] - y[OK]
+        } else {
+            x <- x[complete.cases(x)]
+        }
         m <- length(x)
         METHOD <- "1-sample Permutation Test"
         if (is.null(exact)) exact <- (m <= 50)
@@ -148,6 +153,8 @@ function(x,y=NULL, paired = FALSE, alternative = c("two.sided", "less", "greater
         }
 #    }
      } else {
+        x <- x[complete.cases(x)]
+        y <- y[complete.cases(y)]
         m <- length(x)
         n <- length(y)
         if(n < m & conf.int) {

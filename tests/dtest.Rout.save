@@ -1,20 +1,21 @@
 
 R : Copyright 2003, The R Development Core Team
-Version 1.7.1  (2003-06-16)
+Version 1.8.0 alpha (2003-09-17)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
-Type `license()' or `licence()' for distribution details.
+Type 'license()' or 'licence()' for distribution details.
 
 R is a collaborative project with many contributors.
-Type `contributors()' for more information.
+Type 'contributors()' for more information.
 
-Type `demo()' for some demos, `help()' for on-line help, or
-`help.start()' for a HTML browser interface to help.
-Type `q()' to quit R.
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for a HTML browser interface to help.
+Type 'q()' to quit R.
 
 > 
 > library(exactRankTests)
+Loading required package: ctest 
 > RNGkind("Wichmann-Hill", "Kinderman-Ramage")
 > set.seed(29081975)
 > 
@@ -112,7 +113,7 @@ pwilcox:  0.02764398 pperm:  0.02764398
 pwilcox:  0.9143719 pperm:  0.9143719 
 > 
 > cat("Max difference: ", max(abs(hansi - seppl)), "\n")
-Max difference:  9.769963e-15 
+Max difference:  7.660539e-15 
 > 
 >   stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
 > 

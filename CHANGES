@@ -1,4 +1,8 @@
-$Id: CHANGES,v 1.58.2.2 2003/09/03 13:39:28 hothorn Exp $
+$Id: CHANGES,v 1.58.2.3 2003/09/18 11:25:04 hothorn Exp $
+
+        0.8-4 (18.09.2003)
+
+        perm.test(x, ...) failed when missing values where supplied.
 
 	0.8-3 (03.09.2003)
 

@@ -5,7 +5,7 @@ exportPattern("\\.exact.default$")
 exportPattern("\\.exact.formula$")
 
 export(dperm, qperm, pperm, rperm, perm.test, perm.test.default,
-perm.test.formula, cscores, cscores.default, cscores.factor, cscores.Surv,
-irank)
+perm.test.formula, cscores, cscores.default, cscores.factor, 
+cscores.Surv, irank)
 
 import(ctest)

@@ -1,17 +1,17 @@
 
 R : Copyright 2003, The R Development Core Team
-Version 1.7.1  (2003-06-16)
+Version 1.8.0 alpha (2003-09-17)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
-Type `license()' or `licence()' for distribution details.
+Type 'license()' or 'licence()' for distribution details.
 
 R is a collaborative project with many contributors.
-Type `contributors()' for more information.
+Type 'contributors()' for more information.
 
-Type `demo()' for some demos, `help()' for on-line help, or
-`help.start()' for a HTML browser interface to help.
-Type `q()' to quit R.
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for a HTML browser interface to help.
+Type 'q()' to quit R.
 
 > attach(NULL, name = "CheckExEnv")
 > assign(".CheckExEnv", as.environment(2), pos = length(search())) # base
@@ -44,6 +44,7 @@ Type `q()' to quit R.
 > assign("par.postscript", par(no.readonly = TRUE), env = .CheckExEnv)
 > options(contrasts = c(unordered = "contr.treatment", ordered = "contr.poly"))
 > library('exactRankTests')
+Loading required package: ctest 
 > cleanEx(); ..nameEx <- "dperm"
 > ###--- >>> `dperm' <<<----- Distribution of One and Two Sample Permutation Tests
 > 
@@ -132,13 +133,13 @@ alternative hypothesis: true mu is less than 0
 > # critical value, two-sided test
 > 
 > abs(qperm(0.025, scores, length(x)))
-[1] 3.872587
+[1] 3.869096
 > 
 > # p-values
 > 
 > p1 <- pperm(X, scores, length(x), alternative="two.sided")
 > p1
-[1] 0.5188357
+[1] 0.5184243
 > 
 > # generate integer valued scores with the same shape as normal quantile
 > # scores, this no longer v.d.Waerden, but something very similar
@@ -153,7 +154,7 @@ alternative hypothesis: true mu is less than 0
 > # compare p1 and p2
 > 
 > p1 - p2
-[1] 0.01066271
+[1] 0.01025136
 > 
 > # the blood pressure example from StatXact manual, page 221:
 > 
@@ -759,7 +760,7 @@ difference in location
 > 
 > 
 > cat("Time elapsed: ", proc.time() - get("ptime", env = .CheckExEnv),"\n")
-Time elapsed:  2.42 0.03 2.45 0 0 
+Time elapsed:  9.16 0.13 9.31 0 0 
 > dev.off(); quit('no')
 null device 
           1 

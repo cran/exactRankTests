@@ -1,6 +1,6 @@
 
-R : Copyright 2001, The R Development Core Team
-Version 1.4.0 Under development (unstable) (2001-12-09)
+R : Copyright 2002, The R Development Core Team
+Version 1.4.1  (2002-01-30)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -351,7 +351,7 @@ Max difference:  0
 	2-sample Permutation Test
 
 data:  group1 and group2 
-= 331, p-value = 0.1475
+T = 331, p-value = 0.1475
 alternative hypothesis: true mu is not equal to 0 
 95 percent confidence interval:
  -8.50  1.25 
@@ -383,7 +383,7 @@ alternative hypothesis: true mu is not equal to 0
 	2-sample Permutation Test
 
 data:  A and B 
-= 61, p-value = 0.01180
+T = 61, p-value = 0.01180
 alternative hypothesis: true mu is not equal to 0 
 95 percent confidence interval:
  0.05263158 0.34285714 
@@ -403,7 +403,7 @@ alternative hypothesis: true mu is not equal to 0
 	2-sample Permutation Test
 
 data:  treat and contr 
-= 402, p-value = 0.1040
+T = 402, p-value = 0.1040
 alternative hypothesis: true mu is not equal to 0 
 
 > 
@@ -415,7 +415,7 @@ alternative hypothesis: true mu is not equal to 0
 	2-sample Permutation Test
 
 data:  treat and contr 
-= 402, p-value = 0.05641
+T = 402, p-value = 0.05641
 alternative hypothesis: true mu is greater than 0 
 
 > 
@@ -434,7 +434,7 @@ alternative hypothesis: true mu is greater than 0
 	1-sample Permutation Test
 
 data:  diff 
-= 177, p-value = 0.002592
+T = 177, p-value = 0.002592
 alternative hypothesis: true mu is not equal to 0 
 
 > 
@@ -866,7 +866,7 @@ difference in location
 > 
 > 
 > cat("Time elapsed: ", proc.time() - get("ptime", env = .CheckExEnv),"\n")
-Time elapsed:  11.27 0.15 11.51 0 0 
+Time elapsed:  4.91 0.06 5 0 0 
 > dev.off(); quit('no')
 null device 
           1 

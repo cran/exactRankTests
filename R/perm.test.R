@@ -1,4 +1,4 @@
-# $Id: perm.test.R,v 1.8 2002/02/06 15:47:22 hothorn Exp $
+# $Id: perm.test.R,v 1.10 2002/02/20 15:05:43 hothorn Exp $
 
 perm.test <- function(x, ...) UseMethod("perm.test")
 
@@ -59,9 +59,10 @@ function(x,y=NULL, paired = FALSE, alternative = c("two.sided", "less", "greater
             wmean <- sum(abs(x))/2
             wvar <- sum(abs(x)^2)/4
             PVAL <- pnorm((STATISTIC - wmean) / sqrt(wvar))
-            PVAL <- min(PVAL, 1-PVAL)
+            if (alternative == "greater")
+                PVAL <- 1 - PVAL
             if(alternative == "two.sided")
-                PVAL <- 2 * PVAL
+                PVAL <- 2 * min(PVAL, 1-PVAL)
             if (conf.int) { 
                 conf.int <- FALSE
                 warning("cannot compute asymptotic confidence intervals")
@@ -186,7 +187,8 @@ function(x,y=NULL, paired = FALSE, alternative = c("two.sided", "less", "greater
             wmean <- m/N*sum(c(x,y))
             wvar <- m*n/(N*(N-1))*sum((c(x,y) - wmean/m)^2)
             PVAL <- pnorm((STATISTIC - wmean)/sqrt(wvar))
-            PVAL <- min(PVAL, 1-PVAL)
+            if (alternative == "greater")
+                PVAL <- 1 - PVAL
             if(alternative == "two.sided")
                 PVAL <- 2 * min(PVAL, 1 - PVAL)
             if (conf.int) {
@@ -276,6 +278,7 @@ function(x,y=NULL, paired = FALSE, alternative = c("two.sided", "less", "greater
             attr(cint, "conf.level") <- conf.level
         }
     }
+    names(STATISTIC) <- "T"
     if (exact) {
         names(MIDP) <- "point prob"
         RVAL <- list(statistic = STATISTIC,

@@ -1,4 +1,4 @@
-# $Id: wilcox.exact.R,v 1.15 2001/12/08 13:45:14 hothorn Exp $
+# $Id: wilcox.exact.R,v 1.16 2002/02/20 15:05:43 hothorn Exp $
 
 wilcox.exact <- function(x, ...) UseMethod("wilcox.exact")
 
@@ -77,8 +77,9 @@ function(x, y = NULL, alternative = c("two.sided", "less", "greater"),
                 diffs <- outer(x, x, "+")
                 diffs <- sort(diffs[!lower.tri(diffs)]) / 2
                 if (TIES) {
-                  fs <- function(d)
+                  fs <- function(d) {
                     xx <- x - d; sum(rank(abs(xx))[xx > 0])
+                  }
                   w <- sapply(diffs, fs)
                 } else {
                   w <- sum(rank(abs(x))):1
@@ -117,9 +118,10 @@ function(x, y = NULL, alternative = c("two.sided", "less", "greater"),
                 wmean <- sum(r)/2
                 wvar <- sum(r^2)/4
                 PVAL <- pnorm((STATISTIC - wmean) / sqrt(wvar))
-                PVAL <- min(PVAL, 1-PVAL)
+                if(alternative == "greater")
+                    PVAL <- 1 - PVAL
                 if(alternative == "two.sided") 
-                    PVAL <- 2 * PVAL 
+                    PVAL <- 2 * min(PVAL, 1-PVAL) 
 
                 if(conf.int && !is.na(x)) {
                     ## Asymptotic confidence intervale for the median in the
@@ -249,7 +251,8 @@ function(x, y = NULL, alternative = c("two.sided", "less", "greater"),
             wmean <- n.x/N*sum(r)
             wvar <- n.x*n.y/(N*(N-1))*sum((r - wmean/n.x)^2)
             PVAL <- pnorm((STATISTIC + n.x*(n.x+1)/2 - wmean)/sqrt(wvar))
-            PVAL <- min(PVAL, 1-PVAL)
+            if (alternative == "greater")
+               PVAL <- 1 - PVAL
             if(alternative == "two.sided") 
                 PVAL <- 2 * min(PVAL, 1 - PVAL)
             if(conf.int) {

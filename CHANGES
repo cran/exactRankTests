@@ -1,4 +1,15 @@
-$Id: CHANGES,v 1.29 2002/02/11 09:12:02 hothorn Exp $
+$Id: CHANGES,v 1.31 2002/02/20 15:05:58 hothorn Exp $
+	
+	0.6-4 (20.02.2002)
+
+	conf.int for paired samples was broken in wilcox.exact
+
+	p.value for alternative == "less" and "greater" now add to 1 for
+        asymptotic distribution
+
+	0.6-3 (13.02.2002)
+
+	STATISTIC in perm.test had a missing name attribute
 
 	0.6-2 (11.02.2002)
 

@@ -1,6 +1,6 @@
 
 R : Copyright 2002, The R Development Core Team
-Version 1.5.0 Under development (unstable) (2002-04-14)
+Version 1.5.1  (2002-06-17)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -13,11 +13,13 @@ Type `demo()' for some demos, `help()' for on-line help, or
 `help.start()' for a HTML browser interface to help.
 Type `q()' to quit R.
 
+> T <- F <- NULL
 > 
 > library(exactRankTests)
 > 
 > # From Ruggero Bellio <ruggero.bellio@dss.uniud.it>
 > # 20.02.2002
+> # and 23.07.2002
 > 
 > x <- c(0,87, 0, 0, 0, 0, 8, 0,16, 0,64, 0, 0,37, 200, 0,0,32, 5 ,0, 0,14, 0,
 +        0, 4, 0, 0,50, 0, 0,99, 0, 0,12,36,22, 4,13, 0,10,70, 0, 0, 0, 0,19,
@@ -34,10 +36,10 @@ Type `q()' to quit R.
 	Exact Wilcoxon signed rank test
 
 data:  x and y 
-V = 559, p-value = 0.7598
+V = 559, p-value = 0.9603
 alternative hypothesis: true mu is not equal to 0 
 95 percent confidence interval:
- -15.5   9.0 
+ -13.5  10.5 
 sample estimates:
 (pseudo)median 
          -0.25 
@@ -78,4 +80,12 @@ data:  scores[1:20] and scores[21:40]
 T = 358, p-value = 0.1878
 alternative hypothesis: true mu is not equal to 0 
 
+> 
+> # dperm was broken for some configurations of paired samples
+> 
+> ret <- c()
+> for (i in 1:100)
++   ret <- c(ret,dperm(-(1:10), sample(1:20, 5), 5))
+> stopifnot(sum(ret) == 0) 
+> 
 > 

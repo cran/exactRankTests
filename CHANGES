@@ -1,4 +1,9 @@
-$Id: CHANGES,v 1.38 2002/07/03 08:08:53 hothorn Exp $
+$Id: CHANGES,v 1.39 2002/07/23 07:04:40 hothorn Exp $
+
+	0.6-12 (23.07.2002)
+
+	bugfix for paired samples: do not substract the minimum of the
+        scores anymore.
 
 	0.6-11 (03.07.2002)
 

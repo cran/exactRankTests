@@ -3,6 +3,7 @@ library(exactRankTests)
 
 # From Ruggero Bellio <ruggero.bellio@dss.uniud.it>
 # 20.02.2002
+# and 23.07.2002
 
 x <- c(0,87, 0, 0, 0, 0, 8, 0,16, 0,64, 0, 0,37, 200, 0,0,32, 5 ,0, 0,14, 0,
        0, 4, 0, 0,50, 0, 0,99, 0, 0,12,36,22, 4,13, 0,10,70, 0, 0, 0, 0,19,
@@ -42,3 +43,11 @@ scores <- pmin(scores, length(ramsay) + length(jung.parekh) - scores + 1)
 AB <- sum(scores[seq(along = ramsay)])
 pperm(AB, scores, length(ramsay), alternative = "two.sided")
 perm.test(scores[1:20], scores[21:40])
+
+# dperm was broken for some configurations of paired samples
+
+ret <- c()
+for (i in 1:100)
+  ret <- c(ret,dperm(-(1:10), sample(1:20, 5), 5))
+stopifnot(sum(ret) == 0) 
+

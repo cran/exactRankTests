@@ -1,4 +1,4 @@
-# $Id: dpqperm.R,v 1.14 2002/07/03 08:08:53 hothorn Exp $
+# $Id: dpqperm.R,v 1.15 2002/07/23 06:31:25 hothorn Exp $
 
 toltest <- function(x, scores, m) 
 {
@@ -94,22 +94,20 @@ equiscores <- function(scores, m, tol = 0.01, fact=NULL)
     if (m > length(scores)) 
         stop("m greater length(scores)")
 
+    paired <- (length(scores) == m)
+
     fscore <- scores - floor(scores)
     
     if (all(fscore == 0))
     { 
         # integer valued scores
         fact <- 1
-        add <- min(scores) - 1
-	scores <- scores - add
     } else {
         if (all(fscore[fscore != 0] == 0.5))
         {
             # midranked scores
             fact <- 2
             scores <- scores*fact
-            add <- min(scores) - 1
-            scores <- scores - add
         } else {
             # rational or real scores
             ssc <- sort(scores)
@@ -138,10 +136,14 @@ fact <- optimize(test, interval=c(1e-5,100000))$minimum
                 }
             } 
             scores <- round(scores * fact)
-            add <- min(scores)-1
-            scores <- scores - add
         }
     }
+
+    if(!paired) 
+      add <- min(scores) - 1
+    else 
+      add <- 0
+    scores <- scores - add
 
     RVAL <- list(scores = scores, fact = fact, add = add)
     class(RVAL) <- "equis"
@@ -173,6 +175,8 @@ cperm <- function(escores, m, paired = NULL)
         prob <- prob[t]
         # 0 is possible
 	t <- t - 1
+        if (escores$add != 0) 
+          warning("escores$add not zero for paired samples!")
     } else {
         # independent samples
         col <- sum(sort(escores$scores)[(N + 1 - m):N])

@@ -135,10 +135,11 @@ pt
 diff <- c(-149, 51, 0, 126, -106, -20, 0, -52, -292, 0, -103, 0, -84, -89,
 -159, -404, -500, -259, -14, -2600)
 
-# p-values in StatXact == 0.0011 one-sided, 0.0021 two.sided are slightly
-# different, STATISTIC is ok ?!?
+# p-values in StatXact == 0.0011 one-sided, 0.0021 two.sided 
 
 perm.test(diff)
+
+perm.test(diff, alternative="less")
 
 pt <- perm.test(diff, exact=FALSE)
 \testonly{

@@ -1,19 +1,19 @@
 \name{dperm}
 \alias{dperm}
 \alias{pperm}
-\alias{pperm2}
 \alias{qperm}
 \alias{rperm}
-\title{Distribution of Permutation Tests}
+\title{Distribution of One and Two Sample Permutation Tests}
 \description{
 Density, distribution function and quantile function 
-for the distribution of permutation tests using the Shift-Algorithm by
+for the distribution of one and two sample 
+permutation tests using the Shift-Algorithm by
 Streitberg and R\"ohmel.
 }
 \usage{
 dperm(x, scores, m, paired=NULL, tol = 0.01, fact=NULL)
-pperm(q, scores, m, paired=NULL, tol = 0.01, fact=NULL)
-pperm2(q, scores, m, paired=NULL, tol = 0.01, fact=NULL)
+pperm(q, scores, m, paired=NULL, tol = 0.01, fact=NULL,
+      alternative=c("less", "greater", "two.sided"), pprob=FALSE)
 qperm(p, scores, m, paired=NULL, tol = 0.01, fact=NULL)
 rperm(n, scores, m)
 }
@@ -34,6 +34,12 @@ due to memory/time limitations.}
   \item{fact}{ real. If \code{fact} is given, real valued scores are mapped into
 integers using \code{fact} as factor. \code{tol} is ignored.}
   \item{n}{number of observations.}
+  \item{alternative}{character indicating whether the probability \eqn{P(T \le q)}
+(\code{less}), \eqn{P(T \ge q)} (\code{greater}) or a two sided p-value
+(\code{two.sided}) should be computed in
+\code{pperm}.} 
+  \item{pprob}{logical. Indicates if the probability \eqn{P(T = q)} should
+be computed additionally.}
 }
 \details{
   The exact distribution of the sum of the first \code{m} scores is
@@ -70,30 +76,47 @@ The second idea is to map the scores itself into
 \eqn{\{1, \dots, N\}}. This induces additional ties, but the shape of the
 scores is very similar. That means we do not try to approximate something
 but use a different test (with integer scores), serving for the same purpose
-(due to a similar shape of the scores). 
+(due to a similar shape of the scores). However, this has to be done prior
+to calling \code{pperm} (see the examples).
 
 Exact two-sided p-values are computed as suggested in the StatXact-4 
-manual, page 209, equation (9.32) and equation (8.19), p. 165 (paired case).  
+manual, page 209, equation (9.32) and equation (8.19), p. 165 (paired case).
+In detail: For the paired case the two-sided p-value is just twice the
+one-sided one. For the independent sample case the two sided p-value is
+defined as
+\deqn{p_2 = P( |T - E(T)| \ge | q - E(T) |)}
+where \eqn{q} is the quantile passed to \code{pperm}.
 
 }
 \value{
 \code{dperm} gives the density, \code{pperm} gives the distribution
-function and \code{qperm} gives the quantile function. \code{pperm2} can be
-used for the calculation of two-sided p-values. \code{rperm} is
-just a one-line wrapper to \code{\link{sample}}.
+function and \code{qperm} gives the quantile function. If \code{pprob} is
+true, \code{pperm} returns a list with elements
+\item{PVALUE}{the probability specified by \code{alternative}.}
+\item{PPROB}{the probability \eqn{P(T = q)}.}
+\code{rperm} is a wrapper to \code{\link{sample}}.
 
 }
 \references{ 
 
 	Bernd Streitberg and Joachim R\"ohmel (1986). 
-	Exact Distributions For Permutations and Rank Tests: 
+	Exact Distributions for Permutations and Rank Tests: 
 	An Introduction to Some Recently Published Algorithms. 
-	\emph{Statistical Software Newsletter} \bold{12}, No. 1, 10--17.
+	\emph{Statistical Software Newsletter} \bold{12}(1), 10--17.
 
-	Bernd Streitberg and Joachim R\"ohmel (1987)
+	Bernd Streitberg and Joachim R\"ohmel (1987).
 	Exakte Verteilungen f\"ur Rang- und Randomisierungstests 
 	im allgemeinen $c$-Stichprobenfall.
-	\emph{EDV in Medizin und Biologie} \bold{18}, No. 1, 12--19.
+	\emph{EDV in Medizin und Biologie} \bold{18}(1), 12--19.
+
+	Torsten Hothorn (2001).
+	On Exact Rank Tests in \R.
+	\emph{R News} \bold{1}(1), 11--12.
+	
+	Cyrus R. Mehta and Nitin R. Patel (1998).
+	\emph{StatXact-4 for Windows.}
+	Manual, Cytel Software Cooperation, Cambridge, USA
+
 }
 \author{ Torsten Hothorn <Torsten.Hothorn@rzmail.uni-erlangen.de> }
 
@@ -181,7 +204,7 @@ abs(qperm(0.025, scores, length(x)))
 
 # p-values
 
-p1 <- pperm2(X, scores, length(x))
+p1 <- pperm(X, scores, length(x), alternative="two.sided")
 
 # generate integer valued scores with the same shape as normal quantile
 # scores, this no longer v.d.Waerden, but something very similar
@@ -190,24 +213,25 @@ scores <- scores - min(scores)
 scores <- round(scores*N/max(scores))
 
 X <- sum(scores[seq(along=x)])
-p2 <- pperm2(X, scores, length(x))
+p2 <- pperm(X, scores, length(x), alternative="two.sided")
 
 # compare p1 and p2
 
 p1 - p2
 
-# the blood pressure example from StatXact:
+# the blood pressure example from StatXact manual, page 221:
 
 treat <- c(94, 108, 110, 90)
 contr <- c(80, 94, 85, 90, 90, 90, 108, 94, 78, 105, 88)
 
-# compute the v.d. Waerden test and compare the results to StatXact:
+# compute the v.d. Waerden test and compare the results to StatXact-4 for
+# Windows:
 
 r <- rank(c(contr, treat))
 sc <- qnorm(r/16)
 X <- sum(sc[seq(along=contr)])
 round(pperm(X, sc, 11), 4) 	# == 0.0462 (StatXact)
-round(pperm2(X, sc, 11), 4) 	# == 0.0799 (StatXact)
+round(pperm(X, sc, 11, alternative="two.sided"), 4) 	# == 0.0799 (StatXact)
 
 # the alternative method returns:
 
@@ -216,7 +240,7 @@ sc <- round(sc*16/max(sc))
 X <- sum(sc[seq(along=contr)])
 
 round(pperm(X, sc, 11), 4)      # compare to 0.0462 
-round(pperm2(X, sc, 11), 4)     # compare to 0.0799
+round(pperm(X, sc, 11, alternative="two.sided"), 4)     # compare to 0.0799
 
 \testonly{
 
@@ -232,13 +256,15 @@ for (i in 1:10)
 	# cat("m: ", m, "n: ", n, " val: ", val, "\n")
 	hansi <- c(hansi,  psignrank(val, m))
 	cat("psignrank: ", hansi[length(hansi)])
-	seppl <- c(seppl, pperm(val, score, m))
+	seppl <- c(seppl, pperm(val, score, m, alternative="less"))
 	cat(" pperm: ", seppl[length(seppl)], "\n")
 }
 
 cat("Max difference: ", max(abs(hansi - seppl)), "\n")
 
-stopifnot(max(abs(hansi - seppl)) <= 1e-10)
+\testonly{
+  stopifnot(max(abs(hansi - seppl)) <= 1e-10)
+}
 
 hansi <- c()
 seppl <- c()
@@ -256,8 +282,9 @@ for (i in 1:10)
 
 cat("Max difference: ", max(abs(hansi - seppl)), "\n")
 
-stopifnot(max(abs(hansi - seppl)) <= 1e-10)
-
+\testonly{
+  stopifnot(max(abs(hansi - seppl)) <= 1e-10)
+}
 
 # independent observations
 
@@ -275,14 +302,16 @@ for (i in 1:10)
 	# cat("m: ", m, "n: ", n, " val: ", val, "\n")
 	hansi <- c(hansi,  pwilcox(val, m, n))
 	cat("pwilcox: ", hansi[length(hansi)])
-	seppl <- c(seppl, pperm(val + m*(m+1)/2, score, m))
+	seppl <- c(seppl, pperm(val + m*(m+1)/2, score, m,
+alternative="less"))
 	cat(" pperm: ", seppl[length(seppl)], "\n")
 }
 
 cat("Max difference: ", max(abs(hansi - seppl)), "\n")
 
-stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
-
+\testonly{
+  stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
+}
 
 hansi <- c()
 seppl <- c()
@@ -304,7 +333,14 @@ for (i in 1:10)
 
 cat("Max difference: ", max(abs(hansi - seppl)), "\n")
 
-stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
+\testonly{
+  stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
+}
+
+\testonly{
+  # bugged me
+  stopifnot(pperm(36, c(16,15,5,11,14), 5, alternative="t") == 0.625)
+}
 
 }
 

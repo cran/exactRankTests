@@ -1,14 +1,20 @@
 attach(NULL, name = "CheckExEnv")
-assign(".CheckExEnv", pos.to.env(2), pos = length(search())) # base
-## This plot.new() patch has not yet an effect for
-## persp();   layout() & filled.contour() are neither ok
+assign(".CheckExEnv", as.environment(2), pos = length(search())) # base
+## This plot.new() patch has no effect yet for persp();
+## layout() & filled.contour() are now ok
 assign("plot.new", function() { .Internal(plot.new())
 		       pp <- par(c("mfg","mfcol","oma","mar"))
 		       if(all(pp$mfg[1:2] == c(1, pp$mfcol[2]))) {
-		         outer <- (oma4 <- pp$oma[4]) > 0; mar4 <- pp$mar[4]
+			 outer <- (oma4 <- pp$oma[4]) > 0; mar4 <- pp$mar[4]
 			 mtext(paste("help(",..nameEx,")"), side = 4,
 			       line = if(outer)max(1, oma4 - 1) else min(1, mar4 - 1),
 			       outer = outer, adj=1, cex= .8, col="orchid")} },
+       env = .CheckExEnv)
+assign("cleanEx", function(env = .GlobalEnv) {
+	rm(list = ls(envir = env, all.names = TRUE), envir = env)
+	RNGkind("Wichmann-Hill", "default")
+	assign(".Random.seed", c(0,rep(7654,3)), pos=1)
+       },
        env = .CheckExEnv)
 assign("..nameEx", "__{must remake R-ex/*.R}__", env = .CheckExEnv) #-- for now
 assign("ptime", proc.time(), env = .CheckExEnv)
@@ -16,13 +22,11 @@ postscript("exactRankTests-Examples.ps")
 assign("par.postscript", par(no.readonly = TRUE), env = .CheckExEnv)
 options(contrasts = c(unordered = "contr.treatment", ordered = "contr.poly"))
 library('exactRankTests')
-rm(list = ls(all = TRUE)); .Random.seed <- c(0,rep(7654,3))
-..nameEx <- "dperm"
-###--- >>> `dperm' <<<----- Distribution of Permutation Tests
+cleanEx(); ..nameEx <- "dperm"
+###--- >>> `dperm' <<<----- Distribution of One and Two Sample Permutation Tests
 
 	## alias	 help(dperm)
 	## alias	 help(pperm)
-	## alias	 help(pperm2)
 	## alias	 help(qperm)
 	## alias	 help(rperm)
 
@@ -111,7 +115,7 @@ abs(qperm(0.025, scores, length(x)))
 
 # p-values
 
-p1 <- pperm2(X, scores, length(x))
+p1 <- pperm(X, scores, length(x), alternative="two.sided")
 
 # generate integer valued scores with the same shape as normal quantile
 # scores, this no longer v.d.Waerden, but something very similar
@@ -120,24 +124,25 @@ scores <- scores - min(scores)
 scores <- round(scores*N/max(scores))
 
 X <- sum(scores[seq(along=x)])
-p2 <- pperm2(X, scores, length(x))
+p2 <- pperm(X, scores, length(x), alternative="two.sided")
 
 # compare p1 and p2
 
 p1 - p2
 
-# the blood pressure example from StatXact:
+# the blood pressure example from StatXact manual, page 221:
 
 treat <- c(94, 108, 110, 90)
 contr <- c(80, 94, 85, 90, 90, 90, 108, 94, 78, 105, 88)
 
-# compute the v.d. Waerden test and compare the results to StatXact:
+# compute the v.d. Waerden test and compare the results to StatXact-4 for
+# Windows:
 
 r <- rank(c(contr, treat))
 sc <- qnorm(r/16)
 X <- sum(sc[seq(along=contr)])
 round(pperm(X, sc, 11), 4)      # == 0.0462 (StatXact)
-round(pperm2(X, sc, 11), 4)     # == 0.0799 (StatXact)
+round(pperm(X, sc, 11, alternative="two.sided"), 4)     # == 0.0799 (StatXact)
 
 # the alternative method returns:
 
@@ -146,17 +151,193 @@ sc <- round(sc*16/max(sc))
 X <- sum(sc[seq(along=contr)])
 
 round(pperm(X, sc, 11), 4)      # compare to 0.0462 
-round(pperm2(X, sc, 11), 4)     # compare to 0.0799
+round(pperm(X, sc, 11, alternative="two.sided"), 4)     # compare to 0.0799
+
+
+
+# paired observations
+
+hansi <- c()
+seppl <- c()
+for (i in 1:10)
+{
+        m <- sample(10:50, 1)
+        score <- sample(m)
+        val <- sample(0:m, 1)
+        # cat("m: ", m, "n: ", n, " val: ", val, "\n")
+        hansi <- c(hansi,  psignrank(val, m))
+        cat("psignrank: ", hansi[length(hansi)])
+        seppl <- c(seppl, pperm(val, score, m, alternative="less"))
+        cat(" pperm: ", seppl[length(seppl)], "\n")
+}
+
+cat("Max difference: ", max(abs(hansi - seppl)), "\n")
+
+
+  stopifnot(max(abs(hansi - seppl)) <= 1e-10)
+
+
+hansi <- c()
+seppl <- c()
+for (i in 1:10)
+{
+        m <- sample(10:50, 1)
+        score <- sample(m)
+        prob <- runif(1)
+        # cat("m: ", m, "n: ", n, " prob: ", prob, "\n")
+        hansi <- c(hansi,  qsignrank(prob, m))
+        cat("qwilcox: ", hansi[length(hansi)])
+        seppl <- c(seppl, qperm(prob, score, m))
+        cat(" qperm: ", seppl[length(seppl)], "\n")
+}
+
+cat("Max difference: ", max(abs(hansi - seppl)), "\n")
+
+
+  stopifnot(max(abs(hansi - seppl)) <= 1e-10)
+
+
+# independent observations
+
+hansi <- c()
+seppl <- c()
+for (i in 1:10)
+{
+        m <- sample(10:50, 1)
+        if (runif(1) < 0.5)
+                n <- sample(10:50, 1)
+        else    
+                n <- m
+        score <- sample(n+m)
+        val <- sample(0:(m*n), 1)
+        # cat("m: ", m, "n: ", n, " val: ", val, "\n")
+        hansi <- c(hansi,  pwilcox(val, m, n))
+        cat("pwilcox: ", hansi[length(hansi)])
+        seppl <- c(seppl, pperm(val + m*(m+1)/2, score, m,
+alternative="less"))
+        cat(" pperm: ", seppl[length(seppl)], "\n")
+}
+
+cat("Max difference: ", max(abs(hansi - seppl)), "\n")
+
+
+  stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
+
+
+hansi <- c()
+seppl <- c()
+for (i in 1:10)
+{
+        m <- sample(10:50, 1)
+        if (runif(1) < 0.5)
+                n <- sample(10:50, 1)
+        else
+                n <- m
+        score <- sample(n+m)
+        prob <- runif(1)
+        # cat("m: ", m, "n: ", n, " prob: ", prob, "\n")
+        hansi <- c(hansi,  qwilcox(prob, m, n))
+        cat("qwilcox: ", hansi[length(hansi)])
+        seppl <- c(seppl, qperm(prob, score, m) - m*(m+1)/2)
+        cat(" qperm: ", seppl[length(seppl)], "\n")
+}
+
+cat("Max difference: ", max(abs(hansi - seppl)), "\n")
+
+
+  stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
+
+
+
+  # bugged me
+  stopifnot(pperm(36, c(16,15,5,11,14), 5, alternative="t") == 0.625)
+
+
+
 
 
 ## Keywords: 'distribution'.
 
 
-rm(list = ls(all = TRUE)); .Random.seed <- c(0,rep(7654,3))
-..nameEx <- "wilcox.exact"
+cleanEx(); ..nameEx <- "globulin"
+###--- >>> `globulin' <<<----- Differences in Globulin Fraction in Two Groups
+
+	## alias	 help(globulin)
+
+##___ Examples ___:
+
+data(globulin)
+attach(globulin)
+pt <- perm.test(group1, group2, conf.int=T)
+pt
+stopifnot(pt$conf.int == c(-8.50, 1.25))
+
+## Keywords: 'datasets'.
+
+
+cleanEx(); ..nameEx <- "perm.test"
+###--- >>> `perm.test' <<<----- One and Two Sample Permutation Test
+
+	## alias	 help(perm.test)
+	## alias	 help(perm.test.default)
+	## alias	 help(perm.test.formula)
+
+##___ Examples ___:
+
+
+# Example from Gardner & Altman (1989), p. 30
+# two treatments A and B, 1 means improvement, 0 means no improvement
+# confidence sets cf. R\"ohmel (1996)
+
+A <- c(rep(1, 61), rep(0, 19))
+B <- c(rep(1, 45), rep(0, 35))
+pt <- perm.test(A, B, conf.int=TRUE, exact=TRUE)
+pt
+
+  stopifnot(round(pt$conf.int, 4) == c(0.0526, 0.3429))
+
+
+# the blood pressure example from StatXact-manual, page 262:
+
+treat <- c(94, 108, 110, 90)
+contr <- c(80, 94, 85, 90, 90, 90, 108, 94, 78, 105, 88)
+
+pt <- perm.test(treat, contr)
+pt
+
+  stopifnot(round(pt$p.value, 4) == 0.1040)
+
+pt <- perm.test(treat, contr, alternative="greater")
+pt
+
+  stopifnot(round(pt$p.value, 4) == 0.0564)
+
+# one-sample AIDS data (differences only), page 179
+
+diff <- c(-149, 51, 0, 126, -106, -20, 0, -52, -292, 0, -103, 0, -84, -89,
+-159, -404, -500, -259, -14, -2600)
+
+# p-values in StatXact == 0.0011 one-sided, 0.0021 two.sided are slightly
+# different, STATISTIC is ok ?!?
+
+perm.test(diff)
+
+pt <- perm.test(diff, exact=FALSE)
+
+  # StatXact page 179
+  stopifnot(round(pt$p.value, 4) == 0.0878)
+
+
+
+## Keywords: 'htest'.
+
+
+cleanEx(); ..nameEx <- "wilcox.exact"
 ###--- >>> `wilcox.exact' <<<----- Wilcoxon Rank Sum and Signed Rank Tests
 
 	## alias	 help(wilcox.exact)
+	## alias	 help(wilcox.exact.default)
+	## alias	 help(wilcox.exact.formula)
 
 ##___ Examples ___:
 
@@ -171,7 +352,13 @@ y <- c(0.878, 0.647, 0.598, 2.05, 1.06, 1.29, 1.06, 3.14, 1.29)
 wilcox.exact(x, y, paired = TRUE, alternative = "greater")
 wilcox.exact(y - x, alternative = "less")    # The same.
 
-stopifnot(wilcox.test(y-x)$p.value == wilcox.exact(y -x)$p.value)
+
+  wt <- wilcox.test(y-x)
+  we <- wilcox.exact(y -x)
+  wt
+  we
+  stopifnot(wt$p.value == we$p.value)
+
 
 ## Two-sample test.
 ## Hollander & Wolfe (1973), 69f.
@@ -181,11 +368,46 @@ stopifnot(wilcox.test(y-x)$p.value == wilcox.exact(y -x)$p.value)
 ##  of the human chorioamnion for the term pregnancy.
 x <- c(0.80, 0.83, 1.89, 1.04, 1.45, 1.38, 1.91, 1.64, 0.73, 1.46)
 y <- c(1.15, 0.88, 0.90, 0.74, 1.21)
-wilcox.exact(x, y, alternative = "g")        # greater
+we <- wilcox.exact(x, y, alternative = "g")        # greater
+wt <- wilcox.exact(x, y, alternative = "g")
+
+ stopifnot(we$p.value == wt$p.value)
+ stopifnot(all(we$conf.int == wt$conf.int))
+
 
 x <- rnorm(10)
 y <- rnorm(10, 2)
 wilcox.exact(x, y, conf.int = TRUE)
+
+## Formula interface.
+data(airquality)
+boxplot(Ozone ~ Month, data = airquality)
+wilcox.exact(Ozone ~ Month, data = airquality,
+            subset = Month %in% c(5, 8))
+
+
+  if (!any(duplicated(c(x,y)))) {
+    we <- wilcox.exact(x, y, conf.int = TRUE)
+    print(we)
+    wt <- wilcox.test(x, y, conf.int = TRUE)
+    print(wt)
+    we$pointprob <- NULL
+    we$method <- NULL
+    wt$parameter <- NULL
+    wt$method <- NULL
+    stopifnot(all.equal(wt, we))
+    we <- wilcox.exact(x, conf.int = TRUE)
+    print(we)
+    wt <- wilcox.test(x, conf.int = TRUE)
+    print(wt)
+    we$pointprob <- NULL
+    we$method <- NULL
+    wt$parameter <- NULL
+    wt$method <- NULL
+    stopifnot(all.equal(wt, we))
+  }
+
+  
 
 # Data from the StatXact-4 manual, page 221, diastolic blood pressure
 
@@ -194,25 +416,131 @@ contr <- c(80, 94, 85, 90, 90, 90, 108, 94, 78, 105, 88)
 
 # StatXact 4 for Windows: p.value = 0.0989, point prob = 0.019
 
-wilcox.exact(contr, treat, conf.int=T)
+we <- wilcox.exact(contr, treat, conf.int=TRUE)
+we
+
+  stopifnot(round(we$p.value,4) == 0.0989)
+
+
+we <- wilcox.exact(contr, treat, conf.int=TRUE, exact=FALSE)
+we
+
+  stopifnot(round(we$p.value,4) == 0.0853)
+
+
+
+  # StatXact page 221
+  we <- wilcox.exact(treat, contr, conf.int=TRUE)
+  stopifnot(we$conf.int[1] == -4)
+  stopifnot(we$conf.int[2] == 22)
+  stopifnot(we$conf.estimate == 9.5)
+ 
 
 # StatXact 4 for Windows: p.value = 0.0542, point prob = 0.019
  
-wilcox.exact(contr, treat, alternative="less", conf.int=T) 
+we <- wilcox.exact(contr, treat, alternative="less", conf.int=T) 
+we
+
+  stopifnot(round(we$p.value,4) == 0.0542)
+
+
+# paired observations
+# Data from the StatXact-4 manual, page 167, serum antigen level
+
+# StatXact 4 for Windows: p.value=0.0021 (page 168)
+
+pre <- c(149, 0, 0, 259, 106, 255, 0, 52, 340, 65, 180, 0, 84, 89, 212, 554,
+500, 424, 112, 2600)
+post <- c(0, 51, 0, 385, 0, 235, 0, 0, 48, 65, 77, 0, 0, 0, 53, 150, 0, 165,
+98, 0)
+
+we <- wilcox.exact(pre, post, paired=T, conf.int=TRUE)
+we
+
+  stopifnot(round(we$p.value,4) == 0.0021)
+
+
+
+  # StatXact page 175
+  we <- wilcox.exact(post, pre, paired=T, conf.int=TRUE)
+  stopifnot(we$estimate > we$conf.int[1] & we$estimate < we$conf.int[2])
+  stopifnot(we$conf.int[1] == -292)
+  stopifnot(we$conf.int[2] == -54)
+  stopifnot(round(we$estimate,1) == -137.8)
+
+
+
+we <- wilcox.exact(pre,post, paired=T, conf.int=TRUE, exact=FALSE)
+we
+
+  stopifnot(round(we$p.value,4) == 0.0038)
+  
+
+
+
+
+# Hollander & Wolfe (1999), second edition, Example 4.2., page 112
+
+contr <- c(1042, 1617, 1180, 973, 1552, 1251, 1151, 728, 1079, 951, 1319)
+SST <- c(874, 389, 612, 798, 1152, 893, 541, 741, 1064, 862, 213)
+
+wilcox.exact(contr, SST, conf.int=TRUE) 
+
+# page 110, Example 4.1
+
+term <- c(0.8, 0.83, 1.89, 1.04, 1.45, 1.38, 1.91, 1.64, 0.73, 1.46)
+weeks <- c(1.15, 0.88, 0.90, 0.74, 1.21)
+
+wilcox.exact(weeks, term, conf.int=TRUE)
+
+
+# Hollander & Wolfe, p. 39, results p. 40 and p. 53
+
+x <- c(1.83, 0.50, 1.62, 2.48, 1.68, 1.88, 1.55, 3.06, 1.30)
+y <- c(0.878, 0.647, 0.598, 2.05, 1.06, 1.29, 1.06, 3.14, 1.29)
+
+we <- wilcox.exact(y,x, paired=T, conf.int=TRUE)
+we 
+
+
+  stopifnot(round(we$p.value,4) == 0.0391)
+  stopifnot(round(we$conf.int,3) == c(-0.786, -0.010))
+  stopifnot(round(we$estimate,3) == -0.46)
+
+
+# Hollander & Wolfe, p. 110, results p. 111 and p. 126
+
+x <- c(0.8, 0.83, 1.89, 1.04, 1.45, 1.38, 1.91, 1.64, 0.73, 1.46)
+y <- c(1.15, 0.88, 0.90, 0.74, 1.21)
+
+we <- wilcox.exact(y,x, conf.int=TRUE)
+we
+
+  stopifnot(round(we$p.value,4) == 0.2544)
+  stopifnot(round(we$conf.int,3) == c(-0.76, 0.15))
+  stopifnot(round(we$estimate,3) == -0.305)
+
+
+wel <- wilcox.exact(y,x, conf.int=TRUE, alternative="less")
+weg <- wilcox.exact(y,x, conf.int=TRUE, alternative="greater")
+
+
+  stopifnot(we$estimate == wel$estimate & we$estimate == weg$estimate)
+  stopifnot(we$conf.int[1] <= weg$conf.int[1] & we$conf.int[2] >= wel$conf.int[2])
+
 
 
 stopifnot(wilcox.exact(1:8)$p.value == 0.0078125)
 stopifnot(wilcox.exact(c(1:7,7))$p.value == 0.0078125)
 stopifnot(wilcox.exact(c(1,1,1))$p.value == 0.25)
 
-if (version$minor == "3.0") {
 x <- rnorm(10)
 y <- rnorm(10)
-stopifnot(wilcox.test(x,y,conf.int=T)$estimate ==
-          wilcox.exact(x,y,conf.int=T)$estimate)
-stopifnot(wilcox.test(x,conf.int=T)$estimate ==
-          wilcox.exact(x,conf.int=T)$estimate)
-}
+stopifnot(wilcox.test(x,y,conf.int=TRUE)$estimate ==
+          wilcox.exact(x,y,conf.int=TRUE)$estimate)
+stopifnot(wilcox.test(x,conf.int=TRUE)$estimate ==
+          wilcox.exact(x,conf.int=TRUE)$estimate)
+
 
 
 ## Keywords: 'htest'.

@@ -1,9 +1,11 @@
-# $Id: wilcox.exact.R,v 1.9 2001/06/26 06:34:54 hothorn Exp $
+# $Id: wilcox.exact.R,v 1.15 2001/12/08 13:45:14 hothorn Exp $
 
-wilcox.exact <-
+wilcox.exact <- function(x, ...) UseMethod("wilcox.exact")
+
+wilcox.exact.default <-
 function(x, y = NULL, alternative = c("two.sided", "less", "greater"), 
-         mu = 0, paired = FALSE, exact = NULL, correct = TRUE,
-         conf.int = FALSE, conf.level = 0.95) 
+         mu = 0, paired = FALSE, exact = NULL, 
+         conf.int = FALSE, conf.level = 0.95, ...) 
 {
     alternative <- match.arg(alternative)
     if(!missing(mu) && ((length(mu) > 1) || !is.finite(mu))) 
@@ -55,19 +57,17 @@ function(x, y = NULL, alternative = c("two.sided", "less", "greater"),
         names(STATISTIC) <- "V"
         TIES <- (length(r) != length(unique(r)))
 
-	# always use pperm! psignrank is as fast as pperm
-
-        if (FALSE) { # if(exact && !TIES && !ZEROES) {
+        if (exact) {
             PVAL <-
-                switch(alternative,
-                       "two.sided" = {
-                           if(STATISTIC > (n * (n + 1) / 4)) 
-                               p <- 1 - psignrank(STATISTIC - 1, n)
-                           else p <- psignrank(STATISTIC, n)
-                           min(2 * p, 1)
-                       },
-                       "greater" = 1 - psignrank(STATISTIC - 1, n),
-                       "less" = psignrank(STATISTIC, n))
+               switch(alternative,
+                      "two.sided" = pperm(STATISTIC, r, n,
+                                          alternative="two.sided", pprob=TRUE),
+                      "greater" = pperm(STATISTIC, r, n,
+                                        alternative="greater", pprob=TRUE),
+                      "less" = pperm(STATISTIC, r, n,
+                                     alternative="less", pprob=TRUE))
+            MIDP <- PVAL$PPROB
+            PVAL <- PVAL$PVALUE
             if(conf.int && !is.na(x)) {
                 ## Exact confidence intervale for the median in the
                 ## one-sample case.  When used with paired values this
@@ -76,101 +76,50 @@ function(x, y = NULL, alternative = c("two.sided", "less", "greater"),
                 alpha <- 1 - conf.level
                 diffs <- outer(x, x, "+")
                 diffs <- sort(diffs[!lower.tri(diffs)]) / 2
+                if (TIES) {
+                  fs <- function(d)
+                    xx <- x - d; sum(rank(abs(xx))[xx > 0])
+                  w <- sapply(diffs, fs)
+                } else {
+                  w <- sum(rank(abs(x))):1
+                }
                 cint <-
                     switch(alternative,
                            "two.sided" = {
-                               qu <- qsignrank(alpha / 2, n)
-                               if(qu == 0) qu <- 1
-                               ql <- n*(n+1)/2 - qu
-                               uci <- diffs[qu]
-                               lci <- diffs[ql+1]
-                               c(uci, lci)        
+                               qu <- qperm(alpha/2, r, n) 
+                               ql <- qperm(1-alpha/2, r, n)
+                               if (qu <= min(w)) lci <- max(diffs)
+                               else lci <- min(diffs[w <= qu])
+                               if (ql >= max(w)) uci <- min(diffs)
+                               else uci <- max(diffs[w > ql])
+                               c(uci, lci)
                            },
                            "greater"= {
-                               qu <- qsignrank(alpha, n)
-                               if(qu == 0) qu <- 1
-                               uci <- diffs[qu]
+                               ql <- qperm(1-alpha, r, n)
+                               if (ql >= max(w)) uci <- min(diffs)
+                               else uci <- max(diffs[w > ql])
                                c(uci, Inf)
                            },
                            "less"= {
-                               qu <- qsignrank(alpha, n)
-                               if(qu == 0) qu <- 1
-                               ql <- n*(n+1)/2 - qu
-                               lci <- diffs[ql+1]
-                               c(-Inf, lci)        
-                           })
+                               qu <- qperm(alpha, r, n)
+                               if (qu <= min(w)) lci <- max(diffs)
+                               else lci <- min(diffs[w <= qu])
+                               c(-Inf, lci)
+                })
                 attr(cint, "conf.level") <- conf.level    
-            }
-        } else {
-            if (exact) {
-                PVAL <-
-                   switch(alternative,
-                          "two.sided" = pperm2(STATISTIC, r, n),
-                          "greater" = 1 - pperm(STATISTIC - 1, r, n),
-                          "less" = pperm(STATISTIC, r, n))
-                MIDP <- dperm(STATISTIC, r, n)
-                if(conf.int && !is.na(x)) {
-                    ## Exact confidence intervale for the median in the
-                    ## one-sample case.  When used with paired values this
-                    ## gives a confidence interval for mean(x) - mean(y).
-                    x <- x + mu             # we want a conf.int for the median
-                    alpha <- 1 - conf.level
-                    diffs <- outer(x, x, "+")
-                    diffs <- sort(diffs[!lower.tri(diffs)]) / 2
-                    w <- cumsum(rep(1, max(cumsum(r))))
-                    dup <- which(duplicated(diffs))
-                    indx <- 1:length(diffs)
-                    indx[dup] <- NA
-                    w <- w[!is.na(indx)]
-                    diffs <- diffs[!is.na(indx)]
-                    cint <-
-                        switch(alternative,
-                               "two.sided" = {
-                                   qu <- qperm(alpha/2, r, n) 
-                                   ql <- qperm(1-alpha/2, r, n)
-                                   if (qu <= min(w)) uci <- min(diffs)
-                                   else uci <- max(diffs[w <= qu])
-                                   if (ql >= max(w)) lci <- max(diffs)
-                                   else lci <- min(diffs[w > ql])
-                                   c(uci, lci)
-                               },
-                               "greater"= {
-                                   qu <- qperm(alpha, r, n) 
-                                   if (qu <= min(w)) uci <- min(diffs)
-                                   else uci <- max(diffs[w <= qu])
-                                   c(uci, Inf)
-                               },
-                               "less"= {
-                                   ql <- qperm(1-alpha, r, n)
-                                   if (ql >= max(w)) lci <- max(diffs)
-                                   else lci <- min(diffs[w > ql])
-                                   c(-Inf, lci)
-                         })
-                     attr(cint, "conf.level") <- conf.level    
-	        wmean <- sum(r)/2
-                ESTIMATE <- mean(c(max(diffs[w < wmean]),
-                                   min(diffs[w > wmean])))
+                wmean <- sum(r)/2
+                ESTIMATE <- mean(c(min(diffs[w <= ceiling(wmean)]),
+                                   max(diffs[w > wmean])))
                 names(ESTIMATE) <- "(pseudo)median"
                 }
             } else {
-                NTIES <- table(r)
-                z <- STATISTIC - n * (n + 1)/4
-                SIGMA <- sqrt(n * (n + 1) * (2 * n + 1) / 24
-                              - sum(NTIES^3 - NTIES) / 48)
-                if(correct) {
-                    CORRECTION <-
-                        switch(alternative,
-                               "two.sided" = sign(z) * 0.5,
-                               "greater" = 0.5,
-                               "less" = -0.5)
-                    METHOD <- paste(METHOD, "with continuity correction")
-                }
-
-                PVAL <- pnorm((z - CORRECTION) / SIGMA)
+                METHOD <- "Asymptotic Wilcoxon signed rank test"
+                wmean <- sum(r)/2
+                wvar <- sum(r^2)/4
+                PVAL <- pnorm((STATISTIC - wmean) / sqrt(wvar))
+                PVAL <- min(PVAL, 1-PVAL)
                 if(alternative == "two.sided") 
-                    PVAL <- 2 * min(PVAL, 1 - PVAL)
-                if(alternative == "greater") 
-                    PVAL <- 1 - PVAL
+                    PVAL <- 2 * PVAL 
 
                 if(conf.int && !is.na(x)) {
                     ## Asymptotic confidence intervale for the median in the
@@ -192,18 +141,7 @@ function(x, y = NULL, alternative = c("two.sided", "less", "greater"),
                         nx <- length(xd)
                         dr <- rank(abs(xd))
                         zd <- sum(dr[xd > 0])
-                        NTIES.CI <- table(dr)
-                        zd <- zd - nx * (nx + 1)/4
-                        SIGMA.CI <- sqrt(nx * (nx + 1) * (2 * nx + 1) / 24
-                                     - sum(NTIES.CI^3 -  NTIES.CI) / 48)
-                        if(correct) {
-                            CORRECTION.CI <-
-                                switch(alternative,
-                                       "two.sided" = sign(z) * 0.5,
-                                       "greater" = 0.5,
-                                       "less" = -0.5)
-                        }
-                        zd <- (zd - CORRECTION.CI) / SIGMA.CI
+                        zd <- (zd - wmean) / sqrt(wvar)
                         zd - zq
                     }
                     ## Here we search the root of the function wdiff on the set
@@ -237,19 +175,6 @@ function(x, y = NULL, alternative = c("two.sided", "less", "greater"),
                     names(ESTIMATE) <- "(pseudo)median"
                  }
 
-#                if(exact && TIES) {
-#                warning("Cannot compute exact p-value with ties")
-#                if(conf.int)
-#                    warning(paste("Cannot compute exact confidence",
-#                                  "interval with ties"))
-#                }
-#                if(exact && ZEROES) {
-#                   warning("Cannot compute exact p-value with zeroes")
-#                   if(conf.int)
-#                       warning(paste("Cannot compute exact confidence",
-#                                     "interval with zeroes"))
-#                }
-            }            
 	}
     }
     else {
@@ -265,122 +190,68 @@ function(x, y = NULL, alternative = c("two.sided", "less", "greater"),
         names(STATISTIC) <- "W"
         TIES <- (length(r) != length(unique(r)))
         if(exact) {
-
-	    # always use pperm! pperm is not as fast as pwilcox
-
-	    if (FALSE) { # if (!TIES) {
-                PVAL <-
-                    switch(alternative,
-                           "two.sided" = {
-                               if(STATISTIC > (n.x * n.y / 2)) 
-                                   p <- 1 - pwilcox(STATISTIC - 1, n.x, n.y)
-                               else
-                                   p <- pwilcox(STATISTIC, n.x, n.y)
-                               min(2 * p, 1)
-                           },
-                           "greater" = 1 - pwilcox(STATISTIC - 1, n.x, n.y), 
-                           "less" = pwilcox(STATISTIC, n.x, n.y))
-                if(conf.int) {
-                    ## Exact confidence interval for the location parameter 
-                    ## mean(y) - mean(x) in the two-sample case (cf. the
-                    ## one-sample case).
-                    alpha <- 1 - conf.level
-                    diffs <- sort(outer(y, x, "-"))
-                    cint <-
-                        switch(alternative,
-                               "two.sided" = {
-                                   qu <- qwilcox(alpha/2, n.x, n.y)
-                                   if(qu == 0) qu <- 1
-                                   ql <- n.x*n.y - qu
-                                   uci <- diffs[qu]
-                                   lci <- diffs[ql + 1]
-                                   c(uci, lci)
-                               },
-                               "greater"= {
-                                   qu <- qwilcox(alpha, n.x, n.y)
-                                   if(qu == 0) qu <- 1
-                                   uci <- diffs[qu]
-                                   c(uci, Inf)
-                               },
-                               "less"= {
-                                   qu <- qwilcox(alpha, n.x, n.y)
-                                   if(qu == 0 ) qu <- 1
-                                   ql <- n.x*n.y - qu
-                                   lci <- diffs[ql + 1]
-                                   c(-Inf, lci)
-                               })
-                    attr(cint, "conf.level") <- conf.level    
-                }
-            } else {
-		# now the exact case using Streitberg/Roehmel
-                PVAL <-
-                    switch(alternative,
-                           "two.sided" = pperm2(STATISTIC + n.x*(n.x +1)/2, r, n.x),
-                           "greater" = 1 - pperm(STATISTIC - 1 + n.x*(n.x+1)/2, r, n.x), 
-                           "less" = pperm(STATISTIC+ n.x*(n.x +1)/2, r, n.x))
-                MIDP <- dperm(STATISTIC + n.x*(n.x +1)/2, r, n.x)
-		if(conf.int) {
-                    ## Exact confidence interval for the location parameter 
-                    ## mean(y) - mean(x) in the two-sample case (cf. the
-                    ## one-sample case).
-                    alpha <- 1 - conf.level
-                    diffs <- sort(outer(x, y, "-"))
-                    w <- cumsum(rep(1, n.x*n.y))
-                    dup <- which(duplicated(diffs))
-                    indx <- 1:length(diffs)
-                    indx[dup] <- NA
-                    w <- w[!is.na(indx)]
-                    diffs <- diffs[!is.na(indx)]   
-                    cint <-
-                        switch(alternative,
-                               "two.sided" = {
-                                   qu <- qperm(alpha/2, r, n.x) - n.x*(n.x+1)/2
-                                   ql <- qperm(1-alpha/2, r, n.x) - n.x*(n.x+1)/2
-                                   if (qu <= min(w)) uci <- min(diffs)
-                                   else uci <- max(diffs[w <= qu])
-                                   if (ql >= max(w)) lci <- max(diffs)
-                                   else lci <- min(diffs[w > ql])
-                                   c(uci, lci)
-                               },
-                               "greater"= {
-	                           qu <- qperm(alpha, r, n.x) - n.x*(n.x+1)/2
-                                   if (qu <= min(w)) uci <- min(diffs)
-                                   else uci <- max(diffs[w <= qu])
-                                   c(uci, +Inf)
-                               },
-                               "less"= {
-                                   ql <- qperm(1-alpha, r, n.x) - n.x*(n.x+1)/2
-                                   if (ql >= max(w)) lci <- max(diffs)
-                                   else lci <- min(diffs[w > ql]) 
-                                   c(-Inf, lci)
+            PVAL <-
+                switch(alternative,
+                       "two.sided" = pperm(STATISTIC + n.x*(n.x +1)/2, r,
+                                           n.x, alternative="two.sided", pprob=TRUE),
+                       "greater" = pperm(STATISTIC + n.x*(n.x+1)/2, r,
+                                       n.x, alternative="greater", pprob=TRUE), 
+                           "less" = pperm(STATISTIC+ n.x*(n.x +1)/2, r, n.x,
+                                          alternative="less", pprob=TRUE))
+             MIDP <- PVAL$PPROB    
+             PVAL <- PVAL$PVALUE
+             if(conf.int) {
+                 ## Exact confidence interval for the location parameter 
+                 ## mean(y) - mean(x) in the two-sample case (cf. the
+                 ## one-sample case).
+                 if (mu != 0) r <- rank(c(x,y))
+                 alpha <- 1 - conf.level
+                 diffs <- sort(outer(x, y, "-"))
+                 if (TIES) {
+                   fs <- function(d)
+                     sum(rank(c(x-d,y))[seq(along = x)]) - n.x * (n.x + 1) / 2
+                   w <- sapply(diffs, fs)
+                 } else {
+                   w <- (n.x*n.y):1
+                 }
+                 cint <-
+                     switch(alternative,
+                            "two.sided" = {
+                                qu <- qperm(alpha/2, r, n.x) - n.x*(n.x+1)/2
+                                ql <- qperm(1-alpha/2, r, n.x) - n.x*(n.x+1)/2
+                                if (qu <= min(w)) lci <- max(diffs)
+                                else lci <- min(diffs[w <= qu])
+                                if (ql >= max(w)) uci <- min(diffs)
+                                else uci <- max(diffs[w > ql])
+                                c(uci, lci)
+                            },
+                            "greater"= {
+                                ql <- qperm(1-alpha, r, n.x) - n.x*(n.x+1)/2
+                                if (ql >= max(w)) uci <- min(diffs)
+                                else uci <- max(diffs[w > ql])
+                                c(uci, +Inf)
+                             },
+                             "less"= {
+                                 qu <- qperm(alpha, r, n.x) - n.x*(n.x+1)/2
+                                 if (qu <= min(w)) lci <- max(diffs)
+                                 else lci <- min(diffs[w <= qu])
+                                 c(-Inf, lci)
                               })
-                     attr(cint, "conf.level") <- conf.level    
-                     wmean <- n.x/(n.x+n.y)*sum(r) - n.x*(n.x+1)/2
-                     ESTIMATE <- mean(c(max(diffs[w < wmean]),
-                                        min(diffs[w > wmean])))
-                     names(ESTIMATE) <- "difference in location"
-                }
-            }
+                  attr(cint, "conf.level") <- conf.level    
+                  wmean <- n.x/(n.x+n.y)*sum(r) - n.x*(n.x+1)/2
+                  ESTIMATE <- mean(c(min(diffs[w <= ceiling(wmean)]),
+                                     max(diffs[w > wmean])))
+                  names(ESTIMATE) <- "difference in location"
+             }
         } else {
-            NTIES <- table(r)
-            z <- STATISTIC - n.x * n.y / 2
-            SIGMA <- sqrt((n.x * n.y / 12) *
-                          ((n.x + n.y + 1)
-                           - sum(NTIES^3 - NTIES)
-                           / ((n.x + n.y) * (n.x + n.y - 1))))
-            if(correct) {
-                CORRECTION <- switch(alternative,
-                                     "two.sided" = sign(z) * 0.5,
-                                     "greater" = 0.5,
-                                     "less" = -0.5)
-                METHOD <- paste(METHOD, "with continuity correction")
-            }
-            PVAL <- pnorm((z - CORRECTION)/SIGMA)
+            METHOD <- "Asymptotic Wilcoxon rank sum test"
+            N <- n.x + n.y
+            wmean <- n.x/N*sum(r)
+            wvar <- n.x*n.y/(N*(N-1))*sum((r - wmean/n.x)^2)
+            PVAL <- pnorm((STATISTIC + n.x*(n.x+1)/2 - wmean)/sqrt(wvar))
+            PVAL <- min(PVAL, 1-PVAL)
             if(alternative == "two.sided") 
                 PVAL <- 2 * min(PVAL, 1 - PVAL)
-            if(alternative == "greater") 
-                PVAL <- 1 - PVAL
-
             if(conf.int) {
                 ## Asymptotic confidence interval for the location
                 ## parameter mean(x) - mean(y) in the two-sample case
@@ -394,21 +265,8 @@ function(x, y = NULL, alternative = c("two.sided", "less", "greater"),
                 CORRECTION.CI <- 0
                 wdiff <- function(d, zq) {
                     dr <- rank(c(x - d, y))
-                    NTIES.CI <- table(dr)
-                    dz <- (sum(dr[seq(along = x)])
-                           - n.x * (n.x + 1) / 2 - n.x * n.y / 2)
-                    if(correct) {
-                        CORRECTION.CI <-
-                            switch(alternative,
-                                   "two.sided" = sign(dz) * 0.5,
-                                   "greater" = 0.5,
-                                   "less" = -0.5)        
-                    }
-                    SIGMA.CI <- sqrt((n.x * n.y / 12) *
-                                     ((n.x + n.y + 1)
-                                      - sum(NTIES.CI^3 - NTIES.CI)
-                                      / ((n.x + n.y) * (n.x + n.y - 1))))
-                    dz <- (dz - CORRECTION.CI) / SIGMA.CI
+                    dz <- sum(dr[seq(along = x)])
+                    dz <- (dz - wmean) / sqrt(wvar)
                     dz - zq
                 }
                 cint <- switch(alternative, "two.sided" = {
@@ -431,20 +289,13 @@ function(x, y = NULL, alternative = c("two.sided", "less", "greater"),
                                     zq=0)$root
                 names(ESTIMATE) <- "difference in location"
             }
-
-#            if(exact && TIES) {
-#                warning("Cannot compute exact p-value with ties")
-#                if(conf.int)
-#                    warning(paste("Cannot compute exact confidence",
-#                                  "intervals with ties"))
-#            }
         }
     }
 
     if (!is.null(MIDP)) {
         names(MIDP) <- "point prob"
         RVAL <- list(statistic = STATISTIC,
-                     parameter = MIDP,
+                     pointprob = MIDP,
                      p.value = PVAL, 
                      null.value = c(mu = mu),
                      alternative = alternative,
@@ -464,4 +315,33 @@ function(x, y = NULL, alternative = c("two.sided", "less", "greater"),
     }
     class(RVAL) <- "htest"
     return(RVAL)
+}
+
+wilcox.exact.formula <-
+function(formula, data, subset, na.action, ...)
+{
+    if(missing(formula)
+       || (length(formula) != 3)  
+       || (length(attr(terms(formula[-2]), "term.labels")) != 1)
+       || (length(attr(terms(formula[-3]), "term.labels")) != 1))
+        stop("formula missing or incorrect")
+    if(missing(na.action))
+        na.action <- getOption("na.action")
+    m <- match.call(expand.dots = FALSE)
+    if(is.matrix(eval(m$data, parent.frame())))
+        m$data <- as.data.frame(data) 
+    m[[1]] <- as.name("model.frame")
+    m$... <- NULL
+    mf <- eval(m, parent.frame())
+    DNAME <- paste(names(mf), collapse = " by ")
+    names(mf) <- NULL
+    response <- attr(attr(mf, "terms"), "response")
+    g <- factor(mf[[-response]])
+    if(nlevels(g) != 2)
+        stop("grouping factor must have exactly 2 levels")
+    DATA <- split(mf[[response]], g)
+    names(DATA) <- c("x", "y")
+    y <- do.call("wilcox.exact", c(DATA, list(...)))
+    y$data.name <- DNAME
+    y
 }

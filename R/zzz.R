@@ -1,3 +1,4 @@
-.First.lib <- function(lib, pkg) library.dynam("exactRankTests", pkg, lib)
-
-require(ctest)
+.First.lib <- function(lib, pkg) {
+  require(ctest)
+  library.dynam("exactRankTests", pkg, lib)
+}

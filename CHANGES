@@ -1,4 +1,45 @@
-$Id: CHANGES,v 1.18 2001/09/27 08:04:28 hothorn Exp $
+$Id: CHANGES,v 1.26 2001/12/10 14:05:12 hothorn Exp $
+
+	0.6-0 (10.12.2001)
+
+	release for R-1.4.0
+
+	0.5-9 (08.12.2001)
+
+	map real scores into 1:N for perm.test
+	perm.test and wilcox.exact are generic and have a formula interface	
+	fixed the most painful documentation bugs
+
+	0.5-7 (06.11.2001)
+
+	asymptotic p-values for perm.test and wilcox.test, coincides with
+	StatXact
+
+	0.5-7 (06.11.2001)
+
+	new interface to pperm (computes now all kinds of p.values)
+	therefore wilcox.exact and perm.test changed. several minor code-
+	and documentation fixes.
+
+	0.5-6 (31.10.2001)
+
+	bugfix in one-sided conf.ints paired wilcox.exact
+	examples from Hollander & Wolfe added to wilcox.exact
+	check for conf.ints and estimators. 
+	R CMD check will only work with R-1.4.0-devel and modified 
+	wilcox.exact
+
+	0.5-5 (29.10.2001)
+
+	estimated corrected (PR#1150)
+
+	0.5-4 (27.10.2001)
+
+	pperm has `side' argument: compute P(T <= T) or P(T >= t)
+
+	0.5-3 (25.10.2001)
+
+	perm.test and globulin-example added
 
 	0.5-2 (27.09.2001)
 

@@ -1,6 +1,6 @@
 /*
 
-  $Id: permdist.c,v 1.5 2001/06/26 06:37:03 hothorn Exp $
+  $Id: permdist.c,v 1.6 2001/10/26 16:19:17 hothorn Exp $
   
   permdist : Distribution of Permutation Tests by Streitberg and Roehmel
   Copyright (C) 2000  Torsten Hothorn <Torsten.Hothorn@rzmail.uni-erlangen.de>
@@ -229,3 +229,26 @@ void cpermdist2(double *x, int *m, int *c, int *score_a, int *score_b, int *N, i
 
 }
 
+void outerdiff(double *ret, double *x, double *y, int *m, int *n)
+{
+  int i, j;
+  
+  for (i = 0; i < *m; i++) {
+    for (j = 0; j < *n; j++) {
+      ret[i + *m*j] = x[i] - y[j];
+    }
+  }
+}
+
+void outerprod(double *ret, double *x, double *y, int *m, int *n)
+{
+  int i, j;
+  
+  for (i = 0; i < *m; i++) {
+    for (j = 0; j < *n; j++) {
+      ret[i + *m*j] = x[i] * y[j];
+    }
+  }
+}
+
+      

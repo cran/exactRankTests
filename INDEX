@@ -1,3 +1,6 @@
-dperm                    Distribution of Permutation Tests
+dperm                    Distribution of One and Two Sample Permutation
+                         Tests
 exactRankTests-internal  Internal exactRankTests functions
+globulin                 Differences in Globulin Fraction in Two Groups
+perm.test                One and Two Sample Permutation Test
 wilcox.exact             Wilcoxon Rank Sum and Signed Rank Tests

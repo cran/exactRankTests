@@ -1,14 +1,17 @@
 \name{wilcox.exact}
 \alias{wilcox.exact}
+\alias{wilcox.exact.default}
+\alias{wilcox.exact.formula}
 \title{Wilcoxon Rank Sum and Signed Rank Tests}
 \description{
-  Performs one and two sample Wilcoxon tests on vectors of data. 
-  Version for exactRankTests.
+  Performs one and two sample Wilcoxon tests on vectors of data for possibly
+tied observations.
 }
 \usage{
-wilcox.exact(x, y = NULL, alternative = c("two.sided", "less", "greater"),
-            mu = 0, paired = FALSE, exact = NULL, correct = TRUE, 
-            conf.int = FALSE, conf.level = 0.95)
+\method{wilcox.exact}{default}(x, y = NULL, alternative = c("two.sided", "less", "greater"),
+            mu = 0, paired = FALSE, exact = NULL,  
+            conf.int = FALSE, conf.level = 0.95, \dots)
+\method{wilcox.exact}{formula}(formula, data, subset, na.action, \dots)
 }
 \arguments{
   \item{x}{numeric vector of data values.}
@@ -20,16 +23,27 @@ wilcox.exact(x, y = NULL, alternative = c("two.sided", "less", "greater"),
   \item{paired}{a logical indicating whether you want a paired test.}
   \item{exact}{a logical indicating whether an exact p-value should be
     computed.}
-  \item{correct}{a logical indicating whether to apply continuity
-    correction in the normal approximation for the p-value.}
   \item{conf.int}{a logical indicating whether a confidence interval
     should be computed.}
   \item{conf.level}{confidence level of the interval.}
+    \item{formula}{a formula of the form \code{lhs ~ rhs} where \code{lhs}
+    is a numeric variable giving the data values and \code{rhs} a factor
+    with two levels giving the corresponding groups.}
+  \item{data}{an optional data frame containing the variables in the
+    model formula.}
+  \item{subset}{an optional vector specifying a subset of observations
+    to be used.}
+  \item{na.action}{a function which indicates what should happen when
+    the data contain \code{NA}s.  Defaults to
+    \code{getOption("na.action")}.}
+  \item{\dots}{further arguments to be passed to or from methods.}
+
 }
 \details{
-  For testing proposes, this version computes p-values and quantiles
-  using the Streitberg-R\"ohmel algorithm (both for tied and untied 
-  samples).  
+  This version computes exact conditional (on the data) 
+  p-values and quantiles
+  using the Streitberg-R\"ohmel algorithm for both tied and untied 
+  samples.  
 
   If only \code{x} is given, or if both \code{x} and \code{y} are given
   and \code{paired} is \code{TRUE}, a Wilcoxon signed rank test of the
@@ -58,9 +72,9 @@ wilcox.exact(x, y = NULL, alternative = c("two.sided", "less", "greater"),
   A list with class \code{"htest"} containing the following components:
   \item{statistic}{the value of the test statistic with a name
     describing it.}
-  \item{parameter}{this gives the probability of observing the test
-statistic itself (named as point-prob). Useful for mid-p-values.}
   \item{p.value}{the p-value for the test.}
+  \item{pointprob}{this gives the probability of observing the test
+   statistic itself (called \code{point-prob}).}
   \item{null.value}{the location parameter \code{mu}.}
   \item{alternative}{a character string describing the alternative
     hypothesis.}
@@ -70,21 +84,23 @@ statistic itself (named as point-prob). Useful for mid-p-values.}
     (Only present if argument \code{conf.int = TRUE}.)}
 }
 \references{
-  Myles Hollander & Douglas A. Wolfe (1973),
+  Myles Hollander & Douglas A. Wolfe (1973).
   \emph{Nonparametric statistical inference}.
   New York: John Wiley & Sons.
   Pages 27--33 (one-sample), 68--75 (two-sample).
 
-  David F. Bauer (1972),
+  David F. Bauer (1972).
   Constructing confidence sets using rank statistics.
   \emph{Journal of the American Statistical Association}
   \bold{67}, 687--690.
+
+  Cyrus R. Mehta and Nitin R. Patel (1998).
+  \emph{StatXact-4 for Windows.}
+  Manual, Cytel Software Cooperation, Cambridge, USA
+
 }
 \seealso{
-  \code{\link{kruskal.test}} for testing homogeneity in location
-  parameters in the case of two or more samples;
-  \code{\link{t.test}} for a parametric alternative under normality
-  assumptions.
+  \code{\link{perm.test}} for the one and two sample permutation test.
 }
 \examples{
 ## One-sample test.
@@ -98,7 +114,13 @@ y <- c(0.878, 0.647, 0.598, 2.05, 1.06, 1.29, 1.06, 3.14, 1.29)
 wilcox.exact(x, y, paired = TRUE, alternative = "greater")
 wilcox.exact(y - x, alternative = "less")    # The same.
 
-stopifnot(wilcox.test(y-x)$p.value == wilcox.exact(y -x)$p.value)
+\testonly{
+  wt <- wilcox.test(y-x)
+  we <- wilcox.exact(y -x)
+  wt
+  we
+  stopifnot(wt$p.value == we$p.value)
+}
 
 ## Two-sample test.
 ## Hollander & Wolfe (1973), 69f.
@@ -108,17 +130,40 @@ stopifnot(wilcox.test(y-x)$p.value == wilcox.exact(y -x)$p.value)
 ##  of the human chorioamnion for the term pregnancy.
 x <- c(0.80, 0.83, 1.89, 1.04, 1.45, 1.38, 1.91, 1.64, 0.73, 1.46)
 y <- c(1.15, 0.88, 0.90, 0.74, 1.21)
-wilcox.exact(x, y, alternative = "g")        # greater
+we <- wilcox.exact(x, y, alternative = "g")        # greater
+wt <- wilcox.exact(x, y, alternative = "g")
+\testonly{
+ stopifnot(we$p.value == wt$p.value)
+ stopifnot(all(we$conf.int == wt$conf.int))
+}
 
 x <- rnorm(10)
 y <- rnorm(10, 2)
 wilcox.exact(x, y, conf.int = TRUE)
 
+## Formula interface.
+data(airquality)
+boxplot(Ozone ~ Month, data = airquality)
+wilcox.exact(Ozone ~ Month, data = airquality,
+            subset = Month \%in\% c(5, 8))
+
+
 \testonly{
   if (!any(duplicated(c(x,y)))) {
     we <- wilcox.exact(x, y, conf.int = TRUE)
+    print(we)
     wt <- wilcox.test(x, y, conf.int = TRUE)
-    we$parameter <- NULL
+    print(wt)
+    we$pointprob <- NULL
+    we$method <- NULL
+    wt$parameter <- NULL
+    wt$method <- NULL
+    stopifnot(all.equal(wt, we))
+    we <- wilcox.exact(x, conf.int = TRUE)
+    print(we)
+    wt <- wilcox.test(x, conf.int = TRUE)
+    print(wt)
+    we$pointprob <- NULL
     we$method <- NULL
     wt$parameter <- NULL
     wt$method <- NULL
@@ -134,16 +179,33 @@ contr <- c(80, 94, 85, 90, 90, 90, 108, 94, 78, 105, 88)
 
 # StatXact 4 for Windows: p.value = 0.0989, point prob = 0.019
 
-wilcox.exact(contr, treat, conf.int=T)
+we <- wilcox.exact(contr, treat, conf.int=TRUE)
+we
+\testonly{
+  stopifnot(round(we$p.value,4) == 0.0989)
+}
+
+we <- wilcox.exact(contr, treat, conf.int=TRUE, exact=FALSE)
+we
+\testonly{
+  stopifnot(round(we$p.value,4) == 0.0853)
+}
 
 \testonly{
-  we <- wilcox.exact(contr, treat, conf.int=T)
-  stopifnot(we$estimate > we$conf.int[1] & we$estimate < we$conf.int[2])
+  # StatXact page 221
+  we <- wilcox.exact(treat, contr, conf.int=TRUE)
+  stopifnot(we$conf.int[1] == -4)
+  stopifnot(we$conf.int[2] == 22)
+  stopifnot(we$conf.estimate == 9.5)
 } 
 
 # StatXact 4 for Windows: p.value = 0.0542, point prob = 0.019
  
-wilcox.exact(contr, treat, alternative="less", conf.int=T) 
+we <- wilcox.exact(contr, treat, alternative="less", conf.int=T) 
+we
+\testonly{
+  stopifnot(round(we$p.value,4) == 0.0542)
+}
 
 # paired observations
 # Data from the StatXact-4 manual, page 167, serum antigen level
@@ -155,12 +217,29 @@ pre <- c(149, 0, 0, 259, 106, 255, 0, 52, 340, 65, 180, 0, 84, 89, 212, 554,
 post <- c(0, 51, 0, 385, 0, 235, 0, 0, 48, 65, 77, 0, 0, 0, 53, 150, 0, 165,
 98, 0)
 
-wilcox.exact(pre, post, paired=T, conf.int=T)
+we <- wilcox.exact(pre, post, paired=T, conf.int=TRUE)
+we
+\testonly{
+  stopifnot(round(we$p.value,4) == 0.0021)
+}
 
 \testonly{
-  we <- wilcox.exact(pre, post, paired=T, conf.int=T)
+  # StatXact page 175
+  we <- wilcox.exact(post, pre, paired=T, conf.int=TRUE)
   stopifnot(we$estimate > we$conf.int[1] & we$estimate < we$conf.int[2])
+  stopifnot(we$conf.int[1] == -292)
+  stopifnot(we$conf.int[2] == -54)
+  stopifnot(round(we$estimate,1) == -137.8)
+
 }
+
+we <- wilcox.exact(pre,post, paired=T, conf.int=TRUE, exact=FALSE)
+we
+\testonly{
+  stopifnot(round(we$p.value,4) == 0.0038)
+  
+}
+
 
 \testonly{
 
@@ -169,14 +248,49 @@ wilcox.exact(pre, post, paired=T, conf.int=T)
 contr <- c(1042, 1617, 1180, 973, 1552, 1251, 1151, 728, 1079, 951, 1319)
 SST <- c(874, 389, 612, 798, 1152, 893, 541, 741, 1064, 862, 213)
 
-wilcox.exact(contr, SST, conf.int=T) 
+wilcox.exact(contr, SST, conf.int=TRUE) 
 
 # page 110, Example 4.1
 
 term <- c(0.8, 0.83, 1.89, 1.04, 1.45, 1.38, 1.91, 1.64, 0.73, 1.46)
 weeks <- c(1.15, 0.88, 0.90, 0.74, 1.21)
 
-wilcox.exact(weeks, term, conf.int=T)
+wilcox.exact(weeks, term, conf.int=TRUE)
+}
+
+# Hollander & Wolfe, p. 39, results p. 40 and p. 53
+
+x <- c(1.83, 0.50, 1.62, 2.48, 1.68, 1.88, 1.55, 3.06, 1.30)
+y <- c(0.878, 0.647, 0.598, 2.05, 1.06, 1.29, 1.06, 3.14, 1.29)
+
+we <- wilcox.exact(y,x, paired=T, conf.int=TRUE)
+we 
+
+\testonly{
+  stopifnot(round(we$p.value,4) == 0.0391)
+  stopifnot(round(we$conf.int,3) == c(-0.786, -0.010))
+  stopifnot(round(we$estimate,3) == -0.46)
+}
+
+# Hollander & Wolfe, p. 110, results p. 111 and p. 126
+
+x <- c(0.8, 0.83, 1.89, 1.04, 1.45, 1.38, 1.91, 1.64, 0.73, 1.46)
+y <- c(1.15, 0.88, 0.90, 0.74, 1.21)
+
+we <- wilcox.exact(y,x, conf.int=TRUE)
+we
+\testonly{
+  stopifnot(round(we$p.value,4) == 0.2544)
+  stopifnot(round(we$conf.int,3) == c(-0.76, 0.15))
+  stopifnot(round(we$estimate,3) == -0.305)
+}
+
+wel <- wilcox.exact(y,x, conf.int=TRUE, alternative="less")
+weg <- wilcox.exact(y,x, conf.int=TRUE, alternative="greater")
+
+\testonly{
+  stopifnot(we$estimate == wel$estimate & we$estimate == weg$estimate)
+  stopifnot(we$conf.int[1] <= weg$conf.int[1] & we$conf.int[2] >= wel$conf.int[2])
 }
 
 \testonly{
@@ -186,10 +300,10 @@ stopifnot(wilcox.exact(c(1,1,1))$p.value == 0.25)
 
 x <- rnorm(10)
 y <- rnorm(10)
-stopifnot(wilcox.test(x,y,conf.int=T)$estimate ==
-          wilcox.exact(x,y,conf.int=T)$estimate)
-stopifnot(wilcox.test(x,conf.int=T)$estimate ==
-          wilcox.exact(x,conf.int=T)$estimate)
+stopifnot(wilcox.test(x,y,conf.int=TRUE)$estimate ==
+          wilcox.exact(x,y,conf.int=TRUE)$estimate)
+stopifnot(wilcox.test(x,conf.int=TRUE)$estimate ==
+          wilcox.exact(x,conf.int=TRUE)$estimate)
 }
 
 }

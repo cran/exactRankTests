@@ -1,4 +1,4 @@
-# $Id: dpqperm.R,v 1.8 2001/06/26 06:34:30 hothorn Exp $
+# $Id: dpqperm.R,v 1.12 2001/12/08 14:24:34 hothorn Exp $
 
 toltest <- function(x, scores, m) 
 {
@@ -20,46 +20,46 @@ dperm <- function(x, scores, m, paired = NULL, tol = 0.01, fact = NULL)
     return(RVAL) 
 }
 
-pperm <- function(q, scores, m, paired = NULL, tol = 0.01, fact = NULL)
+
+pperm <- function(q, scores, m, paired = NULL, tol = 0.01, fact = NULL,
+                     alternative=c("less", "greater", "two.sided"),
+                     pprob=FALSE)
 {
     if(is.null(q)) stop("Non-numeric argument to mathematical function")
+    alternative <- match.arg(alternative)
+    if (is.null(paired))  paired <- (length(scores) == m)
     eq <- equiscores(scores, m, tol, fact)
     cp <- cperm(eq, m, paired)
-    RVAL <- c()
+    PVALUE <- c()
+    PPROB <- c()
     for (i in q) {
-        prob <- cp$Prob[cp$T <= i]
-        ifelse(length(prob) >= 1, RVAL <- c(RVAL, sum(prob)),
-                                  RVAL <- c(RVAL, 0))
+        if(alternative=="less")
+            prob <- cp$Prob[cp$T <= i]
+        if(alternative=="greater")
+            prob <- cp$Prob[cp$T >= i]
+        if(alternative=="two.sided" & paired) {
+            if(2*sum(cp$Prob[cp$T <= i]) < 1)
+                prob <- 2*cp$Prob[cp$T <= i]
+            else
+                prob <- 2*cp$Prob[cp$T >= i]
+        }
+        if(alternative=="two.sided" & !paired) {
+            expect <- m/length(scores)*sum(scores)
+            TH <- cp$T - expect
+            ih <- i - expect
+            prob <- c(cp$Prob[TH <= ifelse(ih > 0, -ih, ih)],
+                      cp$Prob[TH >= ifelse(ih >= 0, ih, -ih)])
+        }
+    PVALUE <- c(PVALUE, sum(prob))
+    PPROB <- c(PPROB, ifelse(!is.null(cp$Prob[cp$T == i]),
+                                      cp$Prob[cp$T ==i], 0)) 
     }
-    return(RVAL)
-}
+    if(pprob)
+        return(list(PVALUE = PVALUE, PPROB = PPROB))
+    else
+        return(PVALUE)
+} 
 
-pperm2 <- function(q, scores, m, paired = NULL, tol = 0.01, fact = NULL)
-{
-    if (is.null(q)) stop("Non-numeric argument to mathematical function")
-    eq <- equiscores(scores, m, tol, fact)
-    cp <- cperm(eq, m, paired)
-    paired <- any(c(m == length(scores), paired))
-    if (paired) {
-	expect <- 1/2*sum(scores)
-        if (q <= expect) RVAL <- 2*pperm(q, scores, m, paired, tol, fact)
-        else RVAL <- 2*(1 - pperm(q, scores, m, paired, tol, fact) + dperm(q,
-                            scores, m, paired, tol, fact))
-    } else {
-        expect <- m/length(scores)*sum(scores)
-        cp$T <- cp$T - expect
-        q <- q - expect
-        RVAL <- c()
-        for (i in q) {
-            prob <- c(cp$Prob[cp$T <= ifelse(i > 0, -i, i)],
-                    cp$Prob[cp$T >= ifelse(i >= 0, i, -i)]) 
-            ifelse(length(prob) >= 1, RVAL <- c(RVAL, sum(prob)),
-                    RVAL <- c(RVAL, 0))
-        } 
-        RVAL <- pmin(1, RVAL)
-    }
-    return(RVAL)
-}
 
 qperm <- function(p, scores, m, paired = NULL, tol = 0.01, fact = NULL)
 {
@@ -86,13 +86,13 @@ rperm <- function(n, scores, m)
 equiscores <- function(scores, m, tol = 0.01, fact=NULL)
 {
     if (any(is.null(scores))) 
-      stop("Non-numeric argument to mathematical function")
+        stop("Non-numeric argument to mathematical function")
     if (is.null(m)) 
-      stop("Non-numeric argument to mathematical function")
+        stop("Non-numeric argument to mathematical function")
     if (m < 1) 
-      stop("m less than 1")
+        stop("m less than 1")
     if (m > length(scores)) 
-      stop("m greater length(scores)")
+        stop("m greater length(scores)")
 
     fscore <- scores - floor(scores)
     

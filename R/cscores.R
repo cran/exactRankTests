@@ -1,10 +1,11 @@
-# $Id: cscores.R,v 1.14 2003/02/07 14:03:39 hothorn Exp $
+# $Id: cscores.R,v 1.14.4.1 2003/11/03 15:16:50 hothorn Exp $
 
 cscores <- function(y, ...) UseMethod("cscores")
 
 cscores.default <- function(y, type=c("Data", "Wilcoxon", 
                             "NormalQuantile", "AnsariBradley", "Median",
-                            "ConSal"), int=FALSE, maxs=length(y), ... ) {
+                            "Savage", "ConSal"), int = FALSE, 
+                            maxs=length(y), ... ) {
   type <- match.arg(type)
   if (!(all.equal(floor(maxs),maxs))  || maxs < 1) 
     stop("maxs is not an positiv integer")

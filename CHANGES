@@ -1,4 +1,8 @@
-$Id: CHANGES,v 1.58.2.3 2003/09/18 11:25:04 hothorn Exp $
+$Id: CHANGES,v 1.58.2.4 2003/11/03 15:16:50 hothorn Exp $
+
+	0.8-5 (03.11.2003)
+
+	fix documentation bugs
 
         0.8-4 (18.09.2003)
 
@@ -12,6 +16,10 @@ $Id: CHANGES,v 1.58.2.3 2003/09/18 11:25:04 hothorn Exp $
 	0.8-2 (30.08.2003)
 
 	use canonial header files
+
+	0.8-2 (18.09.2003)
+
+	perm.test(x, ...) failed when missing values where supplied.
 
 	0.8-1 (24.04.2003)
 

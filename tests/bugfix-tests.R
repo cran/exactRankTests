@@ -52,3 +52,10 @@ for (i in 1:100)
 stopifnot(sum(ret) == 0) 
 
 try(dperm(0, c(0,-1,2,2), m=4))
+
+# missing values to the default method `perm.test.default'
+# spotted by Claus Ekstroem <claus@ekstroem.dk>
+# 18.09.2003
+x <- c(1, 2, 3, 4, NA)
+y <- c(1, 2, 1, 2, 3)
+perm.test(x,y, paired=TRUE)

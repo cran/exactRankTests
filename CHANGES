@@ -1,4 +1,12 @@
-$Id: CHANGES,v 1.26 2001/12/10 14:05:12 hothorn Exp $
+$Id: CHANGES,v 1.27 2002/02/06 15:47:22 hothorn Exp $
+
+	0.6-1 (06.02.2002)
+
+	length(x) must be smaller than length(y) in perm.test(x,y), give a
+        warning and interchange if not
+
+	asymptotic p-values in perm.test( ..., paired=FALSE, ...) were
+	wrong, fixed
 
 	0.6-0 (10.12.2001)
 

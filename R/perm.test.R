@@ -1,4 +1,4 @@
-# $Id: perm.test.R,v 1.7 2001/12/08 14:43:37 hothorn Exp $
+# $Id: perm.test.R,v 1.8 2002/02/06 15:47:22 hothorn Exp $
 
 perm.test <- function(x, ...) UseMethod("perm.test")
 
@@ -144,6 +144,11 @@ function(x,y=NULL, paired = FALSE, alternative = c("two.sided", "less", "greater
      } else {
         m <- length(x)
         n <- length(y)
+        if(n < m) {
+            warning("x has more observations than y, returning perm.test(y, x, ...)")
+            return(perm.test(y, x, paired, alternative,
+                   mu, exact, conf.int, conf.level, tol=NULL,...))
+        }
         x <- x - mu
         if (is.null(exact)) exact <- (m <= 50 && n <= 50)
         cxy <- c(x,y)
@@ -178,8 +183,8 @@ function(x,y=NULL, paired = FALSE, alternative = c("two.sided", "less", "greater
         } else {
             METHOD <- paste("Asymptotic", METHOD)
             N <- m + n
-            wmean <- m/N*sum(x)
-            wvar <- m*n/(N*(N-1))*sum((x - wmean/m)^2)
+            wmean <- m/N*sum(c(x,y))
+            wvar <- m*n/(N*(N-1))*sum((c(x,y) - wmean/m)^2)
             PVAL <- pnorm((STATISTIC - wmean)/sqrt(wvar))
             PVAL <- min(PVAL, 1-PVAL)
             if(alternative == "two.sided")

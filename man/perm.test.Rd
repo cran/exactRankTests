@@ -13,7 +13,8 @@
 }
 \arguments{
   \item{x}{numeric vector of integer data values.}
-  \item{y}{numeric vector of integer data values.}
+  \item{y}{numeric vector of integer data values with length greater length
+x (otherwise \code{pperm(y,x,...)} is computed and a warning given).}
   \item{paired}{a logical indicating whether you want a paired test.}
   \item{alternative}{the alternative hypothesis must be
     one of \code{"two.sided"} (default), \code{"greater"} or
@@ -122,6 +123,13 @@ pt
 \testonly{
   stopifnot(round(pt$p.value, 4) == 0.0564)
 }
+
+pt <- perm.test(treat, contr, exact=FALSE)
+pt
+\testonly{
+  stopifnot(round(pt$p.value, 4) == 0.1070)
+}
+
 # one-sample AIDS data (differences only), page 179
 
 diff <- c(-149, 51, 0, 126, -106, -20, 0, -52, -292, 0, -103, 0, -84, -89,

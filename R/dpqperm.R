@@ -1,3 +1,4 @@
+# $Id: dpqperm.R,v 1.8 2001/06/26 06:34:30 hothorn Exp $
 
 toltest <- function(x, scores, m) 
 {

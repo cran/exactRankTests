@@ -114,6 +114,19 @@ x <- rnorm(10)
 y <- rnorm(10, 2)
 wilcox.exact(x, y, conf.int = TRUE)
 
+\testonly{
+  if (!any(duplicated(c(x,y)))) {
+    we <- wilcox.exact(x, y, conf.int = TRUE)
+    wt <- wilcox.test(x, y, conf.int = TRUE)
+    we$parameter <- NULL
+    we$method <- NULL
+    wt$parameter <- NULL
+    wt$method <- NULL
+    stopifnot(all.equal(wt, we))
+  }
+}
+  
+
 # Data from the StatXact-4 manual, page 221, diastolic blood pressure
 
 treat <- c(94, 108, 110, 90)
@@ -122,6 +135,11 @@ contr <- c(80, 94, 85, 90, 90, 90, 108, 94, 78, 105, 88)
 # StatXact 4 for Windows: p.value = 0.0989, point prob = 0.019
 
 wilcox.exact(contr, treat, conf.int=T)
+
+\testonly{
+  we <- wilcox.exact(contr, treat, conf.int=T)
+  stopifnot(we$estimate > we$conf.int[1] & we$estimate < we$conf.int[2])
+} 
 
 # StatXact 4 for Windows: p.value = 0.0542, point prob = 0.019
  
@@ -137,21 +155,24 @@ pre <- c(149, 0, 0, 259, 106, 255, 0, 52, 340, 65, 180, 0, 84, 89, 212, 554,
 post <- c(0, 51, 0, 385, 0, 235, 0, 0, 48, 65, 77, 0, 0, 0, 53, 150, 0, 165,
 98, 0)
 
-wilcox.exact(pre, post, paired=T)
+wilcox.exact(pre, post, paired=T, conf.int=T)
+
+\testonly{
+  we <- wilcox.exact(pre, post, paired=T, conf.int=T)
+  stopifnot(we$estimate > we$conf.int[1] & we$estimate < we$conf.int[2])
+}
 
 \testonly{
 stopifnot(wilcox.exact(1:8)$p.value == 0.0078125)
 stopifnot(wilcox.exact(c(1:7,7))$p.value == 0.0078125)
 stopifnot(wilcox.exact(c(1,1,1))$p.value == 0.25)
 
-if (version$minor == "3.0") {
 x <- rnorm(10)
 y <- rnorm(10)
 stopifnot(wilcox.test(x,y,conf.int=T)$estimate ==
           wilcox.exact(x,y,conf.int=T)$estimate)
 stopifnot(wilcox.test(x,conf.int=T)$estimate ==
           wilcox.exact(x,conf.int=T)$estimate)
-}
 }
 
 }

@@ -1,4 +1,7 @@
 /*
+
+  $Id: permdist.c,v 1.5 2001/06/26 06:37:03 hothorn Exp $
+  
   permdist : Distribution of Permutation Tests by Streitberg and Roehmel
   Copyright (C) 2000  Torsten Hothorn <Torsten.Hothorn@rzmail.uni-erlangen.de>
     

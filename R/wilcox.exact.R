@@ -1,3 +1,5 @@
+# $Id: wilcox.exact.R,v 1.9 2001/06/26 06:34:54 hothorn Exp $
+
 wilcox.exact <-
 function(x, y = NULL, alternative = c("two.sided", "less", "greater"), 
          mu = 0, paired = FALSE, exact = NULL, correct = TRUE,
@@ -146,12 +148,8 @@ function(x, y = NULL, alternative = c("two.sided", "less", "greater"),
                          })
                      attr(cint, "conf.level") <- conf.level    
 	        wmean <- sum(r)/2
-                if(floor(wmean) != wmean)
-                    ESTIMATE <- mean(c(diffs[floor(wmean)],
-                                       diffs[ceiling(wmean)]))
-                else
-                    ESTIMATE <- mean(c(diffs[wmean-1], diffs[wmean+1]))
-
+                ESTIMATE <- mean(c(max(diffs[w < wmean]),
+                                   min(diffs[w > wmean])))
                 names(ESTIMATE) <- "(pseudo)median"
                 }
             } else {
@@ -358,11 +356,8 @@ function(x, y = NULL, alternative = c("two.sided", "less", "greater"),
                               })
                      attr(cint, "conf.level") <- conf.level    
                      wmean <- n.x/(n.x+n.y)*sum(r) - n.x*(n.x+1)/2
-                     if(floor(wmean) != wmean)
-                         ESTIMATE <- mean(c(diffs[floor(wmean)],
-                                            diffs[ceiling(wmean)]))
-                     else
-                         ESTIMATE <- mean(c(diffs[wmean-1], diffs[wmean+1]))
+                     ESTIMATE <- mean(c(max(diffs[w < wmean]),
+                                        min(diffs[w > wmean])))
                      names(ESTIMATE) <- "difference in location"
                 }
             }

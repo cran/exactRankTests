@@ -1,3 +1,12 @@
+$Id: CHANGES,v 1.17 2001/06/26 06:37:03 hothorn Exp $
+
+	0.4-6 (26.06.2001)
+
+	fixed confints, added tests:
+	- all.equal(wilcox.exact, wilcox.test)
+        - estimator \in confint
+        DEPENDS: R(>=1.3.0)
+
 	0.4-5 (09.06.2001)
 
 	Depend broke update.packages -> fixed for R-1.2.3

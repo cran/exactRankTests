@@ -1,6 +1,6 @@
 
 R : Copyright 2002, The R Development Core Team
-Version 1.5.0 Under development (unstable) (2002-03-05)
+Version 1.5.0 Under development (unstable) (2002-04-14)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -57,4 +57,25 @@ sample estimates:
 > 
 > stopifnot(all.equal(p, 1))
 > 
+> # From Achim Zeileis <zeileis@ci.tuwien.ac.at>
+> # 15.04.2002
+> 
+> ramsay <- c(111, 107, 100, 99, 102, 106, 109, 108,
++   104, 99, 101, 96, 97, 102, 107, 113, 116, 113, 110, 98)
+> jung.parekh <- c(107, 108, 106, 98, 105, 103, 110, 105,
++   104, 100, 96, 108, 103, 104, 114, 114, 113, 108, 106, 99)
+> scores <- rank(c(ramsay, jung.parekh))
+> scores <- pmin(scores, length(ramsay) + length(jung.parekh) - scores + 1)
+> AB <- sum(scores[seq(along = ramsay)])
+> pperm(AB, scores, length(ramsay), alternative = "two.sided")
+[1] 0.1880644
+> perm.test(scores[1:20], scores[21:40])
+
+	2-sample Permutation Test (scores mapped into 1:(m+n) using rounded
+	scores)
+
+data:  scores[1:20] and scores[21:40] 
+T = 358, p-value = 0.1878
+alternative hypothesis: true mu is not equal to 0 
+
 > 

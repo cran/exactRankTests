@@ -1,6 +1,6 @@
 /*
 
-  $Id: permdist.c,v 1.7 2002/02/09 09:53:36 hothorn Exp $
+  $Id: permdist.c,v 1.8 2002/04/12 13:00:52 hothorn Exp $
   
   permdist : Distribution of Permutation Tests by Streitberg and Roehmel
   Copyright (C) 2000  Torsten Hothorn <Torsten.Hothorn@rzmail.uni-erlangen.de>
@@ -228,6 +228,108 @@ void cpermdist2(double *x, int *m, int *c, int *score_a, int *score_b, int *N, i
 	free((void *) H);
 
 }
+
+void cpermdist3(double *x, int *m, int *score_a, int *score_b, int *score_c, int *N)
+{
+	/*
+	  3-dim SR
+	*/ 
+
+	double ***H; 
+	int i, j, k, z, sum_a = 0, sum_b = 0, sum_c = 0, s_a = 0, s_b = 0, s_c=0;
+	int l  = 0;
+	double msum = 0.0;
+
+	if (*N > PERM_MAX_N)
+		error("N > %d in cpermdistr2", PERM_MAX_N); 
+	
+	for (i = 0; i < *N; i++) {
+		sum_a += score_a[i];
+		sum_b += score_b[i];
+		sum_c += score_c[i];
+	}
+
+	/*
+		optimization according to Streitberg & Roehmel
+	*/
+	
+	sum_a = imin2(sum_a, *m);
+	Rprintf("a: %d \n", sum_a);
+	Rprintf("m: %d \n", *m);
+	Rprintf("m: %d \n", *N);
+	
+
+	/*
+		initialize H
+	*/
+
+	H = (double ***) calloc(sum_a + 1, sizeof(double **));
+	if (!H)
+		error("cpermdist2 allocation error %d", 1);
+	for (i = 0; i <= sum_a; i++) {
+		H[i] = (double **) calloc(sum_b + 1, sizeof(double));
+		if (!H)
+			error("cpermdist2 allocation error %d", 2);
+		for (j = 0; j <= sum_b; j++) {
+			H[i][j] = (double *) calloc(sum_c + 1, sizeof(double));
+                   	for (l = 0; l <= sum_c; l++)
+				H[i][j][l] = 0;
+		}
+	}
+	
+	Rprintf("H: %d \n", H[2][2][2]);
+		
+	/*
+		start the algorithm with H[0][0][0] = 1
+	*/
+		
+	H[0][0][0] = 1;
+	
+	Rprintf("H null = 1: %f \n", H[0][0][0]);
+	
+	
+	for (k = 0; k < *N; k++) {
+	  s_a = s_a + score_a[k];
+	  s_b = s_b + score_b[k];
+	  s_c = s_c + score_c[k];
+	  for (i = imin2(*m, s_a); i >= score_a[k]; i--) {
+	    for (j = s_b; j >= score_b[k]; j--) {
+	      for (l = s_c; l >= score_c[k]; l--) {
+	        H[i][j][l] = H[i][j][l] + H[i - score_a[k]][j - score_b[k]][l - score_c[k]];
+	      }
+	    }
+	  }
+	}
+
+	/*
+		return the hole matrix H (not needed within exactRankTests)
+	*/ 
+
+	z = 0;
+//	for (i = 0; i < sum_a; i++) {
+	i = *m;
+		for (j = 0; j < sum_b; j++) {
+			for (l = 0; l < sum_c; l++) {
+				x[z] = H[i][j][l];
+				z++;
+			}
+		}
+//	}
+		
+	/*
+		free memory and exit
+	*/
+/*	
+	for (i = sum_a; i >= 0; i--) {
+		for (j = sum_b; j >=0; j--)
+			if (H[i][j] != 0) free((void *) H[i][j]);
+		free((void **) H);
+	}
+	free((void ***) H);
+*/
+}
+
+
 
 void outerdiff(double *ret, double *x, double *y, int *m, int *n)
 {

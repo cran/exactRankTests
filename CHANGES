@@ -1,4 +1,8 @@
-$Id: CHANGES,v 1.34 2002/04/10 15:46:30 hothorn Exp $
+$Id: CHANGES,v 1.35 2002/04/15 06:28:04 hothorn Exp $
+
+	0.6-8 (15.04.2002)
+
+	bug in perm.test.default for real-valued scores fixed
 
 	0.6-7 (10.04.2002)
 

@@ -1,4 +1,4 @@
-# $Id: perm.test.R,v 1.10 2002/02/20 15:05:43 hothorn Exp $
+# $Id: perm.test.R,v 1.11 2002/04/15 06:27:20 hothorn Exp $
 
 perm.test <- function(x, ...) UseMethod("perm.test")
 
@@ -34,9 +34,9 @@ function(x,y=NULL, paired = FALSE, alternative = c("two.sided", "less", "greater
             if (is.null(tol)) {
                 x <- x - min(x)
                 x <- round(x*m/max(x))
-                METHOD <- paste(METHOD, "(scores mapped into 1:m)")
+                METHOD <- paste(METHOD, "(scores mapped into 1:m")
             }
-            METHOD <- paste(METHOD, "using rounded scores")
+            METHOD <- paste(METHOD, "using rounded scores)")
         }
 
         STATISTIC <- sum(x[x > 0])
@@ -157,13 +157,13 @@ function(x,y=NULL, paired = FALSE, alternative = c("two.sided", "less", "greater
         METHOD <- "2-sample Permutation Test"
         if (any(cxy != floor(cxy)) && exact) {
             if (is.null(tol)) {
-                cxy <- cxyx - min(cxyx)
+                cxy <- cxy - min(cxy)
                 cxy <- round(cxy*(n+m)/max(cxy))
-                METHOD <- paste(METHOD, "(scores mapped into 1:(m+n))")
+                METHOD <- paste(METHOD, "(scores mapped into 1:(m+n)")
 	        x <- cxy[seq(along=x)]
 	        y <- cxy[-seq(along=x)]
             }
-            METHOD <- paste(METHOD, "using rounded scores")
+            METHOD <- paste(METHOD, "using rounded scores)")
         }
 
         STATISTIC <- sum(x)

@@ -1,6 +1,6 @@
 /*
 
-  $Id: permdist.c,v 1.6 2001/10/26 16:19:17 hothorn Exp $
+  $Id: permdist.c,v 1.7 2002/02/09 09:53:36 hothorn Exp $
   
   permdist : Distribution of Permutation Tests by Streitberg and Roehmel
   Copyright (C) 2000  Torsten Hothorn <Torsten.Hothorn@rzmail.uni-erlangen.de>
@@ -250,5 +250,3 @@ void outerprod(double *ret, double *x, double *y, int *m, int *n)
     }
   }
 }
-
-      

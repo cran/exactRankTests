@@ -1,4 +1,8 @@
-$Id: CHANGES,v 1.27 2002/02/06 15:47:22 hothorn Exp $
+$Id: CHANGES,v 1.29 2002/02/11 09:12:02 hothorn Exp $
+
+	0.6-2 (11.02.2002)
+
+	R CMD check insits on \n at the end of C-files
 
 	0.6-1 (06.02.2002)
 

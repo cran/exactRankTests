@@ -1,4 +1,4 @@
-# $Id: cscores.R,v 1.11 2002/09/27 06:30:07 hothorn Exp $
+# $Id: cscores.R,v 1.12 2002/11/22 08:52:20 hothorn Exp $
 
 cscores <- function(y, ...) UseMethod("cscores")
 
@@ -37,9 +37,11 @@ cscores.factor <- function(y, ...) {
 
 irank <- function(x, ox=NULL) {
   if (is.null(ox))
-    .Call("irank", as.double(x), as.integer(order(x)-1))
+    .Call("irank", as.double(x), as.integer(order(x)-1), 
+          PACKAGE="exactRankTests")
   else 
-    .Call("irank", as.double(x), as.integer(ox-1))
+    .Call("irank", as.double(x), as.integer(ox-1), 
+          PACKAGE="exactRankTests")
 }
 
 cscores.Surv <- function(y, type="LogRank", int=FALSE, ...) {

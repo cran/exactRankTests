@@ -163,6 +163,23 @@ wilcox.exact(pre, post, paired=T, conf.int=T)
 }
 
 \testonly{
+
+# Hollander & Wolfe (1999), second edition, Example 4.2., page 112
+
+contr <- c(1042, 1617, 1180, 973, 1552, 1251, 1151, 728, 1079, 951, 1319)
+SST <- c(874, 389, 612, 798, 1152, 893, 541, 741, 1064, 862, 213)
+
+wilcox.exact(contr, SST, conf.int=T) 
+
+# page 110, Example 4.1
+
+term <- c(0.8, 0.83, 1.89, 1.04, 1.45, 1.38, 1.91, 1.64, 0.73, 1.46)
+weeks <- c(1.15, 0.88, 0.90, 0.74, 1.21)
+
+wilcox.exact(weeks, term, conf.int=T)
+}
+
+\testonly{
 stopifnot(wilcox.exact(1:8)$p.value == 0.0078125)
 stopifnot(wilcox.exact(c(1:7,7))$p.value == 0.0078125)
 stopifnot(wilcox.exact(c(1,1,1))$p.value == 0.25)

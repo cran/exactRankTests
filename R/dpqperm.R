@@ -1,11 +1,13 @@
-# $Id: dpqperm.R,v 1.24 2003/04/09 09:57:43 hothorn Exp $
+# $Id: dpqperm.R,v 1.24.4.1 2004/09/27 06:07:11 hothorn Exp $
 
 findfact <- function(scores, m, tol) {
     sc <- rev(sort(scores))
     foo <- function(fact) {
       abs(sum(abs(fact*sc[1:m] - round(fact*sc[1:m],0)))/fact - tol)
     }
-    fact <- optimize(foo, c(1, 100000/(sum(sc) -min(sc))))$minimum
+    grid <- seq(from = 1, to = 10000/(sum(sc) -min(sc)), by = 1)
+    fact <- which.min(sapply(grid, foo))
+    ## fact <- optimize(foo, c(1, 100000/(sum(sc) -min(sc))))$minimum
     thistol <- sum(abs(fact*sc[1:m] - round(fact*sc[1:m],0)))/fact
     if (thistol > tol)
       warning(paste("cannot hold tol, tolerance:", round(thistol, 6)))

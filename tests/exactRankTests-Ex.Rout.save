@@ -1,6 +1,6 @@
 
-R : Copyright 2003, The R Foundation for Statistical Computing
-Version 1.9.0 Under development (unstable) (2003-12-15), ISBN 3-900051-00-3
+R : Copyright 2004, The R Foundation for Statistical Computing
+Version 1.9.1  (2004-06-21), ISBN 3-900051-00-3
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -336,11 +336,15 @@ alternative hypothesis: true mu is less than 0
 > # critical value, two-sided test
 > 
 > abs(qperm(0.025, scores, length(x)))
-[1] 3.869096
+[1] 3.871345
+Warning message: 
+cannot hold tol, tolerance: 0.010292 in: findfact(scores - min(scores) + 1, m, tol) 
 > 
 > # p-values
 > 
 > p1 <- pperm(X, scores, length(x), alternative="two.sided")
+Warning message: 
+cannot hold tol, tolerance: 0.010292 in: findfact(scores - min(scores) + 1, m, tol) 
 > 
 > # generate integer valued scores with the same shape as normal quantile
 > # scores, this no longer v.d.Waerden, but something very similar
@@ -353,7 +357,7 @@ alternative hypothesis: true mu is less than 0
 > # compare p1 and p2
 > 
 > p1 - p2
-[1] 0.01025136
+[1] 0.009796705
 > 
 > 
 > 
@@ -451,8 +455,9 @@ alternative hypothesis: true mu is not equal to 0
 +   pperm(T, lsc, sum(tr), alternative="tw", simulate=TRUE)
 + }
 [1] 1e-04
-Warning message: 
-cannot hold tol, tolerance: 0.010001 in: findfact(scores - min(scores) + 1, m, tol) 
+Warning messages: 
+1: cannot hold tol, tolerance: 0.010019 in: findfact(scores - min(scores) + 1, m, tol) 
+2: cannot hold tol, tolerance: 0.010067 in: findfact(scores - min(scores) + 1, m, tol) 
 > 
 > 
 > 
@@ -526,9 +531,9 @@ alternative hypothesis: true mu is not equal to 0
 > mobs <- sum(group=="newdrug")
 > prob <- pperm(T, scores, m=mobs, al="le")
 > prob
-[1] 0.0004995005
+[1] 0.000999001
 > pperm(T, scores, m=mobs, al="tw")
-[1] 0.0004995005
+[1] 0.000999001
 > pperm(T, scores, m=mobs, al="tw", simulate=TRUE)
 [1] 0.001
 > 
@@ -573,7 +578,9 @@ alternative hypothesis: true mu is less than 0
 > css <- cscores(neuropathy$pain, type="ConSal")
 > pperm(sum(css[neuropathy$group=="control"]),css,
 +       m=sum(neuropathy$group=="control"))
-[1] 0.03113022
+[1] 0.03075730
+Warning message: 
+cannot hold tol, tolerance: 0.047123 in: findfact(scores - min(scores) + 1, m, tol) 
 > 
 > 
 > 
@@ -895,7 +902,7 @@ difference in location
 > ### * <FOOTER>
 > ###
 > cat("Time elapsed: ", proc.time() - get("ptime", env = .CheckExEnv),"\n")
-Time elapsed:  5.37 0.06 5.54 0 0 
+Time elapsed:  4.72 0.03 4.9 0 0 
 > dev.off()
 null device 
           1 

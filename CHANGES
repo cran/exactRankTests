@@ -1,4 +1,9 @@
-$Id: CHANGES,v 1.58.2.5 2003/12/16 17:32:02 hothorn Exp $
+$Id: CHANGES,v 1.58.2.6 2004/09/27 06:07:52 hothorn Exp $
+
+	0.8-7 (27.09.2004)
+
+	use a grid search instead of optimize in order to determine
+        fact in `findfact'
 
 	0.8-6 (16.12.2003)
 

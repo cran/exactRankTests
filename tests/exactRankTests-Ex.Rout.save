@@ -207,11 +207,11 @@ difference in location
 > round(pperm(X, sc, 11), 4) 
 [1] 0.0462
 > round(pperm(X, sc, 11, simulate=TRUE), 4)
-[1] 0.0467
+[1] 0.0376
 > round(pperm(X, sc, 11, alternative="two.sided"), 4) 
 [1] 0.0799
 > round(pperm(X, sc, 11, alternative="two.sided", simulate=TRUE), 4)
-[1] 0.0791
+[1] 0.0705
 > 
 > # use scores mapped into integers (cf. dperm)
 > 
@@ -894,7 +894,7 @@ difference in location
 > ### * <FOOTER>
 > ###
 > cat("Time elapsed: ", proc.time() - get("ptime", env = .CheckExEnv),"\n")
-Time elapsed:  10.11 0.59 14.65 0 0 
+Time elapsed:  11.26 0.1 11.51 0 0 
 > dev.off()
 null device 
           1 

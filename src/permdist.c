@@ -49,8 +49,8 @@
 
                                                                    
 #include <R.h>
-#include <R_ext/Mathlib.h>
-#include <Rinternals.h>
+#include <Rmath.h>
+#include <Rdefines.h>
 
 /*
 	length(scores) <= 1.000.000 observations only.

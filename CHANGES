@@ -1,4 +1,8 @@
-$Id: CHANGES,v 1.58 2003/04/24 07:38:35 hothorn Exp $
+$Id: CHANGES,v 1.59 2003/04/29 09:36:37 hothorn Exp $
+
+	0.8-2 (30.08.2003)
+
+	use canonial header files
 
 	0.8-1 (24.04.2003)
 

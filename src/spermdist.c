@@ -33,9 +33,8 @@
 
                                                                    
 #include <R.h>
-#include <Rinternals.h>
-#include <R_ext/Mathlib.h>
-
+#include <Rmath.h>
+#include <Rdefines.h>
 
 SEXP sim2is(SEXP scores, SEXP mfirst, SEXP Nsim) {
 

@@ -1,3 +1,7 @@
+	0.3-8 (03.05.2001)
+
+	c++ comments removed from permdist.c
+
 	0.3-7 (12.04.2001)
 
 	pperm2 now computes correct expectation for paired case.

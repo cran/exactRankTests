@@ -90,7 +90,7 @@ void cpermdist1(double *x, int *score_a, int *N)
 	*/
 
 	for (i = 0; i <= sum_a; i++)
-		msum += H[i];	// 0 is a possible realization
+		msum += H[i];	/* 0 is a possible realization */
 	
 	/*
 		compute probabilities
@@ -100,7 +100,7 @@ void cpermdist1(double *x, int *score_a, int *N)
 	*/ 
 	
 	for (i = 0; i <= sum_a; i++)
-		x[i] = H[i]/msum;	// 0 is a possible realization
+		x[i] = H[i]/msum;	/* 0 is a possible realization */
 	
 	/*
 		free memory and exit

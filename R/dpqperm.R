@@ -38,16 +38,20 @@ pperm2 <- function(q, scores, m, paired = NULL, tol = 0.01, fact = NULL)
     if (is.null(q)) stop("Non-numeric argument to mathematical function")
     eq <- equiscores(scores, m, tol, fact)
     cp <- cperm(eq, m, paired)
-    expect <- m/length(scores)*sum(scores)
+    paired <- any(c(m == length(scores), paired))
+    if (paired)
+        expect <- 1/2*sum(scores)
+    else
+        expect <- m/length(scores)*sum(scores)
     cp$T <- cp$T - expect
     q <- q - expect
     RVAL <- c()
     for (i in q) {
         prob <- c(cp$Prob[cp$T <= ifelse(i > 0, -i, i)],
-                  cp$Prob[cp$T >= ifelse(i >= 0, i, -i)])
+                  cp$Prob[cp$T >= ifelse(i >= 0, i, -i)]) 
         ifelse(length(prob) >= 1, RVAL <- c(RVAL, sum(prob)),
                                   RVAL <- c(RVAL, 0))
-    }
+    } 
     RVAL <- pmin(1, RVAL)
     return(RVAL)
 }

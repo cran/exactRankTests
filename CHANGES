@@ -1,3 +1,9 @@
+	0.3-7 (12.04.2001)
+
+	pperm2 now computes correct expectation for paired case.
+	Now confidence intervals for x - y are computed (was `wilcox.test'
+	in R-1.2.3 will do)	
+
 	0.3-6 (20.02.2001)
 
 	typos in cperm.Rd fixed

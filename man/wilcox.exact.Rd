@@ -98,6 +98,8 @@ y <- c(0.878, 0.647, 0.598, 2.05, 1.06, 1.29, 1.06, 3.14, 1.29)
 wilcox.exact(x, y, paired = TRUE, alternative = "greater")
 wilcox.exact(y - x, alternative = "less")    # The same.
 
+stopifnot(wilcox.test(y-x)$p.value == wilcox.exact(y -x)$p.value)
+
 ## Two-sample test.
 ## Hollander & Wolfe (1973), 69f.
 ## Permeability constants of the human chorioamnion (a placental
@@ -125,5 +127,11 @@ wilcox.exact(contr, treat)
  
 wilcox.exact(contr, treat, alternative="less") 
 
+# works in R-1.2.3 only
+# \testonly{ 
+# x <- rnorm(10,3)
+# y <- rnorm(10)
+# stopifnot(all.equal(wilcox.test(x,y,conf.int=T), wilcox.exact(x,y,conf.int=T)))
+}
 }
 \keyword{htest}

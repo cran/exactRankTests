@@ -1,0 +1,61 @@
+	0.3-6 (20.02.2001)
+
+	typos in cperm.Rd fixed
+
+	0.3-4 (06.01.2001)
+
+	concentrated man pages.
+
+	0.3-3 (20.12.2000)
+
+	added some checks for non-sense parameter configurations. This one
+	goes out to CRAN/contrib.
+
+	0.3-2 (18.12.2000)
+
+	added pperm2 which computes two-sided p-values the way StatXact
+	does. Added example from StatXact manual page 211 on diastolic blood
+	pressure, the results coincied.  
+
+	0.3-1 (17.12.2000)
+
+	renamed "exactDistr" to "exactRankTests" (this is easier to
+	pronounce). After a discussion with Kurt last Friday, this version 
+	will move to CRAN/contrib. 
+
+	0.2-4 (05.12.2000)
+
+	typos fixed, system.file()[1] in examples 
+
+	0.2-3 (04.12.2000)
+
+	uhh, 0.2-2 was buggy :-(
+	bugs (hopefully) fixed, more intelligent determination of the
+	factor to multiply real (!) valued scores with. It is now possible
+	to give a maximum error by "tol" on the quantile scale. Default is 
+	tol = 0.01 which should be ok for most situations. 
+
+	0.2-2 (29.11.2000)
+
+	rational scores now possible -> this results in an approximation
+	only. Can be influenced by "fact".
+
+	0.1-9 (25.10.2000)
+
+	bugfixes for pperm(paired): 0 is a possible realization
+
+	0.1-8 (24.10.2000)
+
+	added the paired sample situation, now ./inst/test1.R for the
+	comparison with [pq]signrank, ./inst/test2.R with  [pq]wilcox
+
+	0.1-7 (23.10.2000)
+
+	bug fixes (H as double), test.R in ./inst for testing with
+	[pq]wilcox
+
+	0.1-6 (22.10.2000)
+
+	hacked cpermdist in C, now computations a lot faster
+
+	

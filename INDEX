@@ -1,0 +1,3 @@
+cperm                    Internal exactRankTests functions
+dperm                    Distribution of Permutation Tests
+wilcox.exact             Wilcoxon Rank Sum and Signed Rank Tests

@@ -83,7 +83,7 @@ x (otherwise \code{pperm(y,x,...)} is computed and a warning given).}
 \references{ 
   Joachim R\"ohmel (1996).
   Precision intervals for estimates of the difference in success
-  rates for binary  random variables based on the Permutation Principle.
+  rates for binary  random variables based on the permutation principle.
   \emph{Biometrical Journal}, \bold{38}(8), 977--993.
 
   Cyrus R. Mehta and Nitin R. Patel (1998).

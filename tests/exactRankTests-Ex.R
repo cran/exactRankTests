@@ -166,8 +166,7 @@ cleanEx(); ..nameEx <- "globulin"
 ##___ Examples ___:
 
 data(globulin)
-attach(globulin)
-pt <- perm.test(group1, group2, conf.int=TRUE)
+pt <- perm.test(gfrac ~ group, data=globulin, conf.int=TRUE)
 pt
 stopifnot(pt$conf.int == c(-8.50, 1.25))
 

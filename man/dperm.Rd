@@ -101,8 +101,8 @@ true, \code{pperm} returns a list with elements
 \references{ 
 
 	Bernd Streitberg and Joachim R\"ohmel (1986). 
-	Exact Distributions for Permutations and Rank Tests: 
-	An Introduction to Some Recently Published Algorithms. 
+	Exact distributions for permutations and rank tests: 
+	An introduction to some recently published algorithms. 
 	\emph{Statistical Software Newsletter} \bold{12}(1), 10--17.
 
 	Bernd Streitberg and Joachim R\"ohmel (1987).
@@ -111,7 +111,7 @@ true, \code{pperm} returns a list with elements
 	\emph{EDV in Medizin und Biologie} \bold{18}(1), 12--19.
 
 	Torsten Hothorn (2001).
-	On Exact Rank Tests in \R.
+	On exact rank tests in \R.
 	\emph{R News} \bold{1}(1), 11--12.
 	
 	Cyrus R. Mehta and Nitin R. Patel (1998).

@@ -1,4 +1,4 @@
-# $Id: wilcox.exact.R,v 1.16 2002/02/20 15:05:43 hothorn Exp $
+# $Id: wilcox.exact.R,v 1.17 2003/01/16 10:44:25 hothorn Exp $
 
 wilcox.exact <- function(x, ...) UseMethod("wilcox.exact")
 
@@ -19,7 +19,10 @@ function(x, y = NULL, alternative = c("two.sided", "less", "greater"),
     }
     MIDP <- NULL
 
+    if(!is.numeric(x)) stop("`x' must be numeric")
+
     if(!is.null(y)) {
+        if(!is.numeric(y)) stop("`y' must be numeric")
         DNAME <- paste(deparse(substitute(x)), "and",
                        deparse(substitute(y)))
         if(paired) {

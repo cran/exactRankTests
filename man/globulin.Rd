@@ -9,8 +9,8 @@ Globulin fraction of plasma (g/l) in two groups of 10 patients.
 \format{
   This data frame contains the following variables:
   \describe{
-    \item{group1}{Globulin fraction of plasma for group 1}
-    \item{group2}{Globulin fraction of plasma for group 2}
+    \item{gfrac}{Globulin fraction of plasma}
+    \item{group}{a factor at levels \code{group1} and \code{group2}}
   }
 }
 \details{
@@ -24,13 +24,12 @@ See page 75 of Gardner & Altman (1989).
 \references{
   Joachim R\"ohmel (1996).
   Precision intervals for estimates of the difference in success 
-  rates for binary  random variables based on the Permutation Principle.
+  rates for binary  random variables based on the permutation principle.
   \emph{Biometrical Journal}, \bold{38}(8), 977--993.  
 }
 \examples{
 data(globulin)
-attach(globulin)
-pt <- perm.test(group1, group2, conf.int=TRUE)
+pt <- perm.test(gfrac ~ group, data=globulin, conf.int=TRUE)
 pt
 stopifnot(pt$conf.int == c(-8.50, 1.25))
 }

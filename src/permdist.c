@@ -1,6 +1,6 @@
 /*
 
-  $Id: permdist.c,v 1.14 2002/09/16 15:33:50 hothorn Exp $
+  $Id: permdist.c,v 1.15 2003/01/15 09:24:32 hothorn Exp $
   
   permdist : Distribution of Permutation Tests by Streitberg and Roehmel
   Copyright (C) 2000  Torsten Hothorn <Torsten.Hothorn@rzmail.uni-erlangen.de>
@@ -281,7 +281,7 @@ void cpermdist3(double *x, int *m, int *maxb, int *maxc, int *score_a, int *scor
 	}
 
 	/*
-		return the hole matrix H (not needed within exactRankTests)
+		return the distribution of sample size m only
 	*/ 
 
 	z = 0;

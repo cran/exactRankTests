@@ -1,5 +1,18 @@
 $Id: CHANGES,v 1.48 2002/12/13 08:57:13 hothorn Exp $
 
+	0.7-6 (19.01.2003)
+
+	ansari.exact added: Ansari-Bradley test with exact conditional
+			    distribution
+        more examples: 	ASAT (proof-of-safety or equivalence),
+			ocarcinoma (exact conditional logrank test),
+			rotarod (WMW-test benchmark from  AmStat 54(1) )
+	
+
+	0.7-5 (13.12.2002)
+	
+	CRAN pedantics
+
 	0.7-4 (13.12.2002)
 
 	check if scores contain negative values for paired samples

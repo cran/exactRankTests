@@ -42,7 +42,7 @@ the kind of scores used is returned.
 \references{
 
         Hothorn, T. and Lausen, B. (2002).
-        On the Exact Distribution of Maximally Selected Rank Statistics.
+        On the exact distribution of maximally selected rank statistics.
         \emph{Computational Statistics \& Data Analysis}, (in press).
         Preprint available from
         \url{http://www.mathpreprints.com/math/Preprint/hothorn/20020227/2}

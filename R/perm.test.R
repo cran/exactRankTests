@@ -1,4 +1,4 @@
-# $Id: perm.test.R,v 1.12 2002/07/03 08:08:53 hothorn Exp $
+# $Id: perm.test.R,v 1.14 2003/01/19 12:54:49 hothorn Exp $
 
 perm.test <- function(x, ...) UseMethod("perm.test")
 
@@ -19,11 +19,14 @@ function(x,y=NULL, paired = FALSE, alternative = c("two.sided", "less", "greater
            stop("conf.level must be a single number between 0 and 1")
     }
 
+    if(!is.numeric(x)) stop("`x' must be numeric")
+
     MIDP <- NULL
-    if (!is.null(y))
+    if (!is.null(y)) {
+        if(!is.numeric(y)) stop("`y' must be numeric")
         DNAME <- paste(deparse(substitute(x)), "and",
                      deparse(substitute(y)))
-    else DNAME <- deparse(substitute(x))
+    } else DNAME <- deparse(substitute(x))
 
     if (paired) {
         if (!is.null(y)) x <- x - y

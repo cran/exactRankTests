@@ -1,6 +1,6 @@
 /*
 
-  $Id: spermdist.c,v 1.5 2003/04/24 07:26:40 hothorn Exp $
+  $Id: spermdist.c,v 1.5.4.1 2003/08/30 14:16:53 hothorn Exp $
   
   spermdist : Simulate Distribution of Permutation Test Statistics
   Copyright (C) 2003  Torsten Hothorn 

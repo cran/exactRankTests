@@ -1,6 +1,6 @@
 
 R : Copyright 2003, The R Development Core Team
-Version 1.7.0 Under development (unstable) (2003-04-09)
+Version 1.7.1  (2003-06-16)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -33,7 +33,7 @@ Type `q()' to quit R.
 +        function(env = .GlobalEnv) {
 + 	   rm(list = ls(envir = env, all.names = TRUE), envir = env)
 +            RNGkind("Wichmann-Hill", "Kinderman-Ramage")
-+ 	   assign(".Random.seed", c(0, rep(7654, 3)), pos = 1)
++ 	   assign(".Random.seed", c(0, rep(7654, 3)), envir=.GlobalEnv)
 + 	   assign("T", NULL, pos = 1);
 + 	   assign("F", NULL, pos = 1);
 +        },
@@ -132,13 +132,13 @@ alternative hypothesis: true mu is less than 0
 > # critical value, two-sided test
 > 
 > abs(qperm(0.025, scores, length(x)))
-[1] 3.869096
+[1] 3.872587
 > 
 > # p-values
 > 
 > p1 <- pperm(X, scores, length(x), alternative="two.sided")
 > p1
-[1] 0.5184243
+[1] 0.5188357
 > 
 > # generate integer valued scores with the same shape as normal quantile
 > # scores, this no longer v.d.Waerden, but something very similar
@@ -153,7 +153,7 @@ alternative hypothesis: true mu is less than 0
 > # compare p1 and p2
 > 
 > p1 - p2
-[1] 0.01025136
+[1] 0.01066271
 > 
 > # the blood pressure example from StatXact manual, page 221:
 > 
@@ -759,7 +759,7 @@ difference in location
 > 
 > 
 > cat("Time elapsed: ", proc.time() - get("ptime", env = .CheckExEnv),"\n")
-Time elapsed:  9.44 0.14 10 0 0 
+Time elapsed:  2.42 0.03 2.45 0 0 
 > dev.off(); quit('no')
 null device 
           1 

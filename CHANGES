@@ -1,4 +1,9 @@
-$Id: CHANGES,v 1.59 2003/04/29 09:36:37 hothorn Exp $
+$Id: CHANGES,v 1.58.2.2 2003/09/03 13:39:28 hothorn Exp $
+
+	0.8-3 (03.09.2003)
+
+	use explicit RNGkind("Wichmann-Hill", "Kinderman-Ramage") 
+	in all regression tests.
 
 	0.8-2 (30.08.2003)
 

@@ -19,8 +19,8 @@ assign("plot.new",
 assign("cleanEx",
        function(env = .GlobalEnv) {
 	   rm(list = ls(envir = env, all.names = TRUE), envir = env)
-           RNGkind("Wichmann-Hill", "default")
-	   assign(".Random.seed", c(0, rep(7654, 3)), pos = 1)
+           RNGkind("Wichmann-Hill", "Kinderman-Ramage")
+	   assign(".Random.seed", c(0, rep(7654, 3)), envir=.GlobalEnv)
 	   assign("T", delay(stop("T used instead of TRUE")),
 		  pos = .CheckExEnv)
 	   assign("F", delay(stop("F used instead of FALSE")),

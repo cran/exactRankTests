@@ -1,6 +1,6 @@
 
 R : Copyright 2003, The R Development Core Team
-Version 1.7.0  (2003-04-16)
+Version 1.7.1  (2003-06-16)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -34,8 +34,8 @@ Type `q()' to quit R.
 > assign("cleanEx",
 +        function(env = .GlobalEnv) {
 + 	   rm(list = ls(envir = env, all.names = TRUE), envir = env)
-+            RNGkind("Wichmann-Hill", "default")
-+ 	   assign(".Random.seed", c(0, rep(7654, 3)), pos = 1)
++            RNGkind("Wichmann-Hill", "Kinderman-Ramage")
++ 	   assign(".Random.seed", c(0, rep(7654, 3)), envir=.GlobalEnv)
 + 	   assign("T", delay(stop("T used instead of TRUE")),
 + 		  pos = .CheckExEnv)
 + 	   assign("F", delay(stop("F used instead of FALSE")),
@@ -207,11 +207,11 @@ difference in location
 > round(pperm(X, sc, 11), 4) 
 [1] 0.0462
 > round(pperm(X, sc, 11, simulate=TRUE), 4)
-[1] 0.0376
+[1] 0.0467
 > round(pperm(X, sc, 11, alternative="two.sided"), 4) 
 [1] 0.0799
 > round(pperm(X, sc, 11, alternative="two.sided", simulate=TRUE), 4)
-[1] 0.0705
+[1] 0.0791
 > 
 > # use scores mapped into integers (cf. dperm)
 > 
@@ -335,7 +335,7 @@ alternative hypothesis: true mu is less than 0
 > # critical value, two-sided test
 > 
 > abs(qperm(0.025, scores, length(x)))
-[1] 3.869096
+[1] 3.872587
 > 
 > # p-values
 > 
@@ -352,7 +352,7 @@ alternative hypothesis: true mu is less than 0
 > # compare p1 and p2
 > 
 > p1 - p2
-[1] 0.01025136
+[1] 0.01066271
 > 
 > 
 > 
@@ -450,8 +450,6 @@ alternative hypothesis: true mu is not equal to 0
 +   pperm(T, lsc, sum(tr), alternative="tw", simulate=TRUE)
 + }
 [1] 1e-04
-Warning message: 
-cannot hold tol, tolerance: 0.010001 in: findfact(scores - min(scores) + 1, m, tol) 
 > 
 > 
 > 
@@ -894,7 +892,7 @@ difference in location
 > ### * <FOOTER>
 > ###
 > cat("Time elapsed: ", proc.time() - get("ptime", env = .CheckExEnv),"\n")
-Time elapsed:  11.26 0.1 11.51 0 0 
+Time elapsed:  7.63 0.08 7.72 0 0 
 > dev.off()
 null device 
           1 

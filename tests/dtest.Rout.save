@@ -1,6 +1,6 @@
 
 R : Copyright 2003, The R Development Core Team
-Version 1.7.0 Under development (unstable) (2003-04-09)
+Version 1.7.1  (2003-06-16)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -15,10 +15,7 @@ Type `q()' to quit R.
 
 > 
 > library(exactRankTests)
-> actversion <- paste(R.version$major, R.version$minor, sep=".")
-> thisversion <- "1.7.0"
-> if (compareVersion(actversion, thisversion) >= 0)
-+   RNGversion("1.6.2")
+> RNGkind("Wichmann-Hill", "Kinderman-Ramage")
 > set.seed(29081975)
 > 
 > # test the distribution functions
@@ -38,19 +35,19 @@ Type `q()' to quit R.
 + 	seppl <- c(seppl, pperm(val, score, m, alternative="less"))
 + 	cat(" pperm: ", seppl[length(seppl)], "\n")
 + }
-psignrank:  3.669993e-08 pperm:  3.669993e-08 
-psignrank:  0.00402832 pperm:  0.00402832 
-psignrank:  0.01708984 pperm:  0.01708984 
-psignrank:  4.172325e-07 pperm:  4.172325e-07 
-psignrank:  3.18978e-08 pperm:  3.18978e-08 
-psignrank:  1.335144e-05 pperm:  1.335144e-05 
-psignrank:  7.45058e-08 pperm:  7.45058e-08 
-psignrank:  6.98492e-10 pperm:  6.98492e-10 
-psignrank:  1.665205e-06 pperm:  1.665205e-06 
-psignrank:  1.687539e-14 pperm:  1.687539e-14 
+psignrank:  1.525879e-05 pperm:  1.525879e-05 
+psignrank:  0.01367188 pperm:  0.01367188 
+psignrank:  0.000292778 pperm:  0.000292778 
+psignrank:  8.003553e-10 pperm:  8.003553e-10 
+psignrank:  0.002136230 pperm:  0.002136230 
+psignrank:  2.563000e-06 pperm:  2.563000e-06 
+psignrank:  2.273737e-11 pperm:  2.273737e-11 
+psignrank:  0.001525879 pperm:  0.001525879 
+psignrank:  2.69413e-05 pperm:  2.69413e-05 
+psignrank:  9.313226e-09 pperm:  9.313226e-09 
 > 
 > cat("Max difference: ", max(abs(hansi - seppl)), "\n")
-Max difference:  1.040834e-17 
+Max difference:  8.673617e-19 
 > 
 >   stopifnot(max(abs(hansi - seppl)) <= 1e-10)
 > 
@@ -67,16 +64,16 @@ Max difference:  1.040834e-17
 +         seppl <- c(seppl, qperm(prob, score, m))
 +         cat(" qperm: ", seppl[length(seppl)], "\n")
 + }
-qwilcox:  217 qperm:  217 
-qwilcox:  165 qperm:  165 
-qwilcox:  115 qperm:  115 
-qwilcox:  447 qperm:  447 
-qwilcox:  102 qperm:  102 
-qwilcox:  48 qperm:  48 
-qwilcox:  105 qperm:  105 
-qwilcox:  306 qperm:  306 
-qwilcox:  33 qperm:  33 
-qwilcox:  320 qperm:  320 
+qwilcox:  198 qperm:  198 
+qwilcox:  72 qperm:  72 
+qwilcox:  505 qperm:  505 
+qwilcox:  504 qperm:  504 
+qwilcox:  98 qperm:  98 
+qwilcox:  222 qperm:  222 
+qwilcox:  251 qperm:  251 
+qwilcox:  445 qperm:  445 
+qwilcox:  203 qperm:  203 
+qwilcox:  50 qperm:  50 
 > 
 > cat("Max difference: ", max(abs(hansi - seppl)), "\n")
 Max difference:  0 
@@ -103,19 +100,19 @@ Max difference:  0
 + alternative="less"))
 + 	cat(" pperm: ", seppl[length(seppl)], "\n")
 + }
-pwilcox:  0.9960877 pperm:  0.9960877 
-pwilcox:  0.99996 pperm:  0.99996 
-pwilcox:  1 pperm:  1 
-pwilcox:  0.9428445 pperm:  0.9428445 
-pwilcox:  0.08425312 pperm:  0.08425312 
-pwilcox:  2.312838e-08 pperm:  2.312838e-08 
-pwilcox:  0.06255251 pperm:  0.06255251 
-pwilcox:  2.009261e-09 pperm:  2.009261e-09 
-pwilcox:  0.8341754 pperm:  0.8341754 
-pwilcox:  0.9999919 pperm:  0.9999919 
+pwilcox:  2.719611e-16 pperm:  2.719611e-16 
+pwilcox:  0.0002691031 pperm:  0.0002691031 
+pwilcox:  0.009271688 pperm:  0.009271688 
+pwilcox:  0.0005671025 pperm:  0.0005671025 
+pwilcox:  0.07486077 pperm:  0.07486077 
+pwilcox:  0.70271 pperm:  0.70271 
+pwilcox:  4.664925e-07 pperm:  4.664925e-07 
+pwilcox:  8.613825e-12 pperm:  8.613825e-12 
+pwilcox:  0.02764398 pperm:  0.02764398 
+pwilcox:  0.9143719 pperm:  0.9143719 
 > 
 > cat("Max difference: ", max(abs(hansi - seppl)), "\n")
-Max difference:  2.664535e-15 
+Max difference:  9.769963e-15 
 > 
 >   stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
 > 
@@ -136,16 +133,16 @@ Max difference:  2.664535e-15
 +         seppl <- c(seppl, qperm(prob, score, m) - m*(m+1)/2)
 +         cat(" qperm: ", seppl[length(seppl)], "\n")
 + }
-qwilcox:  1058 qperm:  1058 
-qwilcox:  72 qperm:  72 
-qwilcox:  278 qperm:  278 
-qwilcox:  167 qperm:  167 
-qwilcox:  759 qperm:  759 
-qwilcox:  224 qperm:  224 
-qwilcox:  679 qperm:  679 
-qwilcox:  598 qperm:  598 
-qwilcox:  239 qperm:  239 
-qwilcox:  228 qperm:  228 
+qwilcox:  965 qperm:  965 
+qwilcox:  364 qperm:  364 
+qwilcox:  476 qperm:  476 
+qwilcox:  341 qperm:  341 
+qwilcox:  776 qperm:  776 
+qwilcox:  249 qperm:  249 
+qwilcox:  264 qperm:  264 
+qwilcox:  1041 qperm:  1041 
+qwilcox:  824 qperm:  824 
+qwilcox:  114 qperm:  114 
 > 
 > cat("Max difference: ", max(abs(hansi - seppl)), "\n")
 Max difference:  0 

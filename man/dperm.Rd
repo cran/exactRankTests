@@ -224,4 +224,4 @@ source(system.file("test1.R", pkg="exactRankTests")[1])
 source(system.file("test2.R", pkg="exactRankTests")[1])
 
 }
-\keyword{exact distribution}
+\keyword{distribution}

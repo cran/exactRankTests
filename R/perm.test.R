@@ -1,4 +1,4 @@
-# $Id: perm.test.R,v 1.11 2002/04/15 06:27:20 hothorn Exp $
+# $Id: perm.test.R,v 1.12 2002/07/03 08:08:53 hothorn Exp $
 
 perm.test <- function(x, ...) UseMethod("perm.test")
 
@@ -80,7 +80,7 @@ function(x,y=NULL, paired = FALSE, alternative = c("two.sided", "less", "greater
             Hx <- .C("cpermdist2", H = as.double(Hx), as.integer(m),
                 as.integer(sum(xscores$scores)), as.integer(rep(1,m)),
                 as.integer(xscores$scores), as.integer(m),
-                as.integer(length(Hx)+1))$H
+                as.integer(length(Hx)+1), PACKAGE="exactRankTests")$H
 
             Hx <- matrix(Hx, nrow=m, byrow=TRUE)
             Hx <- rbind(Hx, 0)
@@ -207,7 +207,7 @@ function(x,y=NULL, paired = FALSE, alternative = c("two.sided", "less", "greater
             Hx <- .C("cpermdist2", H = as.double(Hx), as.integer(m),
                 as.integer(sum(xscores$scores)), as.integer(rep(1,m)),
                 as.integer(xscores$scores), as.integer(m),
-                as.integer(length(Hx)+1))$H
+                as.integer(length(Hx)+1), PACKAGE="exactRankTests")$H
 
             Hx <- matrix(Hx, nrow=m, byrow=TRUE)
             Hx <- rbind(Hx, 0)
@@ -216,7 +216,7 @@ function(x,y=NULL, paired = FALSE, alternative = c("two.sided", "less", "greater
             Hy <- .C("cpermdist2", H = as.double(Hy), as.integer(n),
                 as.integer(sum(yscores$scores)), as.integer(rep(1,n)),
                 as.integer(yscores$scores), as.integer(n),
-                as.integer(length(Hy)+1))$H
+                as.integer(length(Hy)+1), PACKAGE="exactRankTests")$H
 
             Hy <- matrix(Hy, nrow=n, byrow=TRUE)
             Hy <- rbind(Hy, 0)

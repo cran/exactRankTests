@@ -1,4 +1,4 @@
-# $Id: dpqperm.R,v 1.13 2002/04/10 15:46:30 hothorn Exp $
+# $Id: dpqperm.R,v 1.14 2002/07/03 08:08:53 hothorn Exp $
 
 toltest <- function(x, scores, m) 
 {
@@ -167,7 +167,8 @@ cperm <- function(escores, m, paired = NULL)
         # paired two sample situation
         prob <- c(0, prob)
         prob <- .C("cpermdist1", prob = as.double(prob),
-                   as.integer(escores$scores), as.integer(N))$prob
+                   as.integer(escores$scores), as.integer(N),
+                   PACKAGE="exactRankTests")$prob
         t <- which(prob != 0)
         prob <- prob[t]
         # 0 is possible
@@ -178,7 +179,7 @@ cperm <- function(escores, m, paired = NULL)
         scores <- rep(1, N)
         prob <- .C("cpermdist2", prob = as.double(prob), as.integer(m),
                 as.integer(col), as.integer(scores), as.integer(escores$scores),
-                as.integer(N), as.integer(1))$prob
+                as.integer(N), as.integer(1), PACKAGE="exactRankTests")$prob
         t <- which(prob != 0)
         prob <- prob[t]
     }

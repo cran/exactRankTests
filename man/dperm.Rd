@@ -162,7 +162,7 @@ x <- rnorm(n, 5)
 y <- rnorm(n, 5)
 r <- rank(abs(x - y))
 pperm(sum(r[x - y > 0]), r, length(r))
-wilcox.test(x,y, paired=T, alternative="less")
+wilcox.test(x,y, paired=TRUE, alternative="less")
 psignrank(sum(r[x - y > 0]), length(r))
 
 # Ansari-Bradley

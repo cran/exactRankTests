@@ -30,7 +30,7 @@ See page 75 of Gardner & Altman (1989).
 \examples{
 data(globulin)
 attach(globulin)
-pt <- perm.test(group1, group2, conf.int=T)
+pt <- perm.test(group1, group2, conf.int=TRUE)
 pt
 stopifnot(pt$conf.int == c(-8.50, 1.25))
 }

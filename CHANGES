@@ -1,4 +1,12 @@
-$Id: CHANGES,v 1.31 2002/02/20 15:05:58 hothorn Exp $
+$Id: CHANGES,v 1.33 2002/03/06 19:50:40 hothorn Exp $
+
+	0.6-6 (06.03.2002)
+
+	checkTnF was still unhappy with stuff in ./tests
+
+	0.6-5 (06.03.2002)
+
+	make checkTnF happy
 	
 	0.6-4 (20.02.2002)
 

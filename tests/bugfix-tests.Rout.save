@@ -1,6 +1,6 @@
 
 R : Copyright 2002, The R Development Core Team
-Version 1.4.1  (2002-01-30)
+Version 1.5.0 Under development (unstable) (2002-03-05)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -29,7 +29,7 @@ Type `q()' to quit R.
 +        0, 1, 178, 0, 0, 0, 6, 0,7,76, 252, 0 , 0,23, 0, 0,68, 0, 0, 0,24, 0,
 +        59, 0, 0, 0, 0,16)
 > 
-> wilcox.exact(x, y, paired=T, conf.int=T)  # was broken
+> wilcox.exact(x, y, paired=TRUE, conf.int=TRUE)  # was broken
 
 	Exact Wilcoxon signed rank test
 
@@ -43,15 +43,15 @@ sample estimates:
          -0.25 
 
 > 
-> p1 <- wilcox.exact(x, y, paired=T, alternative="g", mu=-50)$p.value
-> p2 <- wilcox.exact(x, y, paired=T, alternative="l", mu=-50)$p.value
+> p1 <- wilcox.exact(x, y, paired=TRUE, alternative="g", mu=-50)$p.value
+> p2 <- wilcox.exact(x, y, paired=TRUE, alternative="l", mu=-50)$p.value
 > p <- p1 + p2
 > names(p) <- NULL
 > 
 > stopifnot(all.equal(p, 1))
 > 
-> p1 <- perm.test(x, y, paired=T, alternative="g")$p.value
-> p2 <- perm.test(x, y, paired=T, alternative="l")$p.value
+> p1 <- perm.test(x, y, paired=TRUE, alternative="g")$p.value
+> p2 <- perm.test(x, y, paired=TRUE, alternative="l")$p.value
 > p <- p1 + p2
 > names(p) <- NULL
 > 

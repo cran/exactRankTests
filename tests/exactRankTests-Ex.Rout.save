@@ -1,6 +1,6 @@
 
 R : Copyright 2002, The R Development Core Team
-Version 1.4.1  (2002-01-30)
+Version 1.5.0 Under development (unstable) (2002-03-05)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -91,7 +91,7 @@ Type `q()' to quit R.
 > r <- rank(abs(x - y))
 > pperm(sum(r[x - y > 0]), r, length(r))
 [1] 0.1875
-> wilcox.test(x,y, paired=T, alternative="less")
+> wilcox.test(x,y, paired=TRUE, alternative="less")
 
 	Wilcoxon signed rank test
 
@@ -345,7 +345,7 @@ Max difference:  0
 > 
 > data(globulin)
 > attach(globulin)
-> pt <- perm.test(group1, group2, conf.int=T)
+> pt <- perm.test(group1, group2, conf.int=TRUE)
 > pt
 
 	2-sample Permutation Test
@@ -673,7 +673,7 @@ difference in location
 > 
 > # StatXact 4 for Windows: p.value = 0.0542, point prob = 0.019
 >  
-> we <- wilcox.exact(contr, treat, alternative="less", conf.int=T) 
+> we <- wilcox.exact(contr, treat, alternative="less", conf.int=TRUE) 
 > we
 
 	Exact Wilcoxon rank sum test
@@ -701,7 +701,7 @@ difference in location
 > post <- c(0, 51, 0, 385, 0, 235, 0, 0, 48, 65, 77, 0, 0, 0, 53, 150, 0, 165,
 + 98, 0)
 > 
-> we <- wilcox.exact(pre, post, paired=T, conf.int=TRUE)
+> we <- wilcox.exact(pre, post, paired=TRUE, conf.int=TRUE)
 > we
 
 	Exact Wilcoxon signed rank test
@@ -721,7 +721,7 @@ sample estimates:
 > 
 > 
 >   # StatXact page 175
->   we <- wilcox.exact(post, pre, paired=T, conf.int=TRUE)
+>   we <- wilcox.exact(post, pre, paired=TRUE, conf.int=TRUE)
 >   stopifnot(we$estimate > we$conf.int[1] & we$estimate < we$conf.int[2])
 >   stopifnot(we$conf.int[1] == -292)
 >   stopifnot(we$conf.int[2] == -54)
@@ -729,7 +729,7 @@ sample estimates:
 > 
 > 
 > 
-> we <- wilcox.exact(pre,post, paired=T, conf.int=TRUE, exact=FALSE)
+> we <- wilcox.exact(pre,post, paired=TRUE, conf.int=TRUE, exact=FALSE)
 > we
 
 	Asymptotic Wilcoxon signed rank test
@@ -794,7 +794,7 @@ difference in location
 > x <- c(1.83, 0.50, 1.62, 2.48, 1.68, 1.88, 1.55, 3.06, 1.30)
 > y <- c(0.878, 0.647, 0.598, 2.05, 1.06, 1.29, 1.06, 3.14, 1.29)
 > 
-> we <- wilcox.exact(y,x, paired=T, conf.int=TRUE)
+> we <- wilcox.exact(y,x, paired=TRUE, conf.int=TRUE)
 > we 
 
 	Exact Wilcoxon signed rank test
@@ -866,7 +866,7 @@ difference in location
 > 
 > 
 > cat("Time elapsed: ", proc.time() - get("ptime", env = .CheckExEnv),"\n")
-Time elapsed:  4.91 0.06 5 0 0 
+Time elapsed:  10.78 0.23 12.22 0 0 
 > dev.off(); quit('no')
 null device 
           1 

@@ -73,7 +73,7 @@ x <- rnorm(n, 5)
 y <- rnorm(n, 5)
 r <- rank(abs(x - y))
 pperm(sum(r[x - y > 0]), r, length(r))
-wilcox.test(x,y, paired=T, alternative="less")
+wilcox.test(x,y, paired=TRUE, alternative="less")
 psignrank(sum(r[x - y > 0]), length(r))
 
 # Ansari-Bradley
@@ -268,7 +268,7 @@ cleanEx(); ..nameEx <- "globulin"
 
 data(globulin)
 attach(globulin)
-pt <- perm.test(group1, group2, conf.int=T)
+pt <- perm.test(group1, group2, conf.int=TRUE)
 pt
 stopifnot(pt$conf.int == c(-8.50, 1.25))
 
@@ -438,7 +438,7 @@ we
 
 # StatXact 4 for Windows: p.value = 0.0542, point prob = 0.019
  
-we <- wilcox.exact(contr, treat, alternative="less", conf.int=T) 
+we <- wilcox.exact(contr, treat, alternative="less", conf.int=TRUE) 
 we
 
   stopifnot(round(we$p.value,4) == 0.0542)
@@ -454,7 +454,7 @@ pre <- c(149, 0, 0, 259, 106, 255, 0, 52, 340, 65, 180, 0, 84, 89, 212, 554,
 post <- c(0, 51, 0, 385, 0, 235, 0, 0, 48, 65, 77, 0, 0, 0, 53, 150, 0, 165,
 98, 0)
 
-we <- wilcox.exact(pre, post, paired=T, conf.int=TRUE)
+we <- wilcox.exact(pre, post, paired=TRUE, conf.int=TRUE)
 we
 
   stopifnot(round(we$p.value,4) == 0.0021)
@@ -462,7 +462,7 @@ we
 
 
   # StatXact page 175
-  we <- wilcox.exact(post, pre, paired=T, conf.int=TRUE)
+  we <- wilcox.exact(post, pre, paired=TRUE, conf.int=TRUE)
   stopifnot(we$estimate > we$conf.int[1] & we$estimate < we$conf.int[2])
   stopifnot(we$conf.int[1] == -292)
   stopifnot(we$conf.int[2] == -54)
@@ -470,7 +470,7 @@ we
 
 
 
-we <- wilcox.exact(pre,post, paired=T, conf.int=TRUE, exact=FALSE)
+we <- wilcox.exact(pre,post, paired=TRUE, conf.int=TRUE, exact=FALSE)
 we
 
   stopifnot(round(we$p.value,4) == 0.0038)
@@ -499,7 +499,7 @@ wilcox.exact(weeks, term, conf.int=TRUE)
 x <- c(1.83, 0.50, 1.62, 2.48, 1.68, 1.88, 1.55, 3.06, 1.30)
 y <- c(0.878, 0.647, 0.598, 2.05, 1.06, 1.29, 1.06, 3.14, 1.29)
 
-we <- wilcox.exact(y,x, paired=T, conf.int=TRUE)
+we <- wilcox.exact(y,x, paired=TRUE, conf.int=TRUE)
 we 
 
 

@@ -14,17 +14,17 @@ y <- c(0, 0,14, 0, 0,16, 0, 145, 0, 0,16, 0, 0,47, 0, 0,0, 144, 0 , 2, 0,13,
        0, 1, 178, 0, 0, 0, 6, 0,7,76, 252, 0 , 0,23, 0, 0,68, 0, 0, 0,24, 0,
        59, 0, 0, 0, 0,16)
 
-wilcox.exact(x, y, paired=T, conf.int=T)  # was broken
+wilcox.exact(x, y, paired=TRUE, conf.int=TRUE)  # was broken
 
-p1 <- wilcox.exact(x, y, paired=T, alternative="g", mu=-50)$p.value
-p2 <- wilcox.exact(x, y, paired=T, alternative="l", mu=-50)$p.value
+p1 <- wilcox.exact(x, y, paired=TRUE, alternative="g", mu=-50)$p.value
+p2 <- wilcox.exact(x, y, paired=TRUE, alternative="l", mu=-50)$p.value
 p <- p1 + p2
 names(p) <- NULL
 
 stopifnot(all.equal(p, 1))
 
-p1 <- perm.test(x, y, paired=T, alternative="g")$p.value
-p2 <- perm.test(x, y, paired=T, alternative="l")$p.value
+p1 <- perm.test(x, y, paired=TRUE, alternative="g")$p.value
+p2 <- perm.test(x, y, paired=TRUE, alternative="l")$p.value
 p <- p1 + p2
 names(p) <- NULL
 

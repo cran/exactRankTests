@@ -1,6 +1,6 @@
 /*
 
-  $Id: spermdist.c,v 1.4 2003/04/09 09:50:58 hothorn Exp $
+  $Id: spermdist.c,v 1.5 2003/04/24 07:26:40 hothorn Exp $
   
   spermdist : Simulate Distribution of Permutation Test Statistics
   Copyright (C) 2003  Torsten Hothorn 
@@ -60,7 +60,6 @@ SEXP sim2is(SEXP scores, SEXP mfirst, SEXP Nsim) {
   int i, j, lasti, countus = 0, this, k;
   double stat = 0.0, cut;
   double *urand, *help;
-  char *names;
               
   /*
   	check the arguments 

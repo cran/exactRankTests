@@ -1,6 +1,6 @@
 /*
 
-  $Id: permdist.c,v 1.26 2003/04/10 08:58:04 hothorn Exp $
+  $Id: permdist.c,v 1.27 2003/04/24 07:26:40 hothorn Exp $
   
   permdist : Distribution of Permutation Tests by Streitberg & Roehmel
   Copyright (C) 2000-2003  Torsten Hothorn 
@@ -57,6 +57,17 @@
 */
 
 #define PERM_MAX_N 1000000
+
+
+int aindx(int i, int j, int n) {
+  /* 
+    array indexing for vectors: for a (m x n) matrix get position of element
+    (j,i)
+  */
+  return(i*(n + 1) + j);
+}
+
+
 
 SEXP cpermdist1(SEXP scores) {
 
@@ -144,7 +155,7 @@ SEXP cpermdist2(SEXP m_a,  SEXP m_b,
   SEXP H, x;		/* matrix of permutations and vector 
                            of probabilities */ 
   
-  int i, j, k, z, sum_a = 0, sum_b = 0, s_a = 0, s_b = 0;
+  int i, j, k, sum_a = 0, sum_b = 0, s_a = 0, s_b = 0;
   double msum = 0.0; 	/* little helpers */
 
   if (!isVector(score_a)) {
@@ -260,12 +271,3 @@ SEXP cpermdist2(SEXP m_a,  SEXP m_b,
     return(x);
   }
 }
-
-int aindx(int i, int j, int n) {
-  /* 
-    array indexing for vectors: for a (m x n) matrix get position of element
-    (j,i)
-  */
-  return(i*(n + 1) + j);
-}
-

@@ -1,4 +1,8 @@
-$Id: CHANGES,v 1.57 2003/04/23 15:09:52 hothorn Exp $
+$Id: CHANGES,v 1.58 2003/04/24 07:38:35 hothorn Exp $
+
+	0.8-1 (24.04.2003)
+
+	make -Wall happy
 
 	0.8-0 (23.04.2003)
 

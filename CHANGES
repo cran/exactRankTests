@@ -1,4 +1,12 @@
-$Id: CHANGES,v 1.35 2002/04/15 06:28:04 hothorn Exp $
+$Id: CHANGES,v 1.36 2002/04/15 16:29:59 hothorn Exp $
+
+	0.6-10 (23.05.2002)
+
+	pedantic
+
+	0.6-9 (15.04.2002)
+
+	added bivariate rank test `br.test' for testing only
 
 	0.6-8 (15.04.2002)
 

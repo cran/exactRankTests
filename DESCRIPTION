@@ -1,7 +1,7 @@
 Package: exactRankTests
 Title: Exact Distributions for Rank Tests 
-Date: $Date: 2002/04/15 06:28:04 $
-Version: 0.6-8
+Date: $Date: 2002/04/15 16:29:59 $
+Version: 0.6-10
 Author: Torsten Hothorn <Torsten.Hothorn@rzmail.uni-erlangen.de> and
   Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 Maintainer: Torsten Hothorn <Torsten.Hothorn@rzmail.uni-erlangen.de>

@@ -1,6 +1,6 @@
 /*
 
-  $Id: permdist.c,v 1.8 2002/04/12 13:00:52 hothorn Exp $
+  $Id: permdist.c,v 1.12 2002/05/23 14:24:21 hothorn Exp $
   
   permdist : Distribution of Permutation Tests by Streitberg and Roehmel
   Copyright (C) 2000  Torsten Hothorn <Torsten.Hothorn@rzmail.uni-erlangen.de>
@@ -67,7 +67,7 @@ void cpermdist1(double *x, int *score_a, int *N)
 		initialize H
 	*/
 
-	H = (double *) calloc(sum_a + 1, sizeof(double));
+	H = (double *) R_alloc(sum_a + 1, sizeof(double));
 	if (!H)
 		error("cpermdist1 allocation error %d", 1);
 	for (i = 0; i <= sum_a; i++)
@@ -105,12 +105,6 @@ void cpermdist1(double *x, int *score_a, int *N)
 	for (i = 0; i <= sum_a; i++)
 		x[i] = H[i]/msum;	/* 0 is a possible realization */
 	
-	/*
-		free memory and exit
-	*/
-	
-	free((void *) H);
-
 }
 
 void cpermdist2(double *x, int *m, int *c, int *score_a, int *score_b, int *N, int *lenx)
@@ -147,11 +141,11 @@ void cpermdist2(double *x, int *m, int *c, int *score_a, int *score_b, int *N, i
 		initialize H
 	*/
 
-	H = (double **) calloc(sum_a + 1, sizeof(double *));
+	H = (double **) R_alloc(sum_a + 1, sizeof(double *));
 	if (!H)
 		error("cpermdist2 allocation error %d", 1);
 	for (i = 0; i <= sum_a; i++) {
-		H[i] = (double *) calloc(sum_b + 1, sizeof(double));
+		H[i] = (double *) R_alloc(sum_b + 1, sizeof(double));
 		if (!H)
 			error("cpermdist2 allocation error %d", 2);
 		for (j = 0; j <= sum_b; j++)
@@ -218,18 +212,9 @@ void cpermdist2(double *x, int *m, int *c, int *score_a, int *score_b, int *N, i
 			x[j] = x[j]/msum;
 	
 	}
-		
-	/*
-		free memory and exit
-	*/
-	
-	for (i = sum_a; i >= 0; i--) 
-		if (H[i] != 0) free((void *) H[i]);
-	free((void *) H);
-
 }
 
-void cpermdist3(double *x, int *m, int *score_a, int *score_b, int *score_c, int *N)
+void cpermdist3(double *x, int *m, int *maxb, int *maxc, int *score_a, int *score_b, int *score_c, int *N)
 {
 	/*
 	  3-dim SR
@@ -238,7 +223,6 @@ void cpermdist3(double *x, int *m, int *score_a, int *score_b, int *score_c, int
 	double ***H; 
 	int i, j, k, z, sum_a = 0, sum_b = 0, sum_c = 0, s_a = 0, s_b = 0, s_c=0;
 	int l  = 0;
-	double msum = 0.0;
 
 	if (*N > PERM_MAX_N)
 		error("N > %d in cpermdistr2", PERM_MAX_N); 
@@ -254,38 +238,33 @@ void cpermdist3(double *x, int *m, int *score_a, int *score_b, int *score_c, int
 	*/
 	
 	sum_a = imin2(sum_a, *m);
-	Rprintf("a: %d \n", sum_a);
-	Rprintf("m: %d \n", *m);
-	Rprintf("m: %d \n", *N);
+	sum_b = imin2(sum_b, *maxb);
+	sum_c = imin2(sum_c, *maxc);
 	
 
 	/*
 		initialize H
 	*/
 
-	H = (double ***) calloc(sum_a + 1, sizeof(double **));
+	H = (double ***) R_alloc(sum_a + 1, sizeof(double **));
 	if (!H)
 		error("cpermdist2 allocation error %d", 1);
 	for (i = 0; i <= sum_a; i++) {
-		H[i] = (double **) calloc(sum_b + 1, sizeof(double));
+		H[i] = (double **) R_alloc(sum_b + 1, sizeof(double));
 		if (!H)
 			error("cpermdist2 allocation error %d", 2);
 		for (j = 0; j <= sum_b; j++) {
-			H[i][j] = (double *) calloc(sum_c + 1, sizeof(double));
+			H[i][j] = (double *) R_alloc(sum_c + 1, sizeof(double));
                    	for (l = 0; l <= sum_c; l++)
 				H[i][j][l] = 0;
 		}
 	}
 	
-	Rprintf("H: %d \n", H[2][2][2]);
-		
 	/*
 		start the algorithm with H[0][0][0] = 1
 	*/
 		
 	H[0][0][0] = 1;
-	
-	Rprintf("H null = 1: %f \n", H[0][0][0]);
 	
 	
 	for (k = 0; k < *N; k++) {
@@ -293,8 +272,8 @@ void cpermdist3(double *x, int *m, int *score_a, int *score_b, int *score_c, int
 	  s_b = s_b + score_b[k];
 	  s_c = s_c + score_c[k];
 	  for (i = imin2(*m, s_a); i >= score_a[k]; i--) {
-	    for (j = s_b; j >= score_b[k]; j--) {
-	      for (l = s_c; l >= score_c[k]; l--) {
+	    for (j = imin2(*maxb, s_b); j >= score_b[k]; j--) {
+	      for (l = imin2(*maxc, s_c); l >= score_c[k]; l--) {
 	        H[i][j][l] = H[i][j][l] + H[i - score_a[k]][j - score_b[k]][l - score_c[k]];
 	      }
 	    }
@@ -306,27 +285,12 @@ void cpermdist3(double *x, int *m, int *score_a, int *score_b, int *score_c, int
 	*/ 
 
 	z = 0;
-//	for (i = 0; i < sum_a; i++) {
-	i = *m;
-		for (j = 0; j < sum_b; j++) {
-			for (l = 0; l < sum_c; l++) {
-				x[z] = H[i][j][l];
-				z++;
-			}
+	for (j = 0; j < sum_b; j++) {
+		for (l = 0; l < sum_c; l++) {
+			x[z] = H[*m][j+1][l+1];
+			z++;
 		}
-//	}
-		
-	/*
-		free memory and exit
-	*/
-/*	
-	for (i = sum_a; i >= 0; i--) {
-		for (j = sum_b; j >=0; j--)
-			if (H[i][j] != 0) free((void *) H[i][j]);
-		free((void **) H);
 	}
-	free((void ***) H);
-*/
 }
 
 

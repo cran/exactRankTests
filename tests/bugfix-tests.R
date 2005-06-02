@@ -64,3 +64,9 @@ perm.test(x,y, paired=TRUE)
 # distributions.
 # spotted by Dieter Menne <dieter.menne@menne-biomed.de>
 pperm(5, 1:4, 4, alt = "two.sided")
+
+# mu was ignored, spotted by <Reiczigel.Jeno@aotk.szie.hu>
+x <- c(28,39,66,75,59,33,45,108,110,81,77,34,80,69,72)
+stopifnot(all.equal(perm.test(x, mu = 60)$p.value, 
+          perm.test(x - 60, mu = 0)$p.value))
+

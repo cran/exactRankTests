@@ -1,4 +1,4 @@
-# $Id: perm.test.R,v 1.17.4.1 2003/09/18 11:24:15 hothorn Exp $
+# $Id: perm.test.R,v 1.17.4.2 2005/06/02 06:42:59 hothorn Exp $
 
 perm.test <- function(x, ...) UseMethod("perm.test")
 
@@ -35,6 +35,7 @@ function(x,y=NULL, paired = FALSE, alternative = c("two.sided", "less", "greater
         } else {
             x <- x[complete.cases(x)]
         }
+        x <- x - mu
         m <- length(x)
         METHOD <- "1-sample Permutation Test"
         if (is.null(exact)) exact <- (m <= 50)

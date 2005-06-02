@@ -1,4 +1,9 @@
-$Id: CHANGES,v 1.58.2.7 2005/03/16 10:43:33 hothorn Exp $
+$Id: CHANGES,v 1.58.2.8 2005/06/02 06:42:59 hothorn Exp $
+
+	0.8-11 (02.06.2005)
+
+        `mu' was ignored for one-sample version of `perm.test' 
+        (spotted by <Reiczigel.Jeno@aotk.szie.hu>)
 
 	0.8-10 (16.03.2005)
 

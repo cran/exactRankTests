@@ -1,6 +1,6 @@
 
-R : Copyright 2004, The R Foundation for Statistical Computing
-Version 2.0.1  (2004-11-15), ISBN 3-900051-07-0
+R : Copyright 2005, The R Foundation for Statistical Computing
+Version 2.1.0  (2005-04-18), ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -101,8 +101,8 @@ data:  ramsay and jung.parekh
 AB = 185.5, p-value = 0.1815
 alternative hypothesis: true ratio of scales is not equal to 1 
 
-Warning message: 
-Cannot compute exact p-value with ties in: ansari.test.default(ramsay, jung.parekh) 
+Warning message:
+cannot compute exact p-value with ties in: ansari.test.default(ramsay, jung.parekh) 
 > ansari.exact(ramsay, jung.parekh)
 
 	Ansari-Bradley test
@@ -333,13 +333,13 @@ alternative hypothesis: true mu is less than 0
 > 
 > abs(qperm(0.025, scores, length(x)))
 [1] 3.871345
-Warning message: 
+Warning message:
 cannot hold tol, tolerance: 0.010292 in: findfact(scores - min(scores) + 1, m, tol) 
 > 
 > # p-values
 > 
 > p1 <- pperm(X, scores, length(x), alternative="two.sided")
-Warning message: 
+Warning message:
 cannot hold tol, tolerance: 0.010292 in: findfact(scores - min(scores) + 1, m, tol) 
 > 
 > # generate integer valued scores with the same shape as normal quantile
@@ -374,7 +374,7 @@ cannot hold tol, tolerance: 0.010292 in: findfact(scores - min(scores) + 1, m, t
 +   ls <- cscores(Surv(ears$left, ears$lcens), int=TRUE)
 +   perm.test(ls ~ group, data=ears)
 + }
-Loading required package: splines 
+Loading required package: splines
 
 	2-sample Permutation Test
 
@@ -452,7 +452,7 @@ alternative hypothesis: true mu is not equal to 0
 +   pperm(T, lsc, sum(tr), alternative="tw", simulate=TRUE)
 + }
 [1] 1e-04
-Warning messages: 
+Warning messages:
 1: cannot hold tol, tolerance: 0.010019 in: findfact(scores - min(scores) + 1, m, tol) 
 2: cannot hold tol, tolerance: 0.010067 in: findfact(scores - min(scores) + 1, m, tol) 
 > 
@@ -576,7 +576,7 @@ alternative hypothesis: true mu is less than 0
 > pperm(sum(css[neuropathy$group=="control"]),css,
 +       m=sum(neuropathy$group=="control"))
 [1] 0.03075730
-Warning message: 
+Warning message:
 cannot hold tol, tolerance: 0.047123 in: findfact(scores - min(scores) + 1, m, tol) 
 > 
 > 
@@ -899,7 +899,7 @@ difference in location
 > ### * <FOOTER>
 > ###
 > cat("Time elapsed: ", proc.time() - get("ptime", env = .CheckExEnv),"\n")
-Time elapsed:  4.46 0.03 4.57 0 0 
+Time elapsed:  4.99 0.04 5.14 0 0 
 > dev.off()
 null device 
           1 

@@ -1,4 +1,5 @@
 useDynLib(exactRankTests)
+import(utils)
 
 exportPattern("\\.exact$")
 exportPattern("\\.exact.default$")

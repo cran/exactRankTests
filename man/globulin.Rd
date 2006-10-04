@@ -1,6 +1,6 @@
 \name{globulin}
 \alias{globulin}
-\non_function{}
+\docType{data}
 \title{ Differences in Globulin Fraction in Two Groups }
 \usage{data(globulin)}
 \description{

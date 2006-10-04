@@ -43,7 +43,7 @@ function(x, y, alternative = c("two.sided", "less", "greater"),
             alpha <- 1 - conf.level
             x <- sort(x)
             y <- sort(y)
-            ab <- function(sig) {
+            ab <- function(sig, zq = 0) {
                 rab <- rank(c(x/sig, y))
                 sum(pmin(rab, N - rab + 1)[seq(along = x)])
             }
@@ -128,7 +128,7 @@ function(x, y, alternative = c("two.sided", "less", "greater"),
     
         if(conf.int && !exact) {
             alpha <- 1 - conf.level
-            ab <- function(sig, zq) {
+            ab <- function(sig, zq = 0) {
                 r <- rank(c(x / sig, y))
                 s <- sum(pmin(r, N -r + 1)[seq(along = x)])
                 normalize(s, r) - zq

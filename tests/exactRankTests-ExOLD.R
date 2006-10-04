@@ -291,8 +291,10 @@ wilcox.exact(Ozone ~ Month, data = airquality,
     print(wt)
     we$pointprob <- NULL
     we$method <- NULL
+    we$null.value <- NULL
     wt$parameter <- NULL
     wt$method <- NULL
+    wt$null.value <- NULL
     stopifnot(all.equal(wt, we))
     we <- wilcox.exact(x, conf.int = TRUE)
     print(we)
@@ -300,8 +302,10 @@ wilcox.exact(Ozone ~ Month, data = airquality,
     print(wt)
     we$pointprob <- NULL
     we$method <- NULL
+    we$null.value <- NULL
     wt$parameter <- NULL
     wt$method <- NULL
+    wt$null.value <- NULL
     stopifnot(all.equal(wt, we))
   }
 

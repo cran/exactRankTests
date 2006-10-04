@@ -1,4 +1,12 @@
-$Id: CHANGES,v 1.58.2.9 2006/02/02 08:44:19 hothorn Exp $
+$Id: CHANGES,v 1.58.2.10 2006/10/04 10:58:51 hothorn Exp $
+
+	0.8-15 (05.10.2006)
+
+        clarify dependencies on stats
+
+	0.8-14 (04.10.2006)
+
+        null.value had different names
 
 	0.8-13 (23.08.2006)
 	

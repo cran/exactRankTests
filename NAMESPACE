@@ -1,5 +1,6 @@
 useDynLib(exactRankTests)
 import(utils)
+import(stats)
 
 exportPattern("\\.exact$")
 exportPattern("\\.exact.default$")
@@ -9,6 +10,3 @@ export(dperm, qperm, pperm, rperm, perm.test, perm.test.default,
 perm.test.formula, cscores, cscores.default, cscores.factor, 
 cscores.Surv, irank)
 
-# There will be no package `ctest' in R-1.9.0
-# import(ctest)
-#

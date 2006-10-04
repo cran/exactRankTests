@@ -78,8 +78,10 @@ if (!any(duplicated(c(x,y)))) {
     print(wt)
     we$pointprob <- NULL
     we$method <- NULL   
+    we$null.value <- NULL
     wt$parameter <- NULL
     wt$method <- NULL   
+    wt$null.value <- NULL
     stopifnot(all.equal(wt, we))
     we <- wilcox.exact(x, conf.int = TRUE)
     print(we)
@@ -87,8 +89,10 @@ if (!any(duplicated(c(x,y)))) {
     print(wt)
     we$pointprob <- NULL
     we$method <- NULL   
+    we$null.value <- NULL
     wt$parameter <- NULL
     wt$method <- NULL   
+    wt$null.value <- NULL
     stopifnot(all.equal(wt, we))
 }
 

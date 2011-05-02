@@ -161,13 +161,13 @@ function(x, y = NULL, alternative = c("two.sided", "less", "greater"),
                     ## As in the exact case, interchange quantiles.
                     cint <- switch(alternative, "two.sided" = {
                         l <- uniroot(wdiff, c(mumin, mumax), tol=1e-4,
-                                     zq=qnorm(alpha/2, lower=FALSE))$root
+                                     zq=qnorm(alpha/2, lower.tail=FALSE))$root
                         u <- uniroot(wdiff, c(mumin, mumax), tol=1e-4,
                                      zq=qnorm(alpha/2))$root
                         c(l, u)
                     }, "greater"= {
                         l <- uniroot(wdiff, c(mumin, mumax), tol=1e-4,
-                                     zq=qnorm(alpha, lower=FALSE))$root
+                                     zq=qnorm(alpha, lower.tail=FALSE))$root
                         c(l, +Inf)
                     }, "less"= {
                         u <- uniroot(wdiff, c(mumin, mumax), tol=1e-4,
@@ -277,13 +277,13 @@ function(x, y = NULL, alternative = c("two.sided", "less", "greater"),
                 }
                 cint <- switch(alternative, "two.sided" = {
                     l <- uniroot(wdiff, c(mumin, mumax), tol=1e-4,
-                                  zq=qnorm(alpha/2, lower=FALSE))$root
+                                  zq=qnorm(alpha/2, lower.tail=FALSE))$root
                     u <- uniroot(wdiff, c(mumin, mumax), tol=1e-4,
                                   zq=qnorm(alpha/2))$root
                     c(l, u)
                 }, "greater"= {
                     l <- uniroot(wdiff, c(mumin, mumax), tol=1e-4,
-                                  zq=qnorm(alpha, lower=FALSE))$root
+                                  zq=qnorm(alpha, lower.tail=FALSE))$root
                     c(l, +Inf)
                 }, "less"= {
                     u <- uniroot(wdiff, c(mumin, mumax), tol=1e-4,

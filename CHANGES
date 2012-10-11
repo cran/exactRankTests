@@ -1,5 +1,9 @@
 $Id: CHANGES,v 1.58.2.10 2006/10/04 10:58:51 hothorn Exp $
 
+	0.8-23 (11.10.2012)
+
+	cpermdist2 R function for maxstat
+
 	0.8-22 (30.08.2011)
 
         spaces in startup message

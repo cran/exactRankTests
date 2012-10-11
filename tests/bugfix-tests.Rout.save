@@ -1,6 +1,8 @@
 
-R : Copyright 2005, The R Foundation for Statistical Computing
-Version 2.1.0  (2005-04-18), ISBN 3-900051-07-0
+R Under development (unstable) (2012-10-07 r60893) -- "Unsuffered Consequences"
+Copyright (C) 2012 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+Platform: i686-pc-linux-gnu (32-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -11,11 +13,16 @@ Type 'contributors()' for more information and
 'citation()' on how to cite R or R packages in publications.
 
 Type 'demo()' for some demos, 'help()' for on-line help, or
-'help.start()' for a HTML browser interface to help.
+'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
 > 
 > library(exactRankTests)
+Loading required package: survival
+Loading required package: splines
+ Package 'exactRankTests' is no longer under development.
+ Please consider using package 'coin' instead.
+
 > 
 > # From Ruggero Bellio <ruggero.bellio@dss.uniud.it>
 > # 20.02.2002
@@ -90,7 +97,7 @@ alternative hypothesis: true mu is not equal to 0
 > 
 > try(dperm(0, c(0,-1,2,2), m=4))
 Error in equiscores(scores, m, tol, fact, simulate) : 
-	scores must be positive
+  scores must be positive
 > 
 > # missing values to the default method `perm.test.default'
 > # spotted by Claus Ekstroem <claus@ekstroem.dk>
@@ -118,3 +125,6 @@ alternative hypothesis: true mu is not equal to 0
 +           perm.test(x - 60, mu = 0)$p.value))
 > 
 > 
+> proc.time()
+   user  system elapsed 
+  0.376   0.036   0.404 

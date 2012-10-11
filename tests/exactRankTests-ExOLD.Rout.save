@@ -1,6 +1,8 @@
 
-R : Copyright 2004, The R Foundation for Statistical Computing
-Version 1.9.1  (2004-06-21), ISBN 3-900051-00-3
+R Under development (unstable) (2012-10-07 r60893) -- "Unsuffered Consequences"
+Copyright (C) 2012 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+Platform: i686-pc-linux-gnu (32-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -8,10 +10,10 @@ Type 'license()' or 'licence()' for distribution details.
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
-'citation()' on how to cite R in publications.
+'citation()' on how to cite R or R packages in publications.
 
 Type 'demo()' for some demos, 'help()' for on-line help, or
-'help.start()' for a HTML browser interface to help.
+'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
 > attach(NULL, name = "CheckExEnv")
@@ -33,7 +35,7 @@ Type 'q()' to quit R.
 > assign("cleanEx",
 +        function(env = .GlobalEnv) {
 + 	   rm(list = ls(envir = env, all.names = TRUE), envir = env)
-+          assign(".Random.seed", as.integer(c(0, rep(7654, 3))), envir=.GlobalEnv)
++            assign(".Random.seed", as.integer(c(0, rep(7654, 3))), envir=.GlobalEnv)
 + 	   assign("T", NULL, pos = 1);
 + 	   assign("F", NULL, pos = 1);
 +        },
@@ -44,6 +46,11 @@ Type 'q()' to quit R.
 > assign("par.postscript", par(no.readonly = TRUE), env = .CheckExEnv)
 > options(contrasts = c(unordered = "contr.treatment", ordered = "contr.poly"))
 > library('exactRankTests')
+Loading required package: survival
+Loading required package: splines
+ Package 'exactRankTests' is no longer under development.
+ Please consider using package 'coin' instead.
+
 > cleanEx(); ..nameEx <- "dperm"
 > ###--- >>> `dperm' <<<----- Distribution of One and Two Sample Permutation Tests
 > 
@@ -104,7 +111,7 @@ Type 'q()' to quit R.
 
 data:  x and y 
 V = 18, p-value = 0.1875
-alternative hypothesis: true mu is less than 0 
+alternative hypothesis: true location shift is less than 0 
 
 > psignrank(sum(r[x - y > 0]), length(r))
 [1] 0.1875
@@ -133,14 +140,16 @@ alternative hypothesis: true mu is less than 0
 > 
 > abs(qperm(0.025, scores, length(x)))
 [1] 3.871345
-Warning message: 
-cannot hold tol, tolerance: 0.010292 in: findfact(scores - min(scores) + 1, m, tol) 
+Warning message:
+In findfact(scores - min(scores) + 1, m, tol) :
+  cannot hold tol, tolerance: 0.010292
 > 
 > # p-values
 > 
 > p1 <- pperm(X, scores, length(x), alternative="two.sided")
-Warning message: 
-cannot hold tol, tolerance: 0.010292 in: findfact(scores - min(scores) + 1, m, tol) 
+Warning message:
+In findfact(scores - min(scores) + 1, m, tol) :
+  cannot hold tol, tolerance: 0.010292
 > p1
 [1] 0.5179696
 > 
@@ -234,7 +243,7 @@ alternative hypothesis: true mu is not equal to 0
 	2-sample Permutation Test
 
 data:  A and B 
-T = 61, p-value = 0.01180
+T = 61, p-value = 0.0118
 alternative hypothesis: true mu is not equal to 0 
 95 percent confidence interval:
  0.05263158 0.34285714 
@@ -254,7 +263,7 @@ alternative hypothesis: true mu is not equal to 0
 	2-sample Permutation Test
 
 data:  treat and contr 
-T = 402, p-value = 0.1040
+T = 402, p-value = 0.104
 alternative hypothesis: true mu is not equal to 0 
 
 > 
@@ -279,7 +288,7 @@ alternative hypothesis: true mu is greater than 0
 	Asymptotic 2-sample Permutation Test
 
 data:  treat and contr 
-T = 402, p-value = 0.1070
+T = 402, p-value = 0.107
 alternative hypothesis: true mu is not equal to 0 
 
 > 
@@ -364,7 +373,7 @@ alternative hypothesis: true mu is less than 0
 
 data:  y - x 
 V = 5, p-value = 0.03906
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true location is not equal to 0 
 
 >   we
 
@@ -429,8 +438,10 @@ alternative hypothesis: true mu is not equal to 0
 +     print(wt)
 +     we$pointprob <- NULL
 +     we$method <- NULL
++     we$null.value <- NULL
 +     wt$parameter <- NULL
 +     wt$method <- NULL
++     wt$null.value <- NULL
 +     stopifnot(all.equal(wt, we))
 +     we <- wilcox.exact(x, conf.int = TRUE)
 +     print(we)
@@ -438,8 +449,10 @@ alternative hypothesis: true mu is not equal to 0
 +     print(wt)
 +     we$pointprob <- NULL
 +     we$method <- NULL
++     we$null.value <- NULL
 +     wt$parameter <- NULL
 +     wt$method <- NULL
++     wt$null.value <- NULL
 +     stopifnot(all.equal(wt, we))
 +   }
 
@@ -459,7 +472,7 @@ difference in location
 
 data:  x and y 
 W = 4, p-value = 0.0001299
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true location shift is not equal to 0 
 95 percent confidence interval:
  -2.953465 -1.320829 
 sample estimates:
@@ -483,7 +496,7 @@ sample estimates:
 
 data:  x 
 V = 21, p-value = 0.5566
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true location is not equal to 0 
 95 percent confidence interval:
  -0.6791477  0.4989492 
 sample estimates:
@@ -763,7 +776,10 @@ difference in location
 > 
 > 
 > cat("Time elapsed: ", proc.time() - get("ptime", env = .CheckExEnv),"\n")
-Time elapsed:  1.46 0.04 1.52 0 0 
+Time elapsed:  0.868 0.076 0.945 0 0 
 > dev.off(); quit('no')
 null device 
           1 
+> proc.time()
+   user  system elapsed 
+  1.060   0.108   1.158 

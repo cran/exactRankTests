@@ -1,5 +1,6 @@
 
 require(exactRankTests)
+set.seed(29)
 
 #
 #  Regression tests

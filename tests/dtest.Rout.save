@@ -1,6 +1,8 @@
 
-R : Copyright 2005, The R Foundation for Statistical Computing
-Version 2.1.0  (2005-04-18), ISBN 3-900051-07-0
+R Under development (unstable) (2012-10-07 r60893) -- "Unsuffered Consequences"
+Copyright (C) 2012 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+Platform: i686-pc-linux-gnu (32-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -11,11 +13,16 @@ Type 'contributors()' for more information and
 'citation()' on how to cite R or R packages in publications.
 
 Type 'demo()' for some demos, 'help()' for on-line help, or
-'help.start()' for a HTML browser interface to help.
+'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
 > 
 > library(exactRankTests)
+Loading required package: survival
+Loading required package: splines
+ Package 'exactRankTests' is no longer under development.
+ Please consider using package 'coin' instead.
+
 > RNGkind("Wichmann-Hill", "Kinderman-Ramage")
 > set.seed(29081975)
 > 
@@ -40,8 +47,8 @@ psignrank:  1.525879e-05 pperm:  1.525879e-05
 psignrank:  0.01367188 pperm:  0.01367188 
 psignrank:  0.000292778 pperm:  0.000292778 
 psignrank:  8.003553e-10 pperm:  8.003553e-10 
-psignrank:  0.002136230 pperm:  0.002136230 
-psignrank:  2.563000e-06 pperm:  2.563000e-06 
+psignrank:  0.00213623 pperm:  0.00213623 
+psignrank:  2.563e-06 pperm:  2.563e-06 
 psignrank:  2.273737e-11 pperm:  2.273737e-11 
 psignrank:  0.001525879 pperm:  0.001525879 
 psignrank:  2.69413e-05 pperm:  2.69413e-05 
@@ -113,7 +120,7 @@ pwilcox:  0.02764398 pperm:  0.02764398
 pwilcox:  0.9143719 pperm:  0.9143719 
 > 
 > cat("Max difference: ", max(abs(hansi - seppl)), "\n")
-Max difference:  2.775558e-17 
+Max difference:  1.110223e-16 
 > 
 >   stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
 > 
@@ -192,3 +199,6 @@ Max difference:  0
 > 
 > 
 > 
+> proc.time()
+   user  system elapsed 
+  1.980   0.072   2.042 

@@ -21,9 +21,7 @@ for (i in 1:10)
 	cat(" pperm: ", seppl[length(seppl)], "\n")
 }
 
-cat("Max difference: ", max(abs(hansi - seppl)), "\n")
-
-  stopifnot(max(abs(hansi - seppl)) <= 1e-10)
+stopifnot(max(abs(hansi - seppl)) <= 1e-10)
 
 hansi <- c()
 seppl <- c()
@@ -39,9 +37,7 @@ for (i in 1:10)
         cat(" qperm: ", seppl[length(seppl)], "\n")
 }
 
-cat("Max difference: ", max(abs(hansi - seppl)), "\n")
-
-  stopifnot(max(abs(hansi - seppl)) <= 1e-10)
+stopifnot(max(abs(hansi - seppl)) <= 1e-10)
 
 # independent observations
 
@@ -64,9 +60,7 @@ alternative="less"))
 	cat(" pperm: ", seppl[length(seppl)], "\n")
 }
 
-cat("Max difference: ", max(abs(hansi - seppl)), "\n")
-
-  stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
+stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
 
 hansi <- c()
 seppl <- c()
@@ -86,9 +80,7 @@ for (i in 1:10)
         cat(" qperm: ", seppl[length(seppl)], "\n")
 }
 
-cat("Max difference: ", max(abs(hansi - seppl)), "\n")
-
-  stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
+stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
 
 for (i in 1:20) {
   x <- rnorm(10)

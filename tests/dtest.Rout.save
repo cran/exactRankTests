@@ -1,7 +1,6 @@
 
-R Under development (unstable) (2013-01-10 r61617) -- "Unsuffered Consequences"
+R version 3.0.1 (2013-05-16) -- "Good Sport"
 Copyright (C) 2013 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
 Platform: x86_64-unknown-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -54,7 +53,10 @@ psignrank:  0.001525879 pperm:  0.001525879
 psignrank:  2.69413e-05 pperm:  2.69413e-05 
 psignrank:  9.313226e-09 pperm:  9.313226e-09 
 > 
-> stopifnot(max(abs(hansi - seppl)) <= 1e-10)
+> cat("Max difference: ", max(abs(hansi - seppl)), "\n")
+Max difference:  8.673617e-19 
+> 
+>   stopifnot(max(abs(hansi - seppl)) <= 1e-10)
 > 
 > hansi <- c()
 > seppl <- c()
@@ -80,7 +82,10 @@ qwilcox:  445 qperm:  445
 qwilcox:  203 qperm:  203 
 qwilcox:  50 qperm:  50 
 > 
-> stopifnot(max(abs(hansi - seppl)) <= 1e-10)
+> cat("Max difference: ", max(abs(hansi - seppl)), "\n")
+Max difference:  0 
+> 
+>   stopifnot(max(abs(hansi - seppl)) <= 1e-10)
 > 
 > # independent observations
 > 
@@ -113,7 +118,10 @@ pwilcox:  8.613825e-12 pperm:  8.613825e-12
 pwilcox:  0.02764398 pperm:  0.02764398 
 pwilcox:  0.9143719 pperm:  0.9143719 
 > 
-> stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
+> cat("Max difference: ", max(abs(hansi - seppl)), "\n")
+Max difference:  5.689893e-16 
+> 
+>   stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
 > 
 > hansi <- c()
 > seppl <- c()
@@ -143,7 +151,10 @@ qwilcox:  1041 qperm:  1041
 qwilcox:  824 qperm:  824 
 qwilcox:  114 qperm:  114 
 > 
-> stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
+> cat("Max difference: ", max(abs(hansi - seppl)), "\n")
+Max difference:  0 
+> 
+>   stopifnot(max(abs(hansi - seppl)) <= 1e-10) 
 > 
 > for (i in 1:20) {
 +   x <- rnorm(10)
@@ -189,4 +200,4 @@ qwilcox:  114 qperm:  114
 > 
 > proc.time()
    user  system elapsed 
-   3.68    0.08    3.73 
+  1.528   0.040   1.562 

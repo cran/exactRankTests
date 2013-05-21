@@ -41,8 +41,8 @@ function(x,y=NULL, paired = FALSE, alternative = c("two.sided", "less", "greater
         if (is.null(exact)) exact <- (m <= 50)
         if (any(x != floor(x)) && exact) {
             if (is.null(tol)) {
-                x <- x - min(x)
-                x <- round(x*m/max(x))
+                sc <- (-sum(x <= 0)):sum(x > 0)
+                x <- sc[rank(x, ties.method = "first")]
                 METHOD <- paste(METHOD, "(scores mapped into 1:m")
             }
             METHOD <- paste(METHOD, "using rounded scores)")
@@ -53,13 +53,13 @@ function(x,y=NULL, paired = FALSE, alternative = c("two.sided", "less", "greater
             PVAL <- switch(alternative,
                "two.sided" = {
                     pperm(STATISTIC, abs(x), m, alternative="two.sided",
-                          pprob=TRUE, tol=tol)
+                          pprob=TRUE, tol=tol, paired = TRUE)
                 }, "greater" = {
                     pperm(STATISTIC, abs(x), m, alternative="greater",
-                          pprob=TRUE, tol=tol)
+                          pprob=TRUE, tol=tol, paired = TRUE)
                 }, "less" = {
                     pperm(STATISTIC, abs(x), m, alternative="less", pprob=TRUE,
-                          tol=tol)
+                          tol=tol, paired = TRUE)
                 })
             MIDP <- PVAL$PPROB
             PVAL <- PVAL$PVALUE

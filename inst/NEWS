@@ -1,4 +1,10 @@
 
+	0.8-25 (21.05.2013)
+
+        perm.test(x, y, paired = TRUE, exact = TRUE, tol = NULL) did not map the
+        scores correctly into integers and gave wrong p-values;
+        spotted by Lewis Halsey <L.Halsey@roehampton.ac.uk>
+
 	0.8-24 (11.01.2013)
 
 	startup message in .onAttach

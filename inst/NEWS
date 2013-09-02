@@ -1,4 +1,8 @@
 
+	0.8-26 (02.09.2013)
+
+	fix NAMESPACE issues
+
 	0.8-25 (21.05.2013)
 
         perm.test(x, y, paired = TRUE, exact = TRUE, tol = NULL) did not map the

@@ -1,8 +1,7 @@
 
-R Under development (unstable) (2012-10-07 r60893) -- "Unsuffered Consequences"
-Copyright (C) 2012 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
-Platform: i686-pc-linux-gnu (32-bit)
+R Under development (unstable) (2013-09-08 r63880) -- "Unsuffered Consequences"
+Copyright (C) 2013 The R Foundation for Statistical Computing
+Platform: x86_64-unknown-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -18,8 +17,6 @@ Type 'q()' to quit R.
 
 > 
 > library(exactRankTests)
-Loading required package: survival
-Loading required package: splines
  Package 'exactRankTests' is no longer under development.
  Please consider using package 'coin' instead.
 
@@ -42,11 +39,11 @@ Loading required package: splines
 
 	Exact Wilcoxon signed rank test
 
-data:  x and y 
+data:  x and y
 V = 559, p-value = 0.9603
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 95 percent confidence interval:
- -13.5  10.5 
+ -13.5  10.5
 sample estimates:
 (pseudo)median 
          -0.25 
@@ -83,9 +80,9 @@ sample estimates:
 	2-sample Permutation Test (scores mapped into 1:(m+n) using rounded
 	scores)
 
-data:  scores[1:20] and scores[21:40] 
+data:  scores[1:20] and scores[21:40]
 T = 358, p-value = 0.1878
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 
 > 
 > # dperm was broken for some configurations of paired samples
@@ -108,16 +105,16 @@ Error in equiscores(scores, m, tol, fact, simulate) :
 
 	1-sample Permutation Test
 
-data:  x and y 
+data:  x and y
 T = 4, p-value = 0.5
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 
 > 
-> # not fixed: This is a problem when defining two-sided P-values for discrete
-> # distributions.
+> # now fixed: This was a problem when defining two-sided P-values for discrete
+> # distributions; the statistic was equal to the expectation (coin deals with this).
 > # spotted by Dieter Menne <dieter.menne@menne-biomed.de>
 > pperm(5, 1:4, 4, alt = "two.sided")
-[1] 1.125
+[1] 1
 > 
 > # mu was ignored, spotted by <Reiczigel.Jeno@aotk.szie.hu>
 > x <- c(28,39,66,75,59,33,45,108,110,81,77,34,80,69,72)
@@ -127,4 +124,4 @@ alternative hypothesis: true mu is not equal to 0
 > 
 > proc.time()
    user  system elapsed 
-  0.376   0.036   0.404 
+  0.196   0.016   0.209 

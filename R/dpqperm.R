@@ -72,7 +72,7 @@ pperm <- function(q, scores, m, paired = NULL, tol = 0.01, fact = NULL,
             else
               prob <- 1
         }
-    PVALUE <- c(PVALUE, sum(prob))
+    PVALUE <- c(PVALUE, min(c(1, sum(prob)))) ### STATISTIC == Expectation
     PPROB <- c(PPROB, ifelse(!is.null(cp$Prob[cp$T == i]),
                                       cp$Prob[cp$T ==i], 0)) 
     }

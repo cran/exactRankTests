@@ -1,4 +1,9 @@
 
+	0.8-27 (24.09.2013)
+
+        p-values were > 1 (in fact, 1 of course) when the statistic was
+        equal its expectation in the paired case.
+
 	0.8-26 (02.09.2013)
 
 	fix NAMESPACE issues

@@ -1,4 +1,8 @@
 
+	0.8-28 (20.02.2015)
+
+	register all methods
+
 	0.8-27 (24.09.2013)
 
         p-values were > 1 (in fact, 1 of course) when the statistic was

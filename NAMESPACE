@@ -1,4 +1,4 @@
-useDynLib(exactRankTests)
+useDynLib(exactRankTests, .registration = TRUE)
 import(utils)
 import(stats)
 

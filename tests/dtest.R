@@ -94,10 +94,11 @@ for (i in 1:20) {
 }
 
 
+if (FALSE) {
 dansari <- function(x, m ,n)
 {
-    .C("dansari", as.integer(length(x)), d = as.double(x), as.integer(m),
-       as.integer(n), PACKAGE="exactRankTests")$d
+    .C(dansari, as.integer(length(x)), d = as.double(x), as.integer(m),
+       as.integer(n))$d
 }
 
 # Ansari-Bradley
@@ -121,4 +122,4 @@ dab <- dansari(0:(n*(2*n+1)/2), n, n)
 
 stopifnot(all.equal(max(abs(dab[tr] - dabexac[tr])), 0))
 
-
+}

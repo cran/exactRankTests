@@ -1,7 +1,7 @@
 Package: exactRankTests
 Title: Exact Distributions for Rank and Permutation Tests
-Date: 2015-02-20
-Version: 0.8-28
+Date: 2017-03-01
+Version: 0.8-29
 Authors@R: c(person("Torsten", "Hothorn", role = c("aut", "cre"),
                     email = "Torsten.Hothorn@R-project.org"),
              person("Kurt", "Hornik", role = "aut"))
@@ -10,10 +10,10 @@ Description: Computes exact conditional p-values and quantiles using an
 Depends: R (>= 2.4.0), stats, utils
 Suggests: survival
 License: GPL (>= 2)
-Packaged: 2015-02-20 14:30:23 UTC; hothorn
+NeedsCompilation: yes
+Packaged: 2017-03-01 14:31:34 UTC; hothorn
 Author: Torsten Hothorn [aut, cre],
   Kurt Hornik [aut]
 Maintainer: Torsten Hothorn <Torsten.Hothorn@R-project.org>
-NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2015-02-20 23:57:41
+Date/Publication: 2017-03-01 19:05:49

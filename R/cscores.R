@@ -46,11 +46,9 @@ cscores.factor <- function(y, ...) {
 
 irank <- function(x, ox=NULL) {
   if (is.null(ox))
-    .Call("irank", as.double(x), as.integer(order(x)-1), 
-          PACKAGE="exactRankTests")
+    .Call(C_irank, as.double(x), as.integer(order(x)-1))
   else 
-    .Call("irank", as.double(x), as.integer(ox-1), 
-          PACKAGE="exactRankTests")
+    .Call(C_irank, as.double(x), as.integer(ox-1))
 }
 
 cscores.Surv <- function(y, type="LogRank", int=FALSE, maxs=nrow(y), ...) {

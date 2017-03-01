@@ -12,7 +12,7 @@
 #include <Rinternals.h>
 
 
-SEXP irank(SEXP x, SEXP orderx)
+SEXP C_irank(SEXP x, SEXP orderx)
 {
     SEXP rk;
     double *tx;

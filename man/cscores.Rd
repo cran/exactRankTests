@@ -46,11 +46,10 @@ the kind of scores used is returned.
 }
 \references{
 
-        Torsten Hothorn & Berthold Lausen (2002),
+        Torsten Hothorn & Berthold Lausen (2003),
         On the exact distribution of maximally selected rank statistics.
-        \emph{Computational Statistics \& Data Analysis}, (in press).
-        Preprint available from
-        \url{http://www.mathpreprints.com/math/Preprint/hothorn/20020227/2}
+        \emph{Computational Statistics \& Data Analysis}, \bold{43}(2),
+        121-137.
 
 	William J. Conover & David S. Salsburg (1988), Locally most powerful tests
 	for detecting treatment effects when only a subset of patients can

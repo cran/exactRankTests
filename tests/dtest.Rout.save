@@ -1,8 +1,7 @@
 
-R Under development (unstable) (2013-01-10 r61617) -- "Unsuffered Consequences"
-Copyright (C) 2013 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
-Platform: x86_64-unknown-linux-gnu (64-bit)
+R Under development (unstable) (2017-02-28 r72286) -- "Unsuffered Consequences"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -18,8 +17,6 @@ Type 'q()' to quit R.
 
 > 
 > library(exactRankTests)
-Loading required package: survival
-Loading required package: splines
  Package 'exactRankTests' is no longer under development.
  Please consider using package 'coin' instead.
 
@@ -157,36 +154,36 @@ qwilcox:  114 qperm:  114
 + }
 > 
 > 
-> dansari <- function(x, m ,n)
+> if (FALSE) {
++ dansari <- function(x, m ,n)
 + {
-+     .C("dansari", as.integer(length(x)), d = as.double(x), as.integer(m),
-+        as.integer(n), PACKAGE="exactRankTests")$d
++     .C(dansari, as.integer(length(x)), d = as.double(x), as.integer(m),
++        as.integer(n))$d
 + }
-> 
-> # Ansari-Bradley
-> 
-> n <- 10
-> x <- rnorm(n, 2, 1)
-> y <- rnorm(n, 2, 2)
-> 
-> # exact distribution using Streitberg-Roehmel
-> 
-> sc <- cscores(c(x,y), type="Ansari")
-> dabexac <- dperm(0:(n*(2*n+1)/2), sc, n)
-> sum(dabexac)
-[1] 1
-> tr <- which(dabexac > 0)
-> 
-> # exact distribution using dansari (wrapper to ansari.c in ctest)
-> 
-> dab <- dansari(0:(n*(2*n+1)/2), n, n)
-> 
-> # compare the two distributions:
-> 
-> stopifnot(all.equal(max(abs(dab[tr] - dabexac[tr])), 0))
-> 
-> 
++ 
++ # Ansari-Bradley
++ 
++ n <- 10
++ x <- rnorm(n, 2, 1)
++ y <- rnorm(n, 2, 2)
++ 
++ # exact distribution using Streitberg-Roehmel
++ 
++ sc <- cscores(c(x,y), type="Ansari")
++ dabexac <- dperm(0:(n*(2*n+1)/2), sc, n)
++ sum(dabexac)
++ tr <- which(dabexac > 0)
++ 
++ # exact distribution using dansari (wrapper to ansari.c in ctest)
++ 
++ dab <- dansari(0:(n*(2*n+1)/2), n, n)
++ 
++ # compare the two distributions:
++ 
++ stopifnot(all.equal(max(abs(dab[tr] - dabexac[tr])), 0))
++ 
++ }
 > 
 > proc.time()
    user  system elapsed 
-   3.68    0.08    3.73 
+  5.488   0.064   5.563 

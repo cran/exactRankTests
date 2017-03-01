@@ -140,13 +140,10 @@ true, \code{pperm} returns a list with elements
         \emph{StatXact-5 for Windows.}
         Manual, Cytel Software Cooperation, Cambridge, USA
 
-        Torsten Hothorn & Berthold Lausen (2002),
+        Torsten Hothorn & Berthold Lausen (2003),
         On the exact distribution of maximally selected rank statistics.
-        \emph{Computational Statistics \& Data Analysis}, (in press).
-        Preprint available from
-        \url{http://www.mathpreprints.com/math/Preprint/hothorn/20020227/2}
-
-
+        \emph{Computational Statistics \& Data Analysis}, \bold{43}(2),
+        121-137.
 
 }
 

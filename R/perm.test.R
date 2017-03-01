@@ -87,10 +87,10 @@ function(x,y=NULL, paired = FALSE, alternative = c("two.sided", "less", "greater
             Hx <- rep(0, sum(xscores$scores)*m)
 
             dummy <- rep(1,m)
-            Hx <- .Call("cpermdist2", as.integer(m),
+            Hx <- .Call(cpermdist2, as.integer(m),
                 as.integer(sum(xscores$scores)), as.integer(dummy),
                 as.integer(xscores$scores), 
-                as.logical(FALSE), PACKAGE="exactRankTests")
+                as.logical(FALSE))
 
             Hx <- matrix(Hx, nrow=m, byrow=TRUE)
             Hx <- rbind(Hx, 0)
@@ -218,18 +218,18 @@ function(x,y=NULL, paired = FALSE, alternative = c("two.sided", "less", "greater
             tsy <- sum(yscores$scores)
 
             dummy <- rep(1,m)
-            Hx <- .Call("cpermdist2", as.integer(m),
+            Hx <- .Call(cpermdist2, as.integer(m),
                 as.integer(tsx), as.integer(dummy),
                 as.integer(xscores$scores), 
-                as.logical(FALSE), PACKAGE="exactRankTests")
+                as.logical(FALSE))
 
             Hx <- matrix(Hx, nrow=m+1, byrow=TRUE)
            
             dummy <- rep(1,n)
-            Hy <- .Call("cpermdist2", as.integer(n),
+            Hy <- .Call(cpermdist2, as.integer(n),
                 as.integer(tsy), as.integer(dummy),
                 as.integer(yscores$scores), 
-                as.logical(FALSE), PACKAGE="exactRankTests")
+                as.logical(FALSE))
 
             Hy <-  matrix(Hy, nrow=n+1, byrow=TRUE)
 

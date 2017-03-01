@@ -184,9 +184,8 @@ cperm <- function(escores, m, paired = NULL, B=NULL)
 
     if (!is.null(B)) {
         if (B < 1) stop("B must be positive integer")
-        RVAL <- .Call("sim2is", scores=as.double(escores$scores),
-                                mfirst=as.integer(m), Nsim=as.integer(B), 
-                                PACKAGE="exactRankTests")
+        RVAL <- .Call(sim2is, scores=as.double(escores$scores),
+                              mfirst=as.integer(m), Nsim=as.integer(B))
         names(RVAL) <- c("T", "Prob")
         if (escores$add != 0 & paired) 
           warning("escores$add not zero for paired samples!")
@@ -196,8 +195,7 @@ cperm <- function(escores, m, paired = NULL, B=NULL)
 
     if (paired) {
         # paired two sample situation
-        prob <- .Call("cpermdist1", scores = as.integer(escores$scores),
-                   PACKAGE="exactRankTests")
+        prob <- .Call(cpermdist1, scores = as.integer(escores$scores))
         t <- which(prob != 0)
         prob <- prob[t]
         # 0 is possible
@@ -208,10 +206,10 @@ cperm <- function(escores, m, paired = NULL, B=NULL)
         # independent samples
         col <- sum(sort(escores$scores)[(N + 1 - m):N])
         scores <- rep(1, N)
-        prob <- .Call("cpermdist2", ma = as.integer(m),
-                mb = as.integer(col), scorea = as.integer(scores), 
-                scoreb = as.integer(escores$scores),
-                retProb = as.logical(TRUE), PACKAGE="exactRankTests")
+        prob <- .Call(cpermdist2, ma = as.integer(m),
+                      mb = as.integer(col), scorea = as.integer(scores), 
+                      scoreb = as.integer(escores$scores),
+                      retProb = as.logical(TRUE))
         t <- which(prob != 0)
         prob <- prob[t]
     }

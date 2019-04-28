@@ -1,6 +1,7 @@
 
-require(exactRankTests)
-set.seed(29)
+require("exactRankTests")
+suppressWarnings(RNGversion("3.5.3"))
+set.seed(29081975)
 
 #
 #  Regression tests

@@ -1,8 +1,7 @@
 
-R Under development (unstable) (2012-10-07 r60893) -- "Unsuffered Consequences"
-Copyright (C) 2012 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
-Platform: i686-pc-linux-gnu (32-bit)
+R version 3.6.0 (2019-04-26) -- "Planting of a Tree"
+Copyright (C) 2019 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -17,14 +16,13 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 Type 'q()' to quit R.
 
 > 
-> require(exactRankTests)
+> require("exactRankTests")
 Loading required package: exactRankTests
-Loading required package: survival
-Loading required package: splines
  Package 'exactRankTests' is no longer under development.
  Please consider using package 'coin' instead.
 
-> set.seed(29)
+> suppressWarnings(RNGversion("3.5.3"))
+> set.seed(29081975)
 > 
 > #
 > #  Regression tests
@@ -40,11 +38,11 @@ Loading required package: splines
 
 	Exact Wilcoxon rank sum test
 
-data:  bp by group 
+data:  bp by group
 W = 35, p-value = 0.0989
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 95 percent confidence interval:
- -4 22 
+ -4 22
 sample estimates:
 difference in location 
                    9.5 
@@ -59,11 +57,11 @@ difference in location
 
 	Asymptotic Wilcoxon rank sum test
 
-data:  bp by group 
+data:  bp by group
 W = 35, p-value = 0.08535
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 95 percent confidence interval:
- -4.143776e-05  2.000007e+01 
+ -4.143776e-05  2.000007e+01
 sample estimates:
 difference in location 
               9.790799 
@@ -79,9 +77,9 @@ difference in location
 
 	2-sample Permutation Test
 
-data:  bp by group 
+data:  bp by group
 T = 402, p-value = 0.104
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 
 > stopifnot(round(pt$p.value, 4) == 0.1040)
 > 
@@ -90,9 +88,9 @@ alternative hypothesis: true mu is not equal to 0
 
 	2-sample Permutation Test
 
-data:  bp by group 
+data:  bp by group
 T = 402, p-value = 0.05641
-alternative hypothesis: true mu is greater than 0 
+alternative hypothesis: true mu is greater than 0
 
 > stopifnot(round(pt$p.value, 4) == 0.0564)
 > 
@@ -101,9 +99,9 @@ alternative hypothesis: true mu is greater than 0
 
 	Asymptotic 2-sample Permutation Test
 
-data:  bp by group 
+data:  bp by group
 T = 402, p-value = 0.107
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 
 > stopifnot(round(pt$p.value, 4) == 0.1070)
 > 
@@ -130,17 +128,17 @@ alternative hypothesis: true mu is not equal to 0
 
 	Wilcoxon signed rank test
 
-data:  y - x 
+data:  y - x
 V = 5, p-value = 0.03906
-alternative hypothesis: true location is not equal to 0 
+alternative hypothesis: true location is not equal to 0
 
 > we
 
 	Exact Wilcoxon signed rank test
 
-data:  y - x 
+data:  y - x
 V = 5, p-value = 0.03906
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 
 > stopifnot(wt$p.value == we$p.value)
 > 
@@ -157,14 +155,14 @@ alternative hypothesis: true mu is not equal to 0
 
 	Exact Wilcoxon rank sum test
 
-data:  x and y 
-W = 7, p-value = 0.0004871
-alternative hypothesis: true mu is not equal to 0 
+data:  x and y
+W = 13, p-value = 0.003886
+alternative hypothesis: true mu is not equal to 0
 95 percent confidence interval:
- -3.263931 -1.238468 
+ -2.6984506 -0.5996612
 sample estimates:
 difference in location 
-             -2.387643 
+              -2.07512 
 
 > 
 > if (!any(duplicated(c(x,y)))) {
@@ -194,50 +192,50 @@ difference in location
 
 	Exact Wilcoxon rank sum test
 
-data:  x and y 
-W = 7, p-value = 0.0004871
-alternative hypothesis: true mu is not equal to 0 
+data:  x and y
+W = 13, p-value = 0.003886
+alternative hypothesis: true mu is not equal to 0
 95 percent confidence interval:
- -3.263931 -1.238468 
+ -2.6984506 -0.5996612
 sample estimates:
 difference in location 
-             -2.387643 
+              -2.07512 
 
 
 	Wilcoxon rank sum test
 
-data:  x and y 
-W = 7, p-value = 0.0004871
-alternative hypothesis: true location shift is not equal to 0 
+data:  x and y
+W = 13, p-value = 0.003886
+alternative hypothesis: true location shift is not equal to 0
 95 percent confidence interval:
- -3.263931 -1.238468 
+ -2.6984506 -0.5996612
 sample estimates:
 difference in location 
-             -2.387643 
+              -2.07512 
 
 
 	Exact Wilcoxon signed rank test
 
-data:  x 
-V = 24, p-value = 0.7695
-alternative hypothesis: true mu is not equal to 0 
+data:  x
+V = 17, p-value = 0.3223
+alternative hypothesis: true mu is not equal to 0
 95 percent confidence interval:
- -1.0525406  0.7945124 
+ -0.9374751  0.7638509
 sample estimates:
 (pseudo)median 
-   -0.08611707 
+    -0.3968314 
 
 
 	Wilcoxon signed rank test
 
-data:  x 
-V = 24, p-value = 0.7695
-alternative hypothesis: true location is not equal to 0 
+data:  x
+V = 17, p-value = 0.3223
+alternative hypothesis: true location is not equal to 0
 95 percent confidence interval:
- -1.0525406  0.7945124 
+ -0.9374751  0.7638509
 sample estimates:
 (pseudo)median 
-   -0.08611707 
+    -0.3968314 
 
 > 
 > 
@@ -250,11 +248,11 @@ sample estimates:
 
 	Exact Wilcoxon rank sum test
 
-data:  contr and SST 
+data:  contr and SST
 W = 106, p-value = 0.00186
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 95 percent confidence interval:
- 168 690 
+ 168 690
 sample estimates:
 difference in location 
                    410 
@@ -269,11 +267,11 @@ difference in location
 
 	Exact Wilcoxon rank sum test
 
-data:  weeks and term 
+data:  weeks and term
 W = 15, p-value = 0.2544
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 95 percent confidence interval:
- -0.76  0.15 
+ -0.76  0.15
 sample estimates:
 difference in location 
                 -0.305 
@@ -290,11 +288,11 @@ difference in location
 
 	Exact Wilcoxon signed rank test
 
-data:  y and x 
+data:  y and x
 V = 5, p-value = 0.03906
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 95 percent confidence interval:
- -0.786 -0.010 
+ -0.786 -0.010
 sample estimates:
 (pseudo)median 
          -0.46 
@@ -314,11 +312,11 @@ sample estimates:
 
 	Exact Wilcoxon rank sum test
 
-data:  y and x 
+data:  y and x
 W = 15, p-value = 0.2544
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 95 percent confidence interval:
- -0.76  0.15 
+ -0.76  0.15
 sample estimates:
 difference in location 
                 -0.305 
@@ -372,11 +370,11 @@ difference in location
 
 	2-sample Permutation Test
 
-data:  A and B 
+data:  A and B
 T = 61, p-value = 0.0118
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 95 percent confidence interval:
- 0.05263158 0.34285714 
+ 0.05263158 0.34285714
 
 > stopifnot(round(pt$conf.int, 4) == c(0.0526, 0.3429))
 > 
@@ -387,11 +385,11 @@ alternative hypothesis: true mu is not equal to 0
 
 	2-sample Permutation Test
 
-data:  gfrac by group 
+data:  gfrac by group
 T = 331, p-value = 0.1475
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 95 percent confidence interval:
- -8.50  1.25 
+ -8.50  1.25
 
 > stopifnot(pt$conf.int == c(-8.50, 1.25))
 > 
@@ -412,9 +410,9 @@ alternative hypothesis: true mu is not equal to 0
 
 	Exact Wilcoxon rank sum test
 
-data:  pain by group 
+data:  pain by group
 W = 357, p-value = 0.1654
-alternative hypothesis: true mu is less than 0 
+alternative hypothesis: true mu is less than 0
 
 > css <- cscores(neuropathy$pain, type="ConSal")   
 > round(pperm(sum(css[neuropathy$group=="control"]),css,
@@ -439,11 +437,11 @@ In findfact(scores - min(scores) + 1, m, tol) :
 
 	Exact Wilcoxon signed rank test
 
-data:  pre and post 
+data:  pre and post
 V = 124, p-value = 0.002136
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 95 percent confidence interval:
-  54 292 
+  54 292
 sample estimates:
 (pseudo)median 
         137.75 
@@ -461,11 +459,11 @@ sample estimates:
 
 	Asymptotic Wilcoxon signed rank test
 
-data:  pre and post 
+data:  pre and post
 V = 124, p-value = 0.003783
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 95 percent confidence interval:
-  54.49998 281.50005 
+  54.49998 281.50005
 sample estimates:
 (pseudo)median 
       137.2646 
@@ -478,4 +476,4 @@ sample estimates:
 > 
 > proc.time()
    user  system elapsed 
-  0.860   0.068   0.920 
+  0.335   0.044   0.374 

@@ -1,4 +1,8 @@
 
+	0.8-30 (29.04.2018)
+
+        use RNGversion("3.5.3")
+
 	0.8-29 (01.03.2017)
 
 	register C routines

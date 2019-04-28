@@ -29,6 +29,9 @@ assign("par.postscript", par(no.readonly = TRUE), env = .CheckExEnv)
 options(contrasts = c(unordered = "contr.treatment", ordered = "contr.poly"))
 library('exactRankTests')
 
+suppressWarnings(RNGversion("3.5.3"))
+set.seed(29081975)
+
 cleanEx(); ..nameEx <- "ASAT"
 
 ### * ASAT

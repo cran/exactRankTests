@@ -1,5 +1,5 @@
 
-library(exactRankTests)
+library("exactRankTests")
 
 # From Ruggero Bellio <ruggero.bellio@dss.uniud.it>
 # 20.02.2002

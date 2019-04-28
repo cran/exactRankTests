@@ -1,7 +1,7 @@
 
-R Under development (unstable) (2013-09-08 r63880) -- "Unsuffered Consequences"
-Copyright (C) 2013 The R Foundation for Statistical Computing
-Platform: x86_64-unknown-linux-gnu (64-bit)
+R version 3.6.0 (2019-04-26) -- "Planting of a Tree"
+Copyright (C) 2019 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -16,7 +16,7 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 Type 'q()' to quit R.
 
 > 
-> library(exactRankTests)
+> library("exactRankTests")
  Package 'exactRankTests' is no longer under development.
  Please consider using package 'coin' instead.
 
@@ -124,4 +124,4 @@ alternative hypothesis: true mu is not equal to 0
 > 
 > proc.time()
    user  system elapsed 
-  0.196   0.016   0.209 
+  0.245   0.012   0.249 

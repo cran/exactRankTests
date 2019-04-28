@@ -1,7 +1,6 @@
 
-library(exactRankTests)
-
-RNGkind("Wichmann-Hill", "Kinderman-Ramage")
+library("exactRankTests")
+suppressWarnings(RNGversion("3.5.3"))
 set.seed(29081975)
 
 # test the distribution functions

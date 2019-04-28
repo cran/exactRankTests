@@ -71,7 +71,7 @@ function(x, y = NULL, alternative = c("two.sided", "less", "greater"),
                                      alternative="less", pprob=TRUE))
             MIDP <- PVAL$PPROB
             PVAL <- PVAL$PVALUE
-            if(conf.int && !is.na(x)) {
+            if(conf.int && !any(is.na(x))) {
                 ## Exact confidence intervale for the median in the
                 ## one-sample case.  When used with paired values this
                 ## gives a confidence interval for mean(x) - mean(y).
@@ -126,7 +126,7 @@ function(x, y = NULL, alternative = c("two.sided", "less", "greater"),
                 if(alternative == "two.sided") 
                     PVAL <- 2 * min(PVAL, 1-PVAL) 
 
-                if(conf.int && !is.na(x)) {
+                if(conf.int && !any(is.na(x))) {
                     ## Asymptotic confidence intervale for the median in the
                     ## one-sample case.  When used with paired values this
                     ## gives a confidence interval for mean(x) - mean(y).

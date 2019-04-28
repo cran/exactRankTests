@@ -1,8 +1,7 @@
 
-R Under development (unstable) (2012-10-07 r60893) -- "Unsuffered Consequences"
-Copyright (C) 2012 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
-Platform: i686-pc-linux-gnu (32-bit)
+R version 3.6.0 (2019-04-26) -- "Planting of a Tree"
+Copyright (C) 2019 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -46,11 +45,12 @@ Type 'q()' to quit R.
 > assign("par.postscript", par(no.readonly = TRUE), env = .CheckExEnv)
 > options(contrasts = c(unordered = "contr.treatment", ordered = "contr.poly"))
 > library('exactRankTests')
-Loading required package: survival
-Loading required package: splines
  Package 'exactRankTests' is no longer under development.
  Please consider using package 'coin' instead.
 
+> 
+> suppressWarnings(RNGversion("3.5.3"))
+> set.seed(29081975)
 > 
 > cleanEx(); ..nameEx <- "ASAT"
 > 
@@ -103,9 +103,9 @@ attr(,"conf.level")
 
 	Ansari-Bradley test
 
-data:  ramsay and jung.parekh 
+data:  ramsay and jung.parekh
 AB = 185.5, p-value = 0.1815
-alternative hypothesis: true ratio of scales is not equal to 1 
+alternative hypothesis: true ratio of scales is not equal to 1
 
 Warning message:
 In ansari.test.default(ramsay, jung.parekh) :
@@ -114,20 +114,20 @@ In ansari.test.default(ramsay, jung.parekh) :
 
 	Ansari-Bradley test
 
-data:  ramsay and jung.parekh 
+data:  ramsay and jung.parekh
 AB = 185.5, p-value = 0.1881
-alternative hypothesis: true ratio of scales is not equal to 1 
+alternative hypothesis: true ratio of scales is not equal to 1
 
 > 
 > ansari.exact(rnorm(20), rnorm(20, 0, 2), conf.int = TRUE)
 
 	Ansari-Bradley test
 
-data:  rnorm(20) and rnorm(20, 0, 2) 
+data:  rnorm(20) and rnorm(20, 0, 2)
 AB = 249, p-value = 0.03605
-alternative hypothesis: true ratio of scales is not equal to 1 
+alternative hypothesis: true ratio of scales is not equal to 1
 95 percent confidence interval:
- 0.2701446 0.9526227 
+ 0.2701446 0.9526227
 sample estimates:
 ratio of scales 
       0.5544411 
@@ -154,25 +154,25 @@ ratio of scales
 
 	2-sample Permutation Test
 
-data:  bp by group 
+data:  bp by group
 T = 402, p-value = 0.104
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 
 > perm.test(bp ~ group, data=bloodp, alternative="greater")
 
 	2-sample Permutation Test
 
-data:  bp by group 
+data:  bp by group
 T = 402, p-value = 0.05641
-alternative hypothesis: true mu is greater than 0 
+alternative hypothesis: true mu is greater than 0
 
 > perm.test(bp ~ group, data=bloodp, exact=FALSE)
 
 	Asymptotic 2-sample Permutation Test
 
-data:  bp by group 
+data:  bp by group
 T = 402, p-value = 0.107
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 
 > 
 > # Wilcoxon-Mann-Whitney test
@@ -181,11 +181,11 @@ alternative hypothesis: true mu is not equal to 0
 
 	Exact Wilcoxon rank sum test
 
-data:  bp by group 
+data:  bp by group
 W = 35, p-value = 0.9648
-alternative hypothesis: true mu is less than 0 
+alternative hypothesis: true mu is less than 0
 95 percent confidence interval:
- -Inf   20 
+ -Inf   20
 sample estimates:
 difference in location 
                    9.5 
@@ -194,11 +194,11 @@ difference in location
 
 	Exact Wilcoxon rank sum test
 
-data:  bp by group 
+data:  bp by group
 W = 35, p-value = 0.0989
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 95 percent confidence interval:
- -4 22 
+ -4 22
 sample estimates:
 difference in location 
                    9.5 
@@ -307,9 +307,9 @@ difference in location
 
 	Wilcoxon signed rank test
 
-data:  x and y 
+data:  x and y
 V = 18, p-value = 0.1875
-alternative hypothesis: true location shift is less than 0 
+alternative hypothesis: true location shift is less than 0
 
 > psignrank(sum(r[x - y > 0]), length(r))
 [1] 0.1875
@@ -386,9 +386,9 @@ In findfact(scores - min(scores) + 1, m, tol) :
 
 	2-sample Permutation Test
 
-data:  ls by group 
+data:  ls by group
 T = 748, p-value = 0.01222
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 
 > 
 > 
@@ -481,11 +481,11 @@ There were 32 warnings (use warnings() to see them)
 
 	2-sample Permutation Test
 
-data:  gfrac by group 
+data:  gfrac by group
 T = 331, p-value = 0.1475
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 95 percent confidence interval:
- -8.50  1.25 
+ -8.50  1.25
 
 > 
 > 
@@ -574,9 +574,9 @@ alternative hypothesis: true mu is not equal to 0
 
 	Exact Wilcoxon rank sum test
 
-data:  pain by group 
+data:  pain by group
 W = 357, p-value = 0.1654
-alternative hypothesis: true mu is less than 0 
+alternative hypothesis: true mu is less than 0
 
 > css <- cscores(neuropathy$pain, type="ConSal")
 > pperm(sum(css[neuropathy$group=="control"]),css,
@@ -644,11 +644,11 @@ In findfact(scores - min(scores) + 1, m, tol) :
 
 	2-sample Permutation Test
 
-data:  A and B 
+data:  A and B
 T = 61, p-value = 0.0118
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 95 percent confidence interval:
- 0.05263158 0.34285714 
+ 0.05263158 0.34285714
 
 > 
 > # one-sample AIDS data (differences only), Methta and Patel (2001),
@@ -665,25 +665,25 @@ alternative hypothesis: true mu is not equal to 0
 
 	1-sample Permutation Test
 
-data:  ppdiff 
+data:  ppdiff
 T = 4831, p-value = 0.002136
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 
 > perm.test(ppdiff, alternative="less")
 
 	1-sample Permutation Test
 
-data:  ppdiff 
+data:  ppdiff
 T = 4831, p-value = 0.999
-alternative hypothesis: true mu is less than 0 
+alternative hypothesis: true mu is less than 0
 
 > perm.test(ppdiff, exact=FALSE)
 
 	Asymptotic 1-sample Permutation Test
 
-data:  ppdiff 
+data:  ppdiff
 T = 4831, p-value = 0.08779
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 
 > 
 > 
@@ -705,19 +705,19 @@ alternative hypothesis: true mu is not equal to 0
 
 	Exact Wilcoxon rank sum test
 
-data:  time by group 
+data:  time by group
 W = 102, p-value = 0.01863
-alternative hypothesis: true mu is greater than 0 
+alternative hypothesis: true mu is greater than 0
 
 > wilcox.exact(time ~ group, data=rotarod, conf.int=TRUE)
 
 	Exact Wilcoxon rank sum test
 
-data:  time by group 
+data:  time by group
 W = 102, p-value = 0.03727
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 95 percent confidence interval:
-   0 137 
+   0 137
 sample estimates:
 difference in location 
                   14.5 
@@ -726,26 +726,26 @@ difference in location
 
 	Asymptotic Wilcoxon rank sum test
 
-data:  time by group 
+data:  time by group
 W = 102, p-value = 0.01473
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 
 > # the permutation test
 > perm.test(time ~ group, data=rotarod)
 
 	2-sample Permutation Test
 
-data:  time by group 
+data:  time by group
 T = 3600, p-value = 0.03727
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 
 > perm.test(time ~ group, data=rotarod, exact=FALSE)
 
 	Asymptotic 2-sample Permutation Test
 
-data:  time by group 
+data:  time by group
 T = 3600, p-value = 0.0324
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 
 > 
 > 
@@ -768,11 +768,11 @@ alternative hypothesis: true mu is not equal to 0
 
 	Exact Wilcoxon signed rank test
 
-data:  pre and post 
+data:  pre and post
 V = 124, p-value = 0.002136
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 95 percent confidence interval:
-  54 292 
+  54 292
 sample estimates:
 (pseudo)median 
         137.75 
@@ -781,11 +781,11 @@ sample estimates:
 
 	Asymptotic Wilcoxon signed rank test
 
-data:  pre and post 
+data:  pre and post
 V = 124, p-value = 0.003783
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 95 percent confidence interval:
-  54.49998 281.50005 
+  54.49998 281.50005
 sample estimates:
 (pseudo)median 
       137.2646 
@@ -819,17 +819,17 @@ sample estimates:
 
 	Exact Wilcoxon signed rank test
 
-data:  x and y 
+data:  x and y
 V = 40, p-value = 0.01953
-alternative hypothesis: true mu is greater than 0 
+alternative hypothesis: true mu is greater than 0
 
 > wilcox.exact(y - x, alternative = "less")    # The same.
 
 	Exact Wilcoxon signed rank test
 
-data:  y - x 
+data:  y - x
 V = 5, p-value = 0.01953
-alternative hypothesis: true mu is less than 0 
+alternative hypothesis: true mu is less than 0
 
 > 
 > ## Two-sample test.
@@ -844,9 +844,9 @@ alternative hypothesis: true mu is less than 0
 
 	Exact Wilcoxon rank sum test
 
-data:  x and y 
+data:  x and y
 W = 35, p-value = 0.1272
-alternative hypothesis: true mu is greater than 0 
+alternative hypothesis: true mu is greater than 0
 
 > 
 > ## Formula interface.
@@ -857,9 +857,9 @@ alternative hypothesis: true mu is greater than 0
 
 	Exact Wilcoxon rank sum test
 
-data:  Ozone by Month 
+data:  Ozone by Month
 W = 127.5, p-value = 6.109e-05
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 
 > 
 > # Hollander & Wolfe, p. 39, results p. 40 and p. 53
@@ -871,11 +871,11 @@ alternative hypothesis: true mu is not equal to 0
 
 	Exact Wilcoxon signed rank test
 
-data:  y and x 
+data:  y and x
 V = 5, p-value = 0.03906
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 95 percent confidence interval:
- -0.786 -0.010 
+ -0.786 -0.010
 sample estimates:
 (pseudo)median 
          -0.46 
@@ -890,11 +890,11 @@ sample estimates:
 
 	Exact Wilcoxon rank sum test
 
-data:  y and x 
+data:  y and x
 W = 15, p-value = 0.2544
-alternative hypothesis: true mu is not equal to 0 
+alternative hypothesis: true mu is not equal to 0
 95 percent confidence interval:
- -0.76  0.15 
+ -0.76  0.15
 sample estimates:
 difference in location 
                 -0.305 
@@ -906,7 +906,7 @@ difference in location
 > ### * <FOOTER>
 > ###
 > cat("Time elapsed: ", proc.time() - get("ptime", env = .CheckExEnv),"\n")
-Time elapsed:  2.028 0.184 2.213 0 0 
+Time elapsed:  1.795 0.04 1.837 0 0 
 > dev.off()
 null device 
           1 
@@ -918,4 +918,4 @@ null device
 > quit('no')
 > proc.time()
    user  system elapsed 
-  2.228   0.208   2.431 
+  1.978   0.045   2.016 

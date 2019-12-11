@@ -1,5 +1,5 @@
 
-R version 3.6.0 (2019-04-26) -- "Planting of a Tree"
+R version 3.6.1 (2019-07-05) -- "Action of the Toes"
 Copyright (C) 2019 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -206,16 +206,16 @@ difference in location
 > 
 > # compute the v.d. Waerden test
 > 
-> sc <- cscores(bloodp$bp, type="NormalQuantile")
+> sc <- round(cscores(bloodp$bp, type="NormalQuantile"), 14)
 > X <- sum(sc[bloodp$group == "group2"])
 > round(pperm(X, sc, 11), 4) 
 [1] 0.0462
 > round(pperm(X, sc, 11, simulate=TRUE), 4)
-[1] 0.0376
+[1] 0.0464
 > round(pperm(X, sc, 11, alternative="two.sided"), 4) 
 [1] 0.0799
 > round(pperm(X, sc, 11, alternative="two.sided", simulate=TRUE), 4)
-[1] 0.0705
+[1] 0.0779
 > 
 > # use scores mapped into integers (cf. dperm)
 > 
@@ -906,7 +906,7 @@ difference in location
 > ### * <FOOTER>
 > ###
 > cat("Time elapsed: ", proc.time() - get("ptime", env = .CheckExEnv),"\n")
-Time elapsed:  1.795 0.04 1.837 0 0 
+Time elapsed:  1.597 0.044 1.641 0 0 
 > dev.off()
 null device 
           1 
@@ -918,4 +918,4 @@ null device
 > quit('no')
 > proc.time()
    user  system elapsed 
-  1.978   0.045   2.016 
+  1.694   0.056   1.743 

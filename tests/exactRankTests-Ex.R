@@ -109,7 +109,7 @@ wilcox.exact(bp ~ group, data=bloodp, conf.int=TRUE)
 
 # compute the v.d. Waerden test
 
-sc <- cscores(bloodp$bp, type="NormalQuantile")
+sc <- round(cscores(bloodp$bp, type="NormalQuantile"), 14)
 X <- sum(sc[bloodp$group == "group2"])
 round(pperm(X, sc, 11), 4) 
 round(pperm(X, sc, 11, simulate=TRUE), 4)

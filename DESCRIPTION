@@ -1,7 +1,7 @@
 Package: exactRankTests
 Title: Exact Distributions for Rank and Permutation Tests
-Date: 2019-04-29
-Version: 0.8-30
+Date: 2019-12-11
+Version: 0.8-31
 Authors@R: c(person("Torsten", "Hothorn", role = c("aut", "cre"),
                     email = "Torsten.Hothorn@R-project.org"),
              person("Kurt", "Hornik", role = "aut"))
@@ -11,9 +11,9 @@ Depends: R (>= 2.4.0), stats, utils
 Suggests: survival
 License: GPL (>= 2)
 NeedsCompilation: yes
-Packaged: 2019-04-28 15:56:28 UTC; hothorn
+Packaged: 2019-12-11 12:55:06 UTC; hothorn
 Author: Torsten Hothorn [aut, cre],
   Kurt Hornik [aut]
 Maintainer: Torsten Hothorn <Torsten.Hothorn@R-project.org>
 Repository: CRAN
-Date/Publication: 2019-04-28 19:20:12 UTC
+Date/Publication: 2019-12-11 17:00:06 UTC

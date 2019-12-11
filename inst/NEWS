@@ -1,5 +1,9 @@
 
-	0.8-30 (29.04.2018)
+	0.8-31 (11.12.2019)
+
+        round scores to 14 digits to make noLD happy in bloodp example
+
+	0.8-30 (29.04.2019)
 
         use RNGversion("3.5.3")
 

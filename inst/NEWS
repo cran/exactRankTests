@@ -1,4 +1,8 @@
 
+	0.8-32 (16.04.2021)
+
+        update reference output
+
 	0.8-31 (11.12.2019)
 
         round scores to 14 digits to make noLD happy in bloodp example

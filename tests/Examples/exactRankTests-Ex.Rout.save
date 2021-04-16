@@ -1,11 +1,13 @@
 
-R version 3.6.1 (2019-07-05) -- "Action of the Toes"
-Copyright (C) 2019 The R Foundation for Statistical Computing
+R version 4.0.5 (2021-03-31) -- "Shake and Throw"
+Copyright (C) 2021 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
@@ -15,46 +17,21 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-> ### * <HEADER>
-> ###
-> attach(NULL, name = "CheckExEnv")
-> assign(".CheckExEnv", as.environment(2), pos = length(search())) # base
-> ## This plot.new() patch has no effect yet for persp();
-> ## layout() & filled.contour() are now ok
-> assign("plot.new",
-+        function() {
-+ 	   .Internal(plot.new())
-+ 	   pp <- par(c("mfg","mfcol","oma","mar"))
-+ 	   if(all(pp$mfg[1:2] == c(1, pp$mfcol[2]))) {
-+                outer <- (oma4 <- pp$oma[4]) > 0; mar4 <- pp$mar[4]
-+                mtext(paste("help(", ..nameEx, ")"), side = 4,
-+                      line = if(outer)max(1, oma4 - 1) else min(1, mar4 - 1),
-+                      outer = outer, adj = 1, cex = .8, col = "orchid")
-+ 	   }
-+        },
-+        env = .CheckExEnv)
-> assign("cleanEx",
-+        function(env = .GlobalEnv) {
-+ 	   rm(list = ls(envir = env, all.names = TRUE), envir = env)
-+            assign(".Random.seed", as.integer(c(0, rep(7654, 3))), envir=.GlobalEnv)
-+        },
-+        env = .CheckExEnv)
-> assign("..nameEx", "__{must remake R-ex/*.R}__", env = .CheckExEnv) # for now
-> assign("ptime", proc.time(), env = .CheckExEnv)
-> postscript("exactRankTests-Examples.ps")
-> assign("par.postscript", par(no.readonly = TRUE), env = .CheckExEnv)
-> options(contrasts = c(unordered = "contr.treatment", ordered = "contr.poly"))
+> pkgname <- "exactRankTests"
+> source(file.path(R.home("share"), "R", "examples-header.R"))
+> options(warn = 1)
 > library('exactRankTests')
- Package 'exactRankTests' is no longer under development.
- Please consider using package 'coin' instead.
+ Package ‘exactRankTests’ is no longer under development.
+ Please consider using package ‘coin’ instead.
 
 > 
-> suppressWarnings(RNGversion("3.5.3"))
-> set.seed(29081975)
-> 
-> cleanEx(); ..nameEx <- "ASAT"
-> 
+> base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
+> base::assign(".old_wd", base::getwd(), pos = 'CheckExEnv')
+> cleanEx()
+> nameEx("ASAT")
 > ### * ASAT
+> 
+> flush(stderr()); flush(stdout())
 > 
 > ### Name: ASAT
 > ### Title: Toxicological Study on Female Wistar Rats
@@ -82,9 +59,11 @@ attr(,"conf.level")
 > 
 > 
 > 
-> cleanEx(); ..nameEx <- "ansari.exact"
-> 
+> cleanEx()
+> nameEx("ansari.exact")
 > ### * ansari.exact
+> 
+> flush(stderr()); flush(stdout())
 > 
 > ### Name: ansari.exact
 > ### Title: Ansari-Bradley Test
@@ -100,6 +79,8 @@ attr(,"conf.level")
 > jung.parekh <- c(107, 108, 106, 98, 105, 103, 110, 105, 104,
 +             100, 96, 108, 103, 104, 114, 114, 113, 108, 106, 99)
 > ansari.test(ramsay, jung.parekh)
+Warning in ansari.test.default(ramsay, jung.parekh) :
+  cannot compute exact p-value with ties
 
 	Ansari-Bradley test
 
@@ -107,9 +88,6 @@ data:  ramsay and jung.parekh
 AB = 185.5, p-value = 0.1815
 alternative hypothesis: true ratio of scales is not equal to 1
 
-Warning message:
-In ansari.test.default(ramsay, jung.parekh) :
-  cannot compute exact p-value with ties
 > ansari.exact(ramsay, jung.parekh)
 
 	Ansari-Bradley test
@@ -124,20 +102,22 @@ alternative hypothesis: true ratio of scales is not equal to 1
 	Ansari-Bradley test
 
 data:  rnorm(20) and rnorm(20, 0, 2)
-AB = 249, p-value = 0.03605
+AB = 250, p-value = 0.03133
 alternative hypothesis: true ratio of scales is not equal to 1
 95 percent confidence interval:
- 0.2701446 0.9526227
+ 0.2979059 0.9800937
 sample estimates:
 ratio of scales 
-      0.5544411 
+      0.5315074 
 
 > 
 > 
 > 
-> cleanEx(); ..nameEx <- "bloodp"
-> 
+> cleanEx()
+> nameEx("bloodp")
 > ### * bloodp
+> 
+> flush(stderr()); flush(stdout())
 > 
 > ### Name: bloodp
 > ### Title: Diastolic Blood Pressure
@@ -206,16 +186,16 @@ difference in location
 > 
 > # compute the v.d. Waerden test
 > 
-> sc <- round(cscores(bloodp$bp, type="NormalQuantile"), 14)
+> sc <- cscores(bloodp$bp, type="NormalQuantile")
 > X <- sum(sc[bloodp$group == "group2"])
 > round(pperm(X, sc, 11), 4) 
 [1] 0.0462
 > round(pperm(X, sc, 11, simulate=TRUE), 4)
-[1] 0.0464
+[1] 0.0372
 > round(pperm(X, sc, 11, alternative="two.sided"), 4) 
 [1] 0.0799
 > round(pperm(X, sc, 11, alternative="two.sided", simulate=TRUE), 4)
-[1] 0.0779
+[1] 0.0705
 > 
 > # use scores mapped into integers (cf. dperm)
 > 
@@ -228,9 +208,12 @@ difference in location
 > 
 > 
 > 
-> cleanEx(); ..nameEx <- "cscores"
 > 
+> cleanEx()
+> nameEx("cscores")
 > ### * cscores
+> 
+> flush(stderr()); flush(stdout())
 > 
 > ### Name: cscores
 > ### Title: Computation of Scores
@@ -250,9 +233,11 @@ difference in location
 > 
 > 
 > 
-> cleanEx(); ..nameEx <- "dperm"
-> 
+> cleanEx()
+> nameEx("dperm")
 > ### * dperm
+> 
+> flush(stderr()); flush(stdout())
 > 
 > ### Name: dperm
 > ### Title: Distribution of One and Two Sample Permutation Tests
@@ -302,17 +287,17 @@ difference in location
 > y <- rnorm(n, 5)
 > r <- cscores(abs(x - y), type="Wilcoxon")
 > pperm(sum(r[x - y > 0]), r, length(r))
-[1] 0.1875
+[1] 0.2783203
 > wilcox.test(x,y, paired=TRUE, alternative="less")
 
-	Wilcoxon signed rank test
+	Wilcoxon signed rank exact test
 
 data:  x and y
-V = 18, p-value = 0.1875
+V = 21, p-value = 0.2783
 alternative hypothesis: true location shift is less than 0
 
 > psignrank(sum(r[x - y > 0]), length(r))
-[1] 0.1875
+[1] 0.2783203
 > 
 > # Ansari-Bradley
 > 
@@ -339,16 +324,14 @@ alternative hypothesis: true location shift is less than 0
 > # critical value, two-sided test
 > 
 > abs(qperm(0.025, scores, length(x)))
-[1] 3.871345
-Warning message:
-In findfact(scores - min(scores) + 1, m, tol) :
+Warning in findfact(scores - min(scores) + 1, m, tol) :
   cannot hold tol, tolerance: 0.010292
+[1] 3.871345
 > 
 > # p-values
 > 
 > p1 <- pperm(X, scores, length(x), alternative="two.sided")
-Warning message:
-In findfact(scores - min(scores) + 1, m, tol) :
+Warning in findfact(scores - min(scores) + 1, m, tol) :
   cannot hold tol, tolerance: 0.010292
 > 
 > # generate integer valued scores with the same shape as normal quantile
@@ -362,14 +345,16 @@ In findfact(scores - min(scores) + 1, m, tol) :
 > # compare p1 and p2
 > 
 > p1 - p2
-[1] 0.009796705
+[1] -0.01441902
 > 
 > 
 > 
 > 
-> cleanEx(); ..nameEx <- "ears"
-> 
+> cleanEx()
+> nameEx("ears")
 > ### * ears
+> 
+> flush(stderr()); flush(stdout())
 > 
 > ### Name: ears
 > ### Title: Survival of Ventilating Tubes
@@ -394,9 +379,14 @@ alternative hypothesis: true mu is not equal to 0
 > 
 > 
 > 
-> cleanEx(); ..nameEx <- "glioma"
-> 
+> cleanEx()
+
+detaching ‘package:survival’
+
+> nameEx("glioma")
 > ### * glioma
+> 
+> flush(stderr()); flush(stdout())
 > 
 > ### Name: glioma
 > ### Title: Malignant Glioma Pilot Study
@@ -459,15 +449,70 @@ alternative hypothesis: true mu is not equal to 0
 +   pperm(T, lsc, sum(tr), alternative="tw")
 +   pperm(T, lsc, sum(tr), alternative="tw", simulate=TRUE)
 + }
+Warning in plot.window(...) :
+  "legend.text" is not a graphical parameter
+Warning in plot.window(...) : "legend.bty" is not a graphical parameter
+Warning in plot.xy(xy, type, ...) :
+  "legend.text" is not a graphical parameter
+Warning in plot.xy(xy, type, ...) :
+  "legend.bty" is not a graphical parameter
+Warning in axis(side = side, at = at, labels = labels, ...) :
+  "legend.text" is not a graphical parameter
+Warning in axis(side = side, at = at, labels = labels, ...) :
+  "legend.bty" is not a graphical parameter
+Warning in axis(side = side, at = at, labels = labels, ...) :
+  "legend.text" is not a graphical parameter
+Warning in axis(side = side, at = at, labels = labels, ...) :
+  "legend.bty" is not a graphical parameter
+Warning in box(...) : "legend.text" is not a graphical parameter
+Warning in box(...) : "legend.bty" is not a graphical parameter
+Warning in title(...) : "legend.text" is not a graphical parameter
+Warning in title(...) : "legend.bty" is not a graphical parameter
+Warning in findfact(scores - min(scores) + 1, m, tol) :
+  cannot hold tol, tolerance: 0.010019
+Warning in plot.window(...) :
+  "legend.text" is not a graphical parameter
+Warning in plot.window(...) : "legend.bty" is not a graphical parameter
+Warning in plot.window(...) : "legend.pos" is not a graphical parameter
+Warning in plot.xy(xy, type, ...) :
+  "legend.text" is not a graphical parameter
+Warning in plot.xy(xy, type, ...) :
+  "legend.bty" is not a graphical parameter
+Warning in plot.xy(xy, type, ...) :
+  "legend.pos" is not a graphical parameter
+Warning in axis(side = side, at = at, labels = labels, ...) :
+  "legend.text" is not a graphical parameter
+Warning in axis(side = side, at = at, labels = labels, ...) :
+  "legend.bty" is not a graphical parameter
+Warning in axis(side = side, at = at, labels = labels, ...) :
+  "legend.pos" is not a graphical parameter
+Warning in axis(side = side, at = at, labels = labels, ...) :
+  "legend.text" is not a graphical parameter
+Warning in axis(side = side, at = at, labels = labels, ...) :
+  "legend.bty" is not a graphical parameter
+Warning in axis(side = side, at = at, labels = labels, ...) :
+  "legend.pos" is not a graphical parameter
+Warning in box(...) : "legend.text" is not a graphical parameter
+Warning in box(...) : "legend.bty" is not a graphical parameter
+Warning in box(...) : "legend.pos" is not a graphical parameter
+Warning in title(...) : "legend.text" is not a graphical parameter
+Warning in title(...) : "legend.bty" is not a graphical parameter
+Warning in title(...) : "legend.pos" is not a graphical parameter
+Warning in findfact(scores - min(scores) + 1, m, tol) :
+  cannot hold tol, tolerance: 0.010067
 [1] 1e-04
-There were 32 warnings (use warnings() to see them)
 > 
 > 
 > 
-> par(get("par.postscript", env = .CheckExEnv))
-> cleanEx(); ..nameEx <- "globulin"
-> 
+> graphics::par(get("par.postscript", pos = 'CheckExEnv'))
+> cleanEx()
+
+detaching ‘package:survival’
+
+> nameEx("globulin")
 > ### * globulin
+> 
+> flush(stderr()); flush(stdout())
 > 
 > ### Name: globulin
 > ### Title: Differences in Globulin Fraction in Two Groups
@@ -490,9 +535,11 @@ alternative hypothesis: true mu is not equal to 0
 > 
 > 
 > 
-> cleanEx(); ..nameEx <- "irank"
-> 
+> cleanEx()
+> nameEx("irank")
 > ### * irank
+> 
+> flush(stderr()); flush(stdout())
 > 
 > ### Name: irank
 > ### Title: Integer Ranks
@@ -503,9 +550,9 @@ alternative hypothesis: true mu is not equal to 0
 > 
 > x <- rnorm(10)
 > irank(x)
- [1]  5  2  6 10  9  1  4  8  3  7
+ [1]  3  5  1 10  6  2  7  9  8  4
 > rank(x)
- [1]  5  2  6 10  9  1  4  8  3  7
+ [1]  3  5  1 10  6  2  7  9  8  4
 > x <- c(1,2,3,3,0)
 > irank(x)
 [1] 2 3 5 5 1
@@ -514,9 +561,11 @@ alternative hypothesis: true mu is not equal to 0
 > 
 > 
 > 
-> cleanEx(); ..nameEx <- "lungcancer"
-> 
+> cleanEx()
+> nameEx("lungcancer")
 > ### * lungcancer
+> 
+> flush(stderr()); flush(stdout())
 > 
 > ### Name: lungcancer
 > ### Title: Lung Cancer Clinical Trial
@@ -532,19 +581,23 @@ alternative hypothesis: true mu is not equal to 0
 > scores <- cscores.Surv(cbind(time, cens))
 > T <- sum(scores[group=="newdrug"])
 > mobs <- sum(group=="newdrug")
-> prob <- pperm(T, scores, m=mobs, al="le")
+> system.time(prob <- pperm(T, scores, m=mobs, al="le"))
+   user  system elapsed 
+  0.003   0.000   0.003 
 > prob
 [1] 0.000999001
 > pperm(T, scores, m=mobs, al="tw")
 [1] 0.000999001
 > pperm(T, scores, m=mobs, al="tw", simulate=TRUE)
-[1] 0.001
+[1] 0.0011
 > 
 > # map into integers, faster
 > scores <- cscores.Surv(cbind(time, cens), int=TRUE)
 > T <- sum(scores[group=="newdrug"])
 > mobs <- sum(group=="newdrug")
-> prob <- pperm(T, scores, m=mobs, al="le")
+> system.time(prob <- pperm(T, scores, m=mobs, al="le"))
+   user  system elapsed 
+  0.001   0.000   0.000 
 > prob
 [1] 0.000999001
 > pperm(T, scores, m=mobs, al="tw")
@@ -557,9 +610,11 @@ alternative hypothesis: true mu is not equal to 0
 > 
 > 
 > 
-> cleanEx(); ..nameEx <- "neuropathy"
-> 
+> cleanEx()
+> nameEx("neuropathy")
 > ### * neuropathy
+> 
+> flush(stderr()); flush(stdout())
 > 
 > ### Name: neuropathy
 > ### Title: Acute Painful Diabetic Neuropathy
@@ -581,17 +636,18 @@ alternative hypothesis: true mu is less than 0
 > css <- cscores(neuropathy$pain, type="ConSal")
 > pperm(sum(css[neuropathy$group=="control"]),css,
 +       m=sum(neuropathy$group=="control"))
-[1] 0.0307573
-Warning message:
-In findfact(scores - min(scores) + 1, m, tol) :
+Warning in findfact(scores - min(scores) + 1, m, tol) :
   cannot hold tol, tolerance: 0.047123
+[1] 0.0307573
 > 
 > 
 > 
 > 
-> cleanEx(); ..nameEx <- "ocarcinoma"
-> 
+> cleanEx()
+> nameEx("ocarcinoma")
 > ### * ocarcinoma
+> 
+> flush(stderr()); flush(stdout())
 > 
 > ### Name: ocarcinoma
 > ### Title: Ovarian Carcinoma
@@ -622,9 +678,14 @@ In findfact(scores - min(scores) + 1, m, tol) :
 > 
 > 
 > 
-> cleanEx(); ..nameEx <- "perm.test"
-> 
+> cleanEx()
+
+detaching ‘ocarcinoma’
+
+> nameEx("perm.test")
 > ### * perm.test
+> 
+> flush(stderr()); flush(stdout())
 > 
 > ### Name: perm.test
 > ### Title: One and Two Sample Permutation Test
@@ -689,9 +750,11 @@ alternative hypothesis: true mu is not equal to 0
 > 
 > 
 > 
-> cleanEx(); ..nameEx <- "rotarod"
-> 
+> cleanEx()
+> nameEx("rotarod")
 > ### * rotarod
+> 
+> flush(stderr()); flush(stdout())
 > 
 > ### Name: rotarod
 > ### Title: Rotating Rats Data
@@ -750,9 +813,11 @@ alternative hypothesis: true mu is not equal to 0
 > 
 > 
 > 
-> cleanEx(); ..nameEx <- "sal"
-> 
+> cleanEx()
+> nameEx("sal")
 > ### * sal
+> 
+> flush(stderr()); flush(stdout())
 > 
 > ### Name: sal
 > ### Title: Serum Antigen Level
@@ -796,9 +861,11 @@ sample estimates:
 > 
 > 
 > 
-> cleanEx(); ..nameEx <- "wilcox.exact"
-> 
+> cleanEx()
+> nameEx("wilcox.exact")
 > ### * wilcox.exact
+> 
+> flush(stderr()); flush(stdout())
 > 
 > ### Name: wilcox.exact
 > ### Title: Wilcoxon Rank Sum and Signed Rank Tests
@@ -862,6 +929,7 @@ W = 127.5, p-value = 6.109e-05
 alternative hypothesis: true mu is not equal to 0
 
 > 
+> 
 > # Hollander & Wolfe, p. 39, results p. 40 and p. 53
 > 
 > x <- c(1.83, 0.50, 1.62, 2.48, 1.68, 1.88, 1.55, 3.06, 1.30)
@@ -905,9 +973,11 @@ difference in location
 > 
 > ### * <FOOTER>
 > ###
-> cat("Time elapsed: ", proc.time() - get("ptime", env = .CheckExEnv),"\n")
-Time elapsed:  1.597 0.044 1.641 0 0 
-> dev.off()
+> cleanEx()
+> options(digits = 7L)
+> base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
+Time elapsed:  2.261 0.042 2.307 0 0 
+> grDevices::dev.off()
 null device 
           1 
 > ###
@@ -916,6 +986,3 @@ null device
 > ### outline-regexp: "\\(> \\)?### [*]+" ***
 > ### End: ***
 > quit('no')
-> proc.time()
-   user  system elapsed 
-  1.694   0.056   1.743 

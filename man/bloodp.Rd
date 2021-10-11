@@ -54,9 +54,11 @@ wilcox.exact(bp ~ group, data=bloodp, conf.int=TRUE)
 sc <- cscores(bloodp$bp, type="NormalQuantile")
 X <- sum(sc[bloodp$group == "group2"])
 round(pperm(X, sc, 11), 4) 
+## IGNORE_RDIFF_BEGIN
 round(pperm(X, sc, 11, simulate=TRUE), 4)
 round(pperm(X, sc, 11, alternative="two.sided"), 4) 
 round(pperm(X, sc, 11, alternative="two.sided", simulate=TRUE), 4)
+## IGNORE_RDIFF_END
 
 # use scores mapped into integers (cf. dperm)
 

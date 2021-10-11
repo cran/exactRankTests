@@ -1,4 +1,8 @@
 
+	0.8-34 (08.10.2021)
+
+        remove system.time from Rd files, set seed for examples
+
 	0.8-32 (16.04.2021)
 
         update reference output

@@ -35,8 +35,7 @@ attach(lungcancer)
 scores <- cscores.Surv(cbind(time, cens))
 T <- sum(scores[group=="newdrug"])
 mobs <- sum(group=="newdrug")
-system.time(prob <- pperm(T, scores, m=mobs, al="le"))
-prob
+(prob <- pperm(T, scores, m=mobs, al="le"))
 pperm(T, scores, m=mobs, al="tw")
 pperm(T, scores, m=mobs, al="tw", simulate=TRUE)
 
@@ -44,8 +43,7 @@ pperm(T, scores, m=mobs, al="tw", simulate=TRUE)
 scores <- cscores.Surv(cbind(time, cens), int=TRUE)
 T <- sum(scores[group=="newdrug"])
 mobs <- sum(group=="newdrug")
-system.time(prob <- pperm(T, scores, m=mobs, al="le"))
-prob
+(prob <- pperm(T, scores, m=mobs, al="le"))
 pperm(T, scores, m=mobs, al="tw")
 pperm(T, scores, m=mobs, al="tw", simulate=TRUE)
 

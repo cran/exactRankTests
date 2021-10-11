@@ -1,5 +1,5 @@
 
-R version 4.0.5 (2021-03-31) -- "Shake and Throw"
+R version 4.1.1 (2021-08-10) -- "Kick Things"
 Copyright (C) 2021 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -40,6 +40,8 @@ Type 'q()' to quit R.
 > 
 > ### ** Examples
 > 
+> 
+> set.seed(29)
 > 
 > data(ASAT)
 > # does not really look symmetric
@@ -190,12 +192,14 @@ difference in location
 > X <- sum(sc[bloodp$group == "group2"])
 > round(pperm(X, sc, 11), 4) 
 [1] 0.0462
+> ## IGNORE_RDIFF_BEGIN
 > round(pperm(X, sc, 11, simulate=TRUE), 4)
 [1] 0.0372
 > round(pperm(X, sc, 11, alternative="two.sided"), 4) 
 [1] 0.0799
 > round(pperm(X, sc, 11, alternative="two.sided", simulate=TRUE), 4)
 [1] 0.0705
+> ## IGNORE_RDIFF_END
 > 
 > # use scores mapped into integers (cf. dperm)
 > 
@@ -581,10 +585,7 @@ alternative hypothesis: true mu is not equal to 0
 > scores <- cscores.Surv(cbind(time, cens))
 > T <- sum(scores[group=="newdrug"])
 > mobs <- sum(group=="newdrug")
-> system.time(prob <- pperm(T, scores, m=mobs, al="le"))
-   user  system elapsed 
-  0.003   0.000   0.003 
-> prob
+> (prob <- pperm(T, scores, m=mobs, al="le"))
 [1] 0.000999001
 > pperm(T, scores, m=mobs, al="tw")
 [1] 0.000999001
@@ -595,10 +596,7 @@ alternative hypothesis: true mu is not equal to 0
 > scores <- cscores.Surv(cbind(time, cens), int=TRUE)
 > T <- sum(scores[group=="newdrug"])
 > mobs <- sum(group=="newdrug")
-> system.time(prob <- pperm(T, scores, m=mobs, al="le"))
-   user  system elapsed 
-  0.001   0.000   0.000 
-> prob
+> (prob <- pperm(T, scores, m=mobs, al="le"))
 [1] 0.000999001
 > pperm(T, scores, m=mobs, al="tw")
 [1] 0.000999001
@@ -976,7 +974,7 @@ difference in location
 > cleanEx()
 > options(digits = 7L)
 > base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  2.261 0.042 2.307 0 0 
+Time elapsed:  1.809 0.083 1.923 0 0 
 > grDevices::dev.off()
 null device 
           1 

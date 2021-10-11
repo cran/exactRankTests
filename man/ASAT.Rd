@@ -40,6 +40,8 @@ Hauschke et al. (1999).
 }
 \examples{
 
+set.seed(29)
+
 data(ASAT)
 # does not really look symmetric
 

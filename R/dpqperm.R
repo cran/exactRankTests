@@ -172,7 +172,7 @@ equiscores <- function(scores, m=NULL, tol = 0.01, fact=NULL, simulate=FALSE)
 
 cperm <- function(escores, m, paired = NULL, B=NULL)
 {
-    if (!(class(escores) == "equis"))
+    if (!(inherits(escores, "equis")))
         stop("scores are not of class equis") 
 
     N <- length(escores$scores)

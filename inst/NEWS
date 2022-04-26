@@ -1,4 +1,8 @@
 
+	0.8-35 (25.04.2022)
+
+        don't escape & in Rd
+
 	0.8-34 (08.10.2021)
 
         remove system.time from Rd files, set seed for examples

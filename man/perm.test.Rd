@@ -92,7 +92,6 @@
   Manual, Cytel Software Cooperation, Cambridge, USA
 
 }
-\author{ Torsten Hothorn <Torsten.Hothorn@rzmail.uni-erlangen.de> }
 
 \note{ Confidence intervals may need some cpu-time ... }
 

@@ -48,7 +48,7 @@ the kind of scores used is returned.
 
         Torsten Hothorn & Berthold Lausen (2003),
         On the exact distribution of maximally selected rank statistics.
-        \emph{Computational Statistics \& Data Analysis}, \bold{43}(2),
+        \emph{Computational Statistics & Data Analysis}, \bold{43}(2),
         121-137.
 
 	William J. Conover & David S. Salsburg (1988), Locally most powerful tests
@@ -57,8 +57,6 @@ the kind of scores used is returned.
 	189-196.
 
 }
-\author{ Torsten Hothorn <Torsten.Hothorn@rzmail.uni-erlangen.de> }
-
 \examples{
 
 y <- rnorm(50)

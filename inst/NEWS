@@ -1,4 +1,8 @@
 
+	0.8-36 (09.03.2026)
+
+        don't check attribute conf.level
+
 	0.8-35 (25.04.2022)
 
         don't escape & in Rd

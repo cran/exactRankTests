@@ -1,7 +1,7 @@
 
-R version 4.0.5 (2021-03-31) -- "Shake and Throw"
-Copyright (C) 2021 The R Foundation for Statistical Computing
-Platform: x86_64-pc-linux-gnu (64-bit)
+R Under development (unstable) (2026-03-09 r89580) -- "Unsuffered Consequences"
+Copyright (C) 2026 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -176,7 +176,7 @@ difference in location
 +     wt$parameter <- NULL
 +     wt$method <- NULL   
 +     wt$null.value <- NULL
-+     stopifnot(all.equal(wt, we))
++     stopifnot(all.equal(wt, we, check.attributes = FALSE))
 +     we <- wilcox.exact(x, conf.int = TRUE)
 +     print(we)
 +     wt <- wilcox.test(x, conf.int = TRUE)
@@ -187,7 +187,7 @@ difference in location
 +     wt$parameter <- NULL
 +     wt$method <- NULL   
 +     wt$null.value <- NULL
-+     stopifnot(all.equal(wt, we))
++     stopifnot(all.equal(wt, we, check.attributes = FALSE))
 + }
 
 	Exact Wilcoxon rank sum test
@@ -207,7 +207,7 @@ difference in location
 data:  x and y
 W = 13, p-value = 0.003886
 alternative hypothesis: true location shift is not equal to 0
-95 percent confidence interval:
+95.67429 percent confidence interval:
  -2.6984506 -0.5996612
 sample estimates:
 difference in location 
@@ -231,7 +231,7 @@ sample estimates:
 data:  x
 V = 17, p-value = 0.3223
 alternative hypothesis: true location is not equal to 0
-95 percent confidence interval:
+95.11719 percent confidence interval:
  -0.9374751  0.7638509
 sample estimates:
 (pseudo)median 
@@ -476,4 +476,4 @@ sample estimates:
 > 
 > proc.time()
    user  system elapsed 
-  0.404   0.046   0.428 
+  0.275   0.016   0.286 

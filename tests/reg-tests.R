@@ -84,7 +84,7 @@ if (!any(duplicated(c(x,y)))) {
     wt$parameter <- NULL
     wt$method <- NULL   
     wt$null.value <- NULL
-    stopifnot(all.equal(wt, we))
+    stopifnot(all.equal(wt, we, check.attributes = FALSE))
     we <- wilcox.exact(x, conf.int = TRUE)
     print(we)
     wt <- wilcox.test(x, conf.int = TRUE)
@@ -95,7 +95,7 @@ if (!any(duplicated(c(x,y)))) {
     wt$parameter <- NULL
     wt$method <- NULL   
     wt$null.value <- NULL
-    stopifnot(all.equal(wt, we))
+    stopifnot(all.equal(wt, we, check.attributes = FALSE))
 }
 
 
